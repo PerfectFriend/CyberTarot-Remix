@@ -1,0 +1,8 @@
+{
+  "name": "Weed Guru",
+  "description": "Weed Guru (Шмаль) - a beautiful, fully localized cannabis and grower-themed tarot oracle with organic lo-fi synthesizer, advanced daily advisor, and a real accurate Lunar grower calendar.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

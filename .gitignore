@@ -1,0 +1,8 @@
+*.apk
+*.zip
+.gradle/
+build/
+app/build/
+.kotlin/
+.build-outputs/
+app/src/main/assets/CyberTarot.apk
