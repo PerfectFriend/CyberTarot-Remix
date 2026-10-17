@@ -1,5 +1,6 @@
 *.apk
 *.zip
+.env
 .gradle/
 build/
 app/build/
