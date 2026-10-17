@@ -38,6 +38,9 @@ class TarotRepository private constructor(context: Context) {
     val p2pTransactions: Flow<List<P2pTransaction>> = dao.getP2pTransactions()
     val adBanners: Flow<List<AdBanner>> = dao.getAdBanners()
     val divinationReadings: Flow<List<DivinationReading>> = dao.getDivinationReadings()
+    val savedDecks: Flow<List<SavedDeck>> = dao.getSavedDecks()
+    val activeDeck: Flow<SavedDeck?> = dao.getActiveDeck()
+    val cardUpgrades: Flow<List<CardUpgrade>> = dao.getCardUpgrades()
 
     suspend fun saveDivinationReading(question: String, cardIndices: List<Int>, isUpright: List<Boolean>, report: String) = withContext(Dispatchers.IO) {
         dao.insertDivinationReading(
@@ -52,6 +55,100 @@ class TarotRepository private constructor(context: Context) {
 
     suspend fun deleteDivinationReading(id: Int) = withContext(Dispatchers.IO) {
         dao.deleteDivinationReading(id)
+    }
+
+    suspend fun saveDeck(name: String, icon: String, cardIndices: List<Int>, makeActive: Boolean, description: String = "", deckId: Int = 0): Long = withContext(Dispatchers.IO) {
+        if (makeActive) {
+            dao.clearActiveDecks()
+        }
+        dao.insertOrUpdateDeck(
+            SavedDeck(
+                id = deckId,
+                name = name,
+                icon = icon,
+                cardIndicesString = cardIndices.joinToString(","),
+                isActive = makeActive,
+                description = description
+            )
+        )
+    }
+
+    suspend fun setActiveDeck(deckId: Int) = withContext(Dispatchers.IO) {
+        dao.clearActiveDecks()
+        dao.setActiveDeckById(deckId)
+    }
+
+    suspend fun deleteDeck(deck: SavedDeck) = withContext(Dispatchers.IO) {
+        dao.deleteDeck(deck)
+    }
+
+    suspend fun getCardUpgrade(cardIndex: Int): CardUpgrade? = withContext(Dispatchers.IO) {
+        dao.getCardUpgrade(cardIndex)
+    }
+
+    suspend fun upgradeCardStat(cardIndex: Int, stat: String): Boolean = withContext(Dispatchers.IO) {
+        val current = dao.getCardUpgrade(cardIndex) ?: CardUpgrade(cardIndex = cardIndex)
+        val profile = dao.getUserProfileSync() ?: return@withContext false
+        val cost = when (stat) {
+            "POWER" -> 100 * current.upgradeLevel
+            "DEFENSE" -> 100 * current.upgradeLevel
+            "RAM" -> 250
+            else -> 100
+        }
+        if (profile.weed < cost) return@withContext false
+
+        val updated = when (stat) {
+            "POWER" -> current.copy(
+                upgradeLevel = (current.upgradeLevel + 1).coerceAtMost(5),
+                bonusPower = current.bonusPower + 1
+            )
+            "DEFENSE" -> current.copy(
+                upgradeLevel = (current.upgradeLevel + 1).coerceAtMost(5),
+                bonusDefense = current.bonusDefense + 1
+            )
+            "RAM" -> current.copy(
+                energyDiscount = 1
+            )
+            else -> current
+        }
+        dao.updateProfile(profile.copy(weed = profile.weed - cost))
+        dao.insertOrUpdateCardUpgrade(updated)
+        true
+    }
+
+    suspend fun setCardSkin(cardIndex: Int, skin: String) = withContext(Dispatchers.IO) {
+        val current = dao.getCardUpgrade(cardIndex) ?: CardUpgrade(cardIndex = cardIndex)
+        dao.insertOrUpdateCardUpgrade(current.copy(customSkin = skin))
+    }
+
+    suspend fun getActiveBattleDeckSync(): List<com.example.duel.BattleCard> = withContext(Dispatchers.IO) {
+        val activeSaved = dao.getActiveDeckSync()
+        val upgradesMap = dao.getCardUpgrades().firstOrNull()?.associateBy { it.cardIndex } ?: emptyMap()
+        val indices = if (activeSaved != null && activeSaved.cardIndices.isNotEmpty()) {
+            activeSaved.cardIndices
+        } else {
+            listOf(0, 1, 2, 3, 4, 7, 10, 11, 13, 17, 18, 19, 21, 25, 30)
+        }
+        indices.mapNotNull { idx ->
+            CyberTarotDeck.cards.getOrNull(idx)?.let { card ->
+                val base = com.example.duel.BattleCardFactory.fromTarot(card)
+                val up = upgradesMap[idx]
+                if (up != null) {
+                    val newCost = (base.energyCost - up.energyDiscount).coerceAtLeast(1)
+                    val newPwr = base.basePower + up.bonusPower
+                    val newDef = base.baseDefense + up.bonusDefense
+                    base.copy(
+                        energyCost = newCost,
+                        basePower = newPwr,
+                        currentPower = newPwr,
+                        baseDefense = newDef,
+                        currentDefense = newDef
+                    )
+                } else {
+                    base
+                }
+            }
+        }
     }
 
     init {
@@ -214,11 +311,21 @@ class TarotRepository private constructor(context: Context) {
                     messagePriceWeed = 8
                 )
             )
-        } else {
-            // Automatically follow system localization if device language changes
-            if (existingProfile.systemLanguage != initialLang) {
-                dao.updateProfile(existingProfile.copy(systemLanguage = initialLang))
-            }
+        }
+
+        // Seed default starter deck if none exists
+        if (dao.getSavedDeckCount() == 0) {
+            val starterIndices = listOf(0, 1, 2, 3, 4, 7, 10, 11, 13, 17, 18, 19, 21, 25, 30)
+            dao.insertOrUpdateDeck(
+                SavedDeck(
+                    id = 0,
+                    name = "Genesis Cyber Deck",
+                    icon = "⚡",
+                    cardIndicesString = starterIndices.joinToString(","),
+                    isActive = true,
+                    description = "Базовая сбалансированная колода Старших и Младших Арканов"
+                )
+            )
         }
     }
 

@@ -100,6 +100,52 @@ class TarotViewModel(application: Application) : AndroidViewModel(application) {
     val transactionLogs: StateFlow<List<TransactionLog>> = repository.transactionLogs
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    // TCG Deck Builder & Card Forge State
+    val savedDecks: StateFlow<List<SavedDeck>> = repository.savedDecks
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val activeDeck: StateFlow<SavedDeck?> = repository.activeDeck
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    val cardUpgrades: StateFlow<Map<Int, CardUpgrade>> = repository.cardUpgrades
+        .map { list -> list.associateBy { it.cardIndex } }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
+
+    fun saveDeck(name: String, icon: String, cardIndices: List<Int>, makeActive: Boolean, description: String = "", deckId: Int = 0) {
+        viewModelScope.launch {
+            repository.saveDeck(name, icon, cardIndices, makeActive, description, deckId)
+        }
+    }
+
+    fun setActiveDeck(deckId: Int) {
+        viewModelScope.launch {
+            repository.setActiveDeck(deckId)
+        }
+    }
+
+    fun deleteDeck(deck: SavedDeck) {
+        viewModelScope.launch {
+            repository.deleteDeck(deck)
+        }
+    }
+
+    fun upgradeCardStat(cardIndex: Int, stat: String, onResult: (Boolean) -> Unit = {}) {
+        viewModelScope.launch {
+            val success = repository.upgradeCardStat(cardIndex, stat)
+            onResult(success)
+        }
+    }
+
+    fun setCardSkin(cardIndex: Int, skin: String) {
+        viewModelScope.launch {
+            repository.setCardSkin(cardIndex, skin)
+        }
+    }
+
+    suspend fun getActiveBattleDeck(): List<com.example.duel.BattleCard> {
+        return repository.getActiveBattleDeckSync()
+    }
+
     // Active Divination Reading State
     private val _divinationState = MutableStateFlow<DivinationState>(DivinationState.Idle)
     val divinationState: StateFlow<DivinationState> = _divinationState.asStateFlow()
@@ -1765,6 +1811,17 @@ class TarotViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
             com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.SUCCESS_CHIME)
+        }
+    }
+
+    fun addWeedCredits(amount: Int) {
+        val currentProfile = userProfile.value ?: return
+        viewModelScope.launch {
+            val updated = currentProfile.copy(weed = currentProfile.weed + amount)
+            repository.updateProfile(updated)
+            val lang = currentProfile.systemLanguage
+            val msg = if (lang == "ru") "⚔️ Награда за дуэль: +$amount WEED Credits!" else "⚔️ Duel reward: +$amount WEED Credits!"
+            postNotification(msg)
         }
     }
 

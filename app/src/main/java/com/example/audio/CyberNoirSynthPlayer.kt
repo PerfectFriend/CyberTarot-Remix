@@ -37,7 +37,7 @@ object CyberNoirSynthPlayer {
     private var fxRemainingSamples = 0
 
     enum class FXType {
-        NONE, CARD_DRAW, SCAN_BEEP, SUCCESS_CHIME, CLICK
+        NONE, CARD_DRAW, SCAN_BEEP, SUCCESS_CHIME, CLICK, LASER_CLASH, SHIELD_BLOCK, COMBAT_VICTORY
     }
 
     /**
@@ -67,6 +67,9 @@ object CyberNoirSynthPlayer {
                 FXType.CARD_DRAW -> (SAMPLE_RATE * 0.45).toInt() // 450ms sweep
                 FXType.SCAN_BEEP -> (SAMPLE_RATE * 0.35).toInt() // 350ms rhythmic pulse
                 FXType.SUCCESS_CHIME -> (SAMPLE_RATE * 0.8).toInt() // 800ms chord sweep
+                FXType.LASER_CLASH -> (SAMPLE_RATE * 0.3).toInt() // 300ms energetic laser strike
+                FXType.SHIELD_BLOCK -> (SAMPLE_RATE * 0.25).toInt() // 250ms metallic resonance
+                FXType.COMBAT_VICTORY -> (SAMPLE_RATE * 1.2).toInt() // 1.2s triumphant synth arpeggio
             }
             fxRemainingSamples = fxDurationSamples
         }
@@ -183,6 +186,34 @@ object CyberNoirSynthPlayer {
                                         }
                                         fxSample = sin(2.0 * PI * scaleNote * fxPhase) * 0.22 * (1.0 - progress)
                                         fxPhase += scaleNote / SAMPLE_RATE
+                                    }
+                                    FXType.LASER_CLASH -> {
+                                        // Rapid frequency drop laser strike with saw-like harmonics
+                                        val freq = 880.0 * (1.0 - progress * 0.7)
+                                        val fundamental = sin(2.0 * PI * freq * fxPhase)
+                                        val sub = sin(2.0 * PI * (freq * 0.5) * fxPhase) * 0.4
+                                        fxSample = (fundamental + sub) * 0.26 * (1.0 - progress)
+                                        fxPhase += freq / SAMPLE_RATE
+                                    }
+                                    FXType.SHIELD_BLOCK -> {
+                                        // Deep resonant metallic deflection ping
+                                        val freq = 220.0 + sin(progress * 15.0) * 40.0
+                                        fxSample = sin(2.0 * PI * freq * fxPhase) * 0.28 * (1.0 - progress)
+                                        fxPhase += freq / SAMPLE_RATE
+                                    }
+                                    FXType.COMBAT_VICTORY -> {
+                                        // Triumphant cyber-fanfare chord progression
+                                        val note = when {
+                                            progress < 0.20 -> 261.63 // C4
+                                            progress < 0.40 -> 329.63 // E4
+                                            progress < 0.60 -> 392.00 // G4
+                                            progress < 0.80 -> 523.25 // C5
+                                            else -> 659.25            // E5
+                                        }
+                                        val lead = sin(2.0 * PI * note * fxPhase) * 0.25
+                                        val shimmer = sin(2.0 * PI * (note * 2.0) * fxPhase) * 0.1
+                                        fxSample = (lead + shimmer) * (1.0 - progress * 0.4)
+                                        fxPhase += note / SAMPLE_RATE
                                     }
                                     FXType.NONE -> {}
                                 }

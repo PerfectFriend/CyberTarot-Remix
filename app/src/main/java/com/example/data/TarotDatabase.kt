@@ -15,9 +15,11 @@ import androidx.room.RoomDatabase
         AdBanner::class,
         DivinationReading::class,
         LocalizationItem::class,
-        CardLocalizationItem::class
+        CardLocalizationItem::class,
+        SavedDeck::class,
+        CardUpgrade::class
     ],
-    version = 13,
+    version = 14,
     exportSchema = false
 )
 abstract class TarotDatabase : RoomDatabase() {

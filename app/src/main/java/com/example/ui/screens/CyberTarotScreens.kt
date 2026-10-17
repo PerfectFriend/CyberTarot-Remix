@@ -757,6 +757,7 @@ fun CyberTarotDashboard(viewModel: TarotViewModel) {
     val isLocked by viewModel.isAppLocked.collectAsStateWithLifecycle()
     val isSafeMode by viewModel.isSafeBotanicalMode.collectAsStateWithLifecycle()
     val showBlessingsPortal by viewModel.showBlessingsPortal.collectAsStateWithLifecycle()
+    var isDuelModeOpen by remember { mutableStateOf(false) }
     var showOnboarding by remember { mutableStateOf(false) }
     val isSecured = profile?.isSecured ?: false
     val lang = profile?.systemLanguage ?: "en"
@@ -773,7 +774,12 @@ fun CyberTarotDashboard(viewModel: TarotViewModel) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        if (showBlessingsPortal) {
+        if (isDuelModeOpen) {
+            com.example.duel.DuelArenaScreen(
+                viewModel = viewModel,
+                onBack = { isDuelModeOpen = false }
+            )
+        } else if (showBlessingsPortal) {
             BlessingQuestsHubDialog(
                 viewModel = viewModel,
                 onDismiss = { viewModel.setBlessingsPortalVisible(false) }
@@ -934,6 +940,31 @@ fun CyberTarotDashboard(viewModel: TarotViewModel) {
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
+                        // TCG Duel Arena Launcher
+                        Surface(
+                            shape = RoundedCornerShape(14.dp),
+                            color = Color(0xFF1E1035),
+                            border = BorderStroke(1.dp, Color(0xFFBD00FF).copy(alpha = 0.6f)),
+                            modifier = Modifier
+                                .clickable { isDuelModeOpen = true }
+                                .testTag("top_open_duel_button")
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 9.dp, vertical = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Text("⚔️", fontSize = 12.sp)
+                                Text(
+                                    text = if (lang == "ru") "ДУЭЛЬ" else "DUEL",
+                                    color = Color(0xFF00F5FF),
+                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+
                         val isSoundOn by com.example.audio.CyberNoirSynthPlayer.isAmbientOn.collectAsStateWithLifecycle()
                         IconButton(
                             onClick = {
@@ -2129,6 +2160,7 @@ fun InteractiveCyberCard(
     val lang = profile?.systemLanguage ?: "en"
     var isRevealed by remember { mutableStateOf(false) }
     var wasMinted by remember { mutableStateOf(false) }
+    var showFullScreenReview by remember { mutableStateOf(false) }
 
     val rotation by animateFloatAsState(
         targetValue = if (isRevealed) 180f else 0f,
@@ -2187,7 +2219,14 @@ fun InteractiveCyberCard(
                     color = if (isRevealed) rarityColor else currentSkin.primaryColor.copy(alpha = 0.8f),
                     shape = RoundedCornerShape(12.dp)
                 )
-                .clickable { isRevealed = true }
+                .clickable {
+                    if (!isRevealed) {
+                        isRevealed = true
+                        com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.CARD_DRAW)
+                    } else {
+                        showFullScreenReview = true
+                    }
+                }
                 .graphicsLayer {
                     rotationY = rotation
                     cameraDistance = 12 * density
@@ -2195,33 +2234,49 @@ fun InteractiveCyberCard(
             contentAlignment = Alignment.Center
         ) {
             if (rotation <= 90f) {
-                // Card Back (Holographic circuit board pattern)
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxSize()
+                // Card Back with Series Artwork
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(12.dp))
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.DeviceHub,
-                        contentDescription = "Hologram Connection",
-                        tint = currentSkin.primaryColor,
-                        modifier = Modifier.size(52.dp)
+                    val backImgRes = getCardBackImage(card.series)
+                    Image(
+                        painter = painterResource(id = backImgRes),
+                        contentDescription = "${card.series} Card Back",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
                     )
-                    Spacer(modifier = Modifier.height(14.dp))
-                    ContrastText(
-                        text = "[TAP TO DECRYPT]",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 12.sp,
-                        color = currentSkin.primaryColor,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    ContrastText(
-                        text = "SECURE PROTOCOL",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 10.sp,
-                        color = Color.LightGray
-                    )
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .fillMaxWidth()
+                            .background(
+                                Brush.verticalGradient(
+                                    listOf(Color.Transparent, Color(0xDD0A0918))
+                                )
+                            )
+                            .padding(bottom = 8.dp, top = 20.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = card.series.uppercase(),
+                                fontSize = 9.sp,
+                                fontFamily = FontFamily.Monospace,
+                                color = NeonCyan,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            ContrastText(
+                                text = "[TAP TO REVEAL]",
+                                fontFamily = FontFamily.Monospace,
+                                fontSize = 11.sp,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
                 }
             } else {
                 // Card Front (Decrypted Node)
@@ -2441,6 +2496,16 @@ fun InteractiveCyberCard(
                     )
                 }
             }
+        }
+
+        if (showFullScreenReview) {
+            FullScreenCardReview(
+                card = card,
+                isMarketView = false,
+                systemLanguage = lang,
+                skin = currentSkin,
+                onClose = { showFullScreenReview = false }
+            )
         }
     }
 }
@@ -3632,6 +3697,15 @@ fun getCardImage(cardIndex: Int): Int? {
     }
 }
 
+fun getCardBackImage(series: String): Int {
+    return when (series) {
+        "Genesis Series" -> R.drawable.back_genesis_series_1792151368530
+        "Amber Series" -> R.drawable.back_amber_series_1792151382337
+        "Seas & Oceans" -> R.drawable.back_ocean_series_1792151396531
+        else -> R.drawable.back_cyber_botanica_1792151356014
+    }
+}
+
 // ==========================================
 // 4. CYBER DECK (Rider-Waite Reference Screen)
 // ==========================================
@@ -3781,61 +3855,44 @@ fun DeckScreen(viewModel: TarotViewModel) {
                 .padding(bottom = 12.dp)
                 .background(Color(0xFF09090F), RoundedCornerShape(24.dp))
                 .border(1.dp, Color(0x1F7F7F7F), RoundedCornerShape(24.dp))
-                .padding(4.dp)
+                .padding(3.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(if (currentDeckSubTab == 0) NeonMagenta.copy(alpha = 0.15f) else Color.Transparent)
-                    .border(1.dp, if (currentDeckSubTab == 0) NeonMagenta else Color.Transparent, RoundedCornerShape(20.dp))
-                    .clickable { currentDeckSubTab = 0 }
-                    .padding(vertical = 8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    "REGISTRY",
-                    color = if (currentDeckSubTab == 0) Color.White else Color.Gray,
-                    fontFamily = FontFamily.Monospace,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 11.sp
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(if (currentDeckSubTab == 1) NeonCyan.copy(alpha = 0.15f) else Color.Transparent)
-                    .border(1.dp, if (currentDeckSubTab == 1) NeonCyan else Color.Transparent, RoundedCornerShape(20.dp))
-                    .clickable { currentDeckSubTab = 1 }
-                    .padding(vertical = 8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    "ANALYTICS",
-                    color = if (currentDeckSubTab == 1) Color.White else Color.Gray,
-                    fontFamily = FontFamily.Monospace,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 11.sp
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(if (currentDeckSubTab == 2) Color(0xFFFFD700).copy(alpha = 0.15f) else Color.Transparent)
-                    .border(1.dp, if (currentDeckSubTab == 2) Color(0xFFFFD700) else Color.Transparent, RoundedCornerShape(20.dp))
-                    .clickable { currentDeckSubTab = 2 }
-                    .padding(vertical = 8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    "SYNTHESIS",
-                    color = if (currentDeckSubTab == 2) Color(0xFFFFD700) else Color.Gray,
-                    fontFamily = FontFamily.Monospace,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 11.sp
-                )
+            val tabs = listOf(
+                Pair(0, "REGISTRY"),
+                Pair(1, "BUILDER"),
+                Pair(2, "FORGE"),
+                Pair(3, "DUEL"),
+                Pair(4, "ANALYTICS")
+            )
+            val tabColors = listOf(
+                NeonMagenta,
+                Color(0xFF00F5FF),
+                Color(0xFFFFD700),
+                Color(0xFF00FF66),
+                NeonCyan
+            )
+
+            tabs.forEachIndexed { idx, (tabIndex, title) ->
+                val isSelected = currentDeckSubTab == tabIndex
+                val color = tabColors[idx]
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(if (isSelected) color.copy(alpha = 0.2f) else Color.Transparent)
+                        .border(1.dp, if (isSelected) color else Color.Transparent, RoundedCornerShape(16.dp))
+                        .clickable { currentDeckSubTab = tabIndex }
+                        .padding(vertical = 6.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        title,
+                        color = if (isSelected) Color.White else Color.Gray,
+                        fontFamily = FontFamily.Monospace,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 9.sp
+                    )
+                }
             }
         }
 
@@ -4294,72 +4351,20 @@ fun DeckScreen(viewModel: TarotViewModel) {
                                     pulseFactor = if (presetStyle == "Neon Matrix Grid") pulseFactor else 1.0f,
                                     cornerRadius = 12.dp
                                 )
-                                .clickable { flippedCardsMap[card.index] = !isFlipped }
+                                .clickable {
+                                    selectedInspectCard = card
+                                    com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.CARD_DRAW)
+                                }
                                 .graphicsLayer {
                                     rotationY = rotation
                                     cameraDistance = 12 * density
                                 }
                         ) {
                             if (rotation <= 90f) {
-                                // Card Back view
+                                // Card Front view (default in deck)
                                 Column(
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .padding(8.dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    // Coordinates tag in command presets
-                                    if (presetStyle == "Holographic Command Table") {
-                                        Text(
-                                            text = "[$coordLabel]",
-                                            color = NeonCyan.copy(alpha = 0.4f),
-                                            fontSize = 8.sp,
-                                            fontFamily = FontFamily.Monospace,
-                                            modifier = Modifier.align(Alignment.Start)
-                                        )
-                                        Spacer(modifier = Modifier.weight(1f))
-                                    }
-
-                                    Box(
-                                        modifier = Modifier
-                                            .size(44.dp)
-                                            .background(Color.Black, RoundedCornerShape(22.dp))
-                                            .border(1.dp, chosenGlowColor.copy(alpha = 0.5f), RoundedCornerShape(22.dp)),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.FilterFrames,
-                                            contentDescription = null,
-                                            tint = chosenGlowColor,
-                                            modifier = Modifier.size(18.dp)
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.height(6.dp))
-                                    Text(
-                                        text = "NODE #${String.format("%02d", card.index)}",
-                                        fontSize = 9.sp,
-                                        fontFamily = FontFamily.Monospace,
-                                        color = Color.Gray
-                                    )
-                                    Text(
-                                        text = "DECRYPT NODE",
-                                        fontSize = 8.sp,
-                                        fontFamily = FontFamily.Monospace,
-                                        color = chosenGlowColor,
-                                        fontWeight = FontWeight.Bold
-                                    )
-
-                                    if (presetStyle == "Holographic Command Table") {
-                                        Spacer(modifier = Modifier.weight(1f))
-                                    }
-                                }
-                            } else {
-                                // Card Front view (rotated 180Y)
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .graphicsLayer { rotationY = 180f }
                                         .padding(10.dp),
                                     verticalArrangement = Arrangement.SpaceBetween
                                 ) {
@@ -4454,11 +4459,47 @@ fun DeckScreen(viewModel: TarotViewModel) {
                                             .height(30.dp)
                                     ) {
                                         AutoResizingText(
-                                            text = "DIAGNOSE",
+                                            text = "INSPECT ⛶",
                                             targetTextSize = 9.sp,
                                             fontWeight = FontWeight.Bold,
                                             fontFamily = FontFamily.Monospace,
                                             textAlign = TextAlign.Center
+                                        )
+                                    }
+                                }
+                            } else {
+                                // Card Back view with Ornate Series Design (flipped)
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .graphicsLayer { rotationY = 180f }
+                                        .clip(RoundedCornerShape(12.dp))
+                                ) {
+                                    val backImgRes = getCardBackImage(card.series)
+                                    Image(
+                                        painter = painterResource(id = backImgRes),
+                                        contentDescription = "${card.series} Back",
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                    Box(
+                                        modifier = Modifier
+                                            .align(Alignment.BottomCenter)
+                                            .fillMaxWidth()
+                                            .background(
+                                                Brush.verticalGradient(
+                                                    listOf(Color.Transparent, Color(0xCC05050A))
+                                                )
+                                            )
+                                            .padding(bottom = 6.dp, top = 16.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = card.series.uppercase(),
+                                            fontSize = 9.sp,
+                                            fontFamily = FontFamily.Monospace,
+                                            color = Color.White,
+                                            fontWeight = FontWeight.Bold
                                         )
                                     }
                                 }
@@ -4468,9 +4509,21 @@ fun DeckScreen(viewModel: TarotViewModel) {
                 }
             }
         } else if (currentDeckSubTab == 1) {
-            NeuralAnalyticsView(mintedCards = mintedCards, marketListings = marketListings)
+            com.example.deckforge.DeckBuilderScreen(
+                viewModel = viewModel,
+                onLaunchDuel = { currentDeckSubTab = 3 }
+            )
+        } else if (currentDeckSubTab == 2) {
+            com.example.deckforge.CardForgeScreen(
+                viewModel = viewModel
+            )
+        } else if (currentDeckSubTab == 3) {
+            com.example.duel.DuelArenaScreen(
+                viewModel = viewModel,
+                onBack = { currentDeckSubTab = 0 }
+            )
         } else {
-            CardSynthesisView(viewModel = viewModel)
+            NeuralAnalyticsView(mintedCards = mintedCards, marketListings = marketListings)
         }
     }
 
@@ -11210,9 +11263,19 @@ fun FullScreenCardReview(
                                 rotationY = rotationState
                                 cameraDistance = 12 * density
                             }
-                            .clickable { isFlipped = !isFlipped }
-                            .width(260.dp)
-                            .height(380.dp)
+                            .clickable {
+                                if (!isFlipped) {
+                                    // 2nd tap: flip card to show back/shirt
+                                    isFlipped = true
+                                    com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.CARD_DRAW)
+                                } else {
+                                    // 3rd tap: return from full-screen back to original screen
+                                    com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.CLICK)
+                                    onClose()
+                                }
+                            }
+                            .width(290.dp)
+                            .height(440.dp)
                             .shadow(24.dp, RoundedCornerShape(16.dp), ambientColor = NeonCyan, spotColor = NeonMagenta)
                             .background(CyberCharcoal, RoundedCornerShape(16.dp))
                             .border(
@@ -11233,14 +11296,15 @@ fun FullScreenCardReview(
                             Column(
                                 modifier = Modifier
                                         .fillMaxSize()
-                                        .padding(16.dp),
+                                        .padding(14.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {
                                 // Top status indicators
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
                                         text = mintedCard?.rarity?.uppercase() ?: card.defaultRarity.uppercase(),
@@ -11269,7 +11333,8 @@ fun FullScreenCardReview(
                                         painter = painterResource(id = cardRes),
                                         contentDescription = localizedName,
                                         modifier = Modifier
-                                            .size(200.dp)
+                                            .fillMaxWidth()
+                                            .height(250.dp)
                                             .clip(RoundedCornerShape(12.dp))
                                             .border(
                                                 width = 1.5.dp,
@@ -11286,7 +11351,8 @@ fun FullScreenCardReview(
                                 } else {
                                     Box(
                                         modifier = Modifier
-                                            .size(200.dp)
+                                            .fillMaxWidth()
+                                            .height(250.dp)
                                             .background(Color.Black.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
                                             .border(1.dp, Color.White.copy(alpha = 0.05f), RoundedCornerShape(12.dp)),
                                         contentAlignment = Alignment.Center
@@ -11304,7 +11370,7 @@ fun FullScreenCardReview(
                                     }
                                 }
 
-                                // Bottom identity block
+                                // Bottom identity block & Flip hint
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     Text(
                                         text = localizedName.uppercase(),
@@ -11320,67 +11386,75 @@ fun FullScreenCardReview(
                                         color = NeonCyan,
                                         modifier = Modifier.padding(top = 2.dp)
                                     )
+                                    Spacer(modifier = Modifier.height(6.dp))
+                                    Box(
+                                        modifier = Modifier
+                                            .clip(RoundedCornerShape(6.dp))
+                                            .background(Color.White.copy(alpha = 0.08f))
+                                            .padding(horizontal = 8.dp, vertical = 2.dp)
+                                    ) {
+                                        Text(
+                                            text = if (systemLanguage == "ru") "ТАП: ПЕРЕВЕРНУТЬ (РУБАШКА) ↻" else "TAP: FLIP TO SHIRT ↻",
+                                            color = NeonCyan,
+                                            fontSize = 9.sp,
+                                            fontFamily = FontFamily.Monospace,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
                                 }
                             }
                         } else {
-                            // BACK SIDE (Reversed matrix / specifications)
-                            Column(
+                            // BACK SIDE: Ornate Series-specific card back artwork
+                            Box(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .graphicsLayer { rotationY = 180f }
-                                    .padding(16.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.SpaceBetween
+                                    .clip(RoundedCornerShape(16.dp))
                             ) {
-                                Text(
-                                    text = "INTELLIGENCE MATRIX",
-                                    color = NeonCyan,
-                                    fontSize = 10.sp,
-                                    fontFamily = FontFamily.Monospace,
-                                    fontWeight = FontWeight.Bold
+                                val backResId = getCardBackImage(card.series)
+                                Image(
+                                    painter = painterResource(id = backResId),
+                                    contentDescription = "${card.series} Card Back",
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop
                                 )
 
-                                Column(
+                                // Overlay badge with series name and tap hint
+                                Box(
                                     modifier = Modifier
+                                        .align(Alignment.BottomCenter)
                                         .fillMaxWidth()
-                                        .weight(1f)
-                                        .padding(vertical = 12.dp),
-                                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                                        .background(
+                                            Brush.verticalGradient(
+                                                listOf(Color.Transparent, Color(0xDD0A0918))
+                                            )
+                                        )
+                                        .padding(bottom = 12.dp, top = 24.dp),
+                                    contentAlignment = Alignment.Center
                                 ) {
-                                    Text(
-                                        text = "Traditional Mapping: $localizedTraditional",
-                                        fontSize = 9.sp,
-                                        color = Color.LightGray,
-                                        fontFamily = FontFamily.Monospace
-                                    )
-                                    Text(
-                                        text = "Core Core Element: $localizedCircuitry",
-                                        fontSize = 9.sp,
-                                        color = Color.LightGray,
-                                        fontFamily = FontFamily.Monospace
-                                    )
-                                    Text(
-                                        text = "Rarity: ${mintedCard?.rarity ?: card.defaultRarity}",
-                                        fontSize = 9.sp,
-                                        color = Color.LightGray,
-                                        fontFamily = FontFamily.Monospace
-                                    )
-                                    Divider(color = Color.DarkGray, modifier = Modifier.padding(vertical = 4.dp))
-                                    Text(
-                                        text = "Circuitry Spec:\n$localizedDesc",
-                                        fontSize = 8.sp,
-                                        color = Color.Gray,
-                                        fontFamily = FontFamily.Monospace,
-                                        lineHeight = 11.sp
-                                    )
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Text(
+                                            text = card.series.uppercase(),
+                                            color = when (card.series) {
+                                                "Genesis Series" -> Color(0xFFFFD700)
+                                                "Amber Series" -> Color(0xFFFF9900)
+                                                "Seas & Oceans" -> NeonCyan
+                                                else -> NeonGreen
+                                            },
+                                            fontSize = 11.sp,
+                                            fontFamily = FontFamily.Monospace,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Spacer(modifier = Modifier.height(2.dp))
+                                        Text(
+                                            text = if (systemLanguage == "ru") "3-Й ТАП: ВЕРНУТЬСЯ В ИСХОДНЫЙ ВИД ✕" else "3RD TAP: RETURN TO VIEW ✕",
+                                            color = NeonGold,
+                                            fontSize = 9.sp,
+                                            fontFamily = FontFamily.Monospace,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
                                 }
-
-                                Text(
-                                    text = "TAP TO FLIP FRONT",
-                                    color = Color.LightGray,
-                                    fontSize = 8.sp,
-                                    fontFamily = FontFamily.Monospace
-                                )
                             }
                         }
                     }

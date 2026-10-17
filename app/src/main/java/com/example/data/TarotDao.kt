@@ -126,4 +126,39 @@ interface TarotDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCardLocalizationItems(items: List<CardLocalizationItem>)
+
+    // Saved Decks (TCG)
+    @Query("SELECT * FROM saved_decks ORDER BY createdAt ASC")
+    fun getSavedDecks(): Flow<List<SavedDeck>>
+
+    @Query("SELECT * FROM saved_decks WHERE isActive = 1 LIMIT 1")
+    fun getActiveDeck(): Flow<SavedDeck?>
+
+    @Query("SELECT * FROM saved_decks WHERE isActive = 1 LIMIT 1")
+    suspend fun getActiveDeckSync(): SavedDeck?
+
+    @Query("SELECT COUNT(*) FROM saved_decks")
+    suspend fun getSavedDeckCount(): Int
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertOrUpdateDeck(deck: SavedDeck): Long
+
+    @Delete
+    suspend fun deleteDeck(deck: SavedDeck)
+
+    @Query("UPDATE saved_decks SET isActive = 0")
+    suspend fun clearActiveDecks()
+
+    @Query("UPDATE saved_decks SET isActive = 1 WHERE id = :deckId")
+    suspend fun setActiveDeckById(deckId: Int)
+
+    // Card Upgrades (TCG Forge)
+    @Query("SELECT * FROM card_upgrades")
+    fun getCardUpgrades(): Flow<List<CardUpgrade>>
+
+    @Query("SELECT * FROM card_upgrades WHERE cardIndex = :cardIndex LIMIT 1")
+    suspend fun getCardUpgrade(cardIndex: Int): CardUpgrade?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertOrUpdateCardUpgrade(upgrade: CardUpgrade)
 }
