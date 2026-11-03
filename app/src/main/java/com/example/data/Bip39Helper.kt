@@ -86,4 +86,13 @@ object Bip39Helper {
 
         return words
     }
+
+    /**
+     * Validates whether the given list of words contains 12 or 24 valid BIP-39 mnemonic words.
+     */
+    fun validateWords(words: List<String>): Boolean {
+        if (words.size != 12 && words.size != 24) return false
+        val wordlistSet = Bip39Wordlist.words.toSet()
+        return words.all { wordlistSet.contains(it.lowercase().trim()) }
+    }
 }

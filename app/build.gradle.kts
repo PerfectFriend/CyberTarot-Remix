@@ -102,6 +102,11 @@ dependencies {
   implementation(libs.converter.moshi)
   implementation(libs.firebase.ai)
   implementation(libs.firebase.appcheck.recaptcha)
+  implementation(libs.firebase.firestore)
+  implementation(libs.firebase.auth)
+  implementation(libs.androidx.credentials)
+  implementation(libs.androidx.credentials.play.services)
+  implementation(libs.googleid)
   implementation(libs.kotlinx.coroutines.android)
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.logging.interceptor)
@@ -128,22 +133,41 @@ dependencies {
   "ksp"(libs.androidx.room.compiler)
 }
 
-tasks.register<Copy>("copyApkToApkFolder") {
-  from(layout.buildDirectory.dir("outputs/apk/debug"))
-  include("app-debug.apk")
-  into(rootProject.layout.projectDirectory.dir("apk"))
-  rename("app-debug.apk", "CyberTarot.apk")
+abstract class CopyApkTask : DefaultTask() {
+  @get:InputFile
+  abstract val sourceApk: RegularFileProperty
 
-  val destFile = rootProject.layout.projectDirectory.file("apk/CyberTarot.apk").asFile
-  doLast {
-    destFile.setReadable(true, false)
-    destFile.setWritable(true, false)
-    destFile.setExecutable(true, false)
-    println("Successfully copied APK to: ${destFile.absolutePath} and set permissions.")
+  @get:OutputFile
+  abstract val targetRootApk: RegularFileProperty
+
+  @get:OutputFile
+  abstract val targetFolderApk: RegularFileProperty
+
+  @TaskAction
+  fun copy() {
+    val src = sourceApk.get().asFile
+    val destRoot = targetRootApk.get().asFile
+    val destFolder = targetFolderApk.get().asFile
+    destFolder.parentFile?.mkdirs()
+    src.copyTo(destRoot, overwrite = true)
+    src.copyTo(destFolder, overwrite = true)
+    destRoot.setReadable(true, false)
+    destRoot.setWritable(true, false)
+    destFolder.setReadable(true, false)
+    destFolder.setWritable(true, false)
+    println("Successfully deployed APK to root (${destRoot.name}) and apk folder (${destFolder.name})")
   }
 }
 
-tasks.matching { it.name == "assembleDebug" }.all {
-  finalizedBy("copyApkToApkFolder")
+val copyApkTask = tasks.register<CopyApkTask>("copyApkToOutputs") {
+  sourceApk.set(layout.buildDirectory.file("outputs/apk/debug/app-debug.apk"))
+  targetRootApk.set(rootProject.layout.projectDirectory.file("CyberTarot.apk"))
+  targetFolderApk.set(rootProject.layout.projectDirectory.file("apk/CyberTarot.apk"))
+  dependsOn("assembleDebug")
 }
+
+tasks.matching { it.name == "assembleDebug" }.all {
+  finalizedBy(copyApkTask)
+}
+
 

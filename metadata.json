@@ -1,6 +1,6 @@
 {
-  "name": "Weed Guru",
-  "description": "Weed Guru (Шмаль) - a beautiful, fully localized cannabis and grower-themed tarot oracle with organic lo-fi synthesizer, advanced daily advisor, and a real accurate Lunar grower calendar.",
+  "name": "CyberTarot",
+  "description": "CyberTarot - Next-gen futuristic cyberpunk tarot oracle and lunar grower mystic sanctuary with holographic deck divination, neural AI synthesis, and sacred cosmic geometry.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

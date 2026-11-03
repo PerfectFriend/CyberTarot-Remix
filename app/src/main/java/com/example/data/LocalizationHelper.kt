@@ -5,12 +5,15 @@ object LocalizationHelper {
     internal val translations = mapOf(
         "en" to mapOf(
             "tab_divination" to "ORACLE",
-            "tab_vault" to "GARDEN",
-            "tab_market" to "DISPENSARY",
-            "tab_netops" to "GROW-OPS",
-            "tab_deck" to "STRAINS",
+            "tab_cards" to "CARDS",
+            "tab_arena" to "ARENA",
+            "tab_crypto" to "CRYPTO",
+            "tab_vault" to "CARDS",
+            "tab_market" to "CRYPTO",
+            "tab_netops" to "OPS",
+            "tab_deck" to "DECKS",
             "tab_settings" to "SETTINGS",
-            "app_title" to "WEED GURU",
+            "app_title" to "SHMALL",
             "credits_label" to "WEED",
             "secured_badge" to "SECURED",
             "unsecured_badge" to "UNSECURED",
@@ -77,10 +80,13 @@ object LocalizationHelper {
         ),
         "ru" to mapOf(
             "tab_divination" to "ОРАКУЛ",
-            "tab_vault" to "ОРАНЖЕРЕЯ",
-            "tab_market" to "ДИСПЕНСЕР",
-            "tab_netops" to "ГРОУ-ОПС",
-            "tab_deck" to "СОРТА",
+            "tab_cards" to "КАРТЫ",
+            "tab_arena" to "АРЕНА",
+            "tab_crypto" to "КРИПТА",
+            "tab_vault" to "КАРТЫ",
+            "tab_market" to "КРИПТА",
+            "tab_netops" to "ОПС",
+            "tab_deck" to "КОЛОДЫ",
             "tab_settings" to "НАСТРОЙКИ",
             "app_title" to "ШМАЛЬ",
             "credits_label" to "WEED",
@@ -338,6 +344,47 @@ object LocalizationHelper {
             "credits_label" to "WEED",
             "secured_badge" to "SICURO",
             "unsecured_badge" to "APERTO"
+        ),
+        "uk" to mapOf(
+            "tab_divination" to "ОРАКУЛ",
+            "tab_cards" to "КАРТИ",
+            "tab_arena" to "АРЕНА",
+            "tab_crypto" to "КРИПТА",
+            "tab_vault" to "КАРТИ",
+            "tab_market" to "КРИПТА",
+            "tab_netops" to "ОПС",
+            "tab_deck" to "КОЛОДИ",
+            "tab_settings" to "НАЛАШТУВАННЯ",
+            "app_title" to "ШМАЛЬ",
+            "credits_label" to "WEED",
+            "secured_badge" to "ЗАХИЩЕНО",
+            "unsecured_badge" to "ВІДКРИТО",
+            "mine_button" to "ХАРВЕСТ",
+            "cooldown_label" to "ПЕРЕЗАРЯДКА",
+            "div_header" to "БОТАНІЧНИЙ РОЗКЛАД",
+            "div_placeholder" to "Запитай Шмаль про свій урожай чи шлях...",
+            "div_btn_3" to "ГРОУ-РОЗКЛАД (3 КАРТИ)",
+            "div_btn_1" to "ОДНА ШИШКА (1 КАРТА)",
+            "settings_header" to "НАЛАШТУВАННЯ",
+            "bip39_header" to "🌱 СІД-ФРАЗА ГРОВЕРА",
+            "bip39_desc" to "Створіть сід-фразу BIP39 для шифрування та захисту журналів офлайн.",
+            "btn_generate" to "СТВОРИТИ СІД",
+            "seed_generated_title" to "🌱 СІД АКТИВНИЙ",
+            "seed_warning" to "Запишіть ці 12 слів по порядку та надійно збережіть офлайн.",
+            "btn_copy" to "КОПІЮВАТИ 📋",
+            "btn_proceed" to "ДАЛІ ➡️",
+            "challenge_title" to "🔒 ПЕРЕВІРКА",
+            "challenge_desc" to "Підтвердіть слова з сіда для авторизації:",
+            "btn_verify" to "ПЕРЕВІРИТИ ✔️",
+            "pin_setup_title" to "🔢 ПІН-КОД",
+            "pin_setup_desc" to "Введіть ПІН-код для захисту профілю:",
+            "btn_save_pin" to "АКТИВУВАТИ 🔒",
+            "pin_required_title" to "🔒 БЛОКУВАННЯ",
+            "pin_required_desc" to "Введіть ПІН для входу в оранжерею:",
+            "btn_unlock" to "ВІДКРИТИ 🔓",
+            "pin_error" to "❌ НЕВІРНИЙ ПІН.",
+            "splash_title" to "ШМАЛЬ",
+            "splash_subtitle" to "(CHILL LINK)"
         )
     )
 
@@ -349,6 +396,7 @@ object LocalizationHelper {
             val langMap = mapOf(
                 "en" to item.en,
                 "ru" to item.ru,
+                "uk" to item.ru,
                 "es" to item.es,
                 "he" to item.he,
                 "de" to item.de,
@@ -365,6 +413,7 @@ object LocalizationHelper {
     val languages = listOf(
         "en" to "English",
         "ru" to "Русский",
+        "uk" to "Українська",
         "es" to "Español",
         "he" to "עברית (Hebrew)",
         "de" to "Deutsch",
@@ -377,7 +426,7 @@ object LocalizationHelper {
 
     fun getSystemDefaultLanguage(): String {
         val deviceLang = java.util.Locale.getDefault().language
-        val supportedLanguages = listOf("en", "ru", "es", "he", "de", "fr", "pt", "it", "zh", "ja")
+        val supportedLanguages = listOf("en", "ru", "uk", "es", "he", "de", "fr", "pt", "it", "zh", "ja")
         return if (deviceLang in supportedLanguages) deviceLang else "en"
     }
 

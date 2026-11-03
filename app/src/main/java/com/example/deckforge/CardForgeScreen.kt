@@ -57,6 +57,15 @@ fun CardForgeScreen(
     var searchQuery by remember { mutableStateOf("") }
     var selectedElementFilter by remember { mutableStateOf<ElementAffinity?>(null) }
     var upgradeFeedbackMessage by remember { mutableStateOf<String?>(null) }
+    var isAiForgeOpen by remember { mutableStateOf(false) }
+
+    if (isAiForgeOpen) {
+        com.example.forge.AiArcanaForgeScreen(
+            viewModel = viewModel,
+            onBack = { isAiForgeOpen = false }
+        )
+        return
+    }
 
     // Sound effect on select
     val onSelectCard: (Int) -> Unit = { idx ->
@@ -102,43 +111,68 @@ fun CardForgeScreen(
                         )
                     }
                 }
-                Column {
+                Column(modifier = Modifier.weight(1f).padding(end = 6.dp)) {
                     Text(
                         text = if (lang == "ru") "КУЗНИЦА АРКАНОВ" else "ARCANA FORGE & SYNTHESIS",
                         color = Color(0xFFFFD700),
-                        fontSize = 17.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Black,
-                        fontFamily = FontFamily.Monospace
+                        fontFamily = FontFamily.Monospace,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     Text(
                         text = if (lang == "ru") "Прокачка силы, брони, RAM и скинов" else "Enhance ATK, DEF, RAM cost & holographic skins",
                         color = Color.Gray,
-                        fontSize = 11.sp,
-                        fontFamily = FontFamily.Monospace
+                        fontSize = 10.sp,
+                        fontFamily = FontFamily.Monospace,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }
 
-            // WEED Credits Badge
-            Surface(
-                shape = RoundedCornerShape(12.dp),
-                color = Color(0xFF0D1B14),
-                border = BorderStroke(1.dp, Color(0xFF00FF66).copy(alpha = 0.6f)),
-                modifier = Modifier.padding(vertical = 4.dp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                // AI Forge Switch Button
+                OutlinedButton(
+                    onClick = {
+                        CyberNoirSynthPlayer.triggerFX(CyberNoirSynthPlayer.FXType.CLICK)
+                        isAiForgeOpen = true
+                    },
+                    shape = RoundedCornerShape(8.dp),
+                    border = BorderStroke(1.dp, Color(0xFF00F5FF)),
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                    modifier = Modifier.height(30.dp)
                 ) {
-                    Text(text = "🌿", fontSize = 12.sp)
-                    Text(
-                        text = "$weedBalance WEED",
-                        color = Color(0xFF00FF66),
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 12.sp
-                    )
+                    Icon(imageVector = Icons.Default.AutoAwesome, contentDescription = null, tint = Color(0xFF00F5FF), modifier = Modifier.size(13.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(if (lang == "ru") "ИИ-Кузница" else "AI Forge", color = Color(0xFF00F5FF), fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                }
+
+                // WEED Credits Badge
+                Surface(
+                    shape = RoundedCornerShape(10.dp),
+                    color = Color(0xFF0D1B14),
+                    border = BorderStroke(1.dp, Color(0xFF00FF66).copy(alpha = 0.6f)),
+                    modifier = Modifier.padding(vertical = 4.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(text = "🌿", fontSize = 11.sp)
+                        Text(
+                            text = "$weedBalance",
+                            color = Color(0xFF00FF66),
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily.Monospace,
+                            fontSize = 11.sp
+                        )
+                    }
                 }
             }
         }

@@ -96,19 +96,23 @@ fun DeckBuilderScreen(
                         )
                     }
                 }
-                Column {
+                Column(modifier = Modifier.weight(1f).padding(end = 6.dp)) {
                     Text(
                         text = if (lang == "ru") "КОНСТРУКТОР КОЛОД" else "DECK FORGE & TACTICS",
                         color = Color(0xFF00F5FF),
-                        fontSize = 17.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Black,
-                        fontFamily = FontFamily.Monospace
+                        fontFamily = FontFamily.Monospace,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     Text(
                         text = if (lang == "ru") "Сборка, кривая RAM и стихийный баланс" else "Tactical synergy & RAM curve analysis",
                         color = Color.Gray,
-                        fontSize = 11.sp,
-                        fontFamily = FontFamily.Monospace
+                        fontSize = 10.sp,
+                        fontFamily = FontFamily.Monospace,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }

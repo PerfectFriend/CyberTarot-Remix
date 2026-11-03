@@ -172,6 +172,7 @@ class DuelCombatEngine {
                     attacker.currentDefense -= 2
                     logs.add(0, "⚡ Шипы отразили 2 доп. урона!")
                 }
+                newEnemyBoard[slotIndex] = defender.copy(currentDefense = defender.currentDefense)
             } else {
                 logs.add(0, "☠️ Вражеский аркан [${defender.name}] уничтожен!")
                 newEnemyBoard[slotIndex] = null
@@ -181,7 +182,10 @@ class DuelCombatEngine {
                 logs.add(0, "☠️ Ваш аркан [${attacker.name}] пал в бою!")
                 newPlayerBoard[slotIndex] = null
             } else {
-                attacker.hasAttackedThisTurn = true
+                newPlayerBoard[slotIndex] = attacker.copy(
+                    hasAttackedThisTurn = true,
+                    currentDefense = attacker.currentDefense
+                )
             }
 
             CyberNoirSynthPlayer.triggerFX(CyberNoirSynthPlayer.FXType.LASER_CLASH)
@@ -201,7 +205,7 @@ class DuelCombatEngine {
                 CyberNoirSynthPlayer.triggerFX(CyberNoirSynthPlayer.FXType.LASER_CLASH)
             }
 
-            attacker.hasAttackedThisTurn = true
+            newPlayerBoard[slotIndex] = attacker.copy(hasAttackedThisTurn = true)
         }
 
         // Leech effect
@@ -308,6 +312,7 @@ class DuelCombatEngine {
                         val counterDmg = (targetPlayerCard.currentPower * counterMult).toInt().coerceAtLeast(1)
                         aiCard.currentDefense -= counterDmg
                         logs.add(0, "↩ Ваш [${targetPlayerCard.name}] контратаковал на $counterDmg урона")
+                        newPlayerBoard[i] = targetPlayerCard.copy(currentDefense = targetPlayerCard.currentDefense)
                     } else {
                         logs.add(0, "☠️ Ваш аркан [${targetPlayerCard.name}] уничтожен!")
                         newPlayerBoard[i] = null
@@ -317,7 +322,7 @@ class DuelCombatEngine {
                         logs.add(0, "☠️ Вражеский аркан [${aiCard.name}] уничтожен!")
                         newEnemyBoard[i] = null
                     } else {
-                        aiCard.hasAttackedThisTurn = true
+                        newEnemyBoard[i] = aiCard.copy(hasAttackedThisTurn = true, currentDefense = aiCard.currentDefense)
                     }
                     CyberNoirSynthPlayer.triggerFX(CyberNoirSynthPlayer.FXType.LASER_CLASH)
                 } else {
@@ -335,7 +340,7 @@ class DuelCombatEngine {
                         logs.add(0, "🚨 Демиург нанес прямой урон: -$dmg HP!")
                         CyberNoirSynthPlayer.triggerFX(CyberNoirSynthPlayer.FXType.LASER_CLASH)
                     }
-                    aiCard.hasAttackedThisTurn = true
+                    newEnemyBoard[i] = aiCard.copy(hasAttackedThisTurn = true)
                 }
             }
         }

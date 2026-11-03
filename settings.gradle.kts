@@ -22,6 +22,6 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "Weed Guru"
+rootProject.name = "CyberTarot"
 
 include(":app")

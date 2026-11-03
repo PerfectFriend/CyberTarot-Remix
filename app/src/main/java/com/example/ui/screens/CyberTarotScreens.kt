@@ -17,6 +17,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.automirrored.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -54,6 +55,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.data.*
 import com.example.ui.theme.*
+import com.example.ui.components.*
 import com.example.viewmodel.DivinationState
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.graphics.Shadow
@@ -84,19 +86,19 @@ fun Modifier.circuitBackground(color: Color = Color(0xFF00FF66).copy(alpha = 0.0
     val path = Path().apply {
         // Main stem/vein curving from bottom center to top right
         moveTo(width * 0.5f, height)
-        quadraticBezierTo(width * 0.45f, height * 0.5f, width * 0.65f, 0f)
+        quadraticTo(width * 0.45f, height * 0.5f, width * 0.65f, 0f)
 
         // Side vein 1 (left upper)
         moveTo(width * 0.48f, height * 0.6f)
-        quadraticBezierTo(width * 0.25f, height * 0.45f, width * 0.10f, height * 0.35f)
+        quadraticTo(width * 0.25f, height * 0.45f, width * 0.10f, height * 0.35f)
 
         // Side vein 2 (right upper)
         moveTo(width * 0.52f, height * 0.5f)
-        quadraticBezierTo(width * 0.75f, height * 0.40f, width * 0.90f, height * 0.30f)
+        quadraticTo(width * 0.75f, height * 0.40f, width * 0.90f, height * 0.30f)
 
         // Side vein 3 (left lower)
         moveTo(width * 0.49f, height * 0.8f)
-        quadraticBezierTo(width * 0.28f, height * 0.75f, width * 0.15f, height * 0.70f)
+        quadraticTo(width * 0.28f, height * 0.75f, width * 0.15f, height * 0.70f)
     }
 
     drawPath(
@@ -231,6 +233,51 @@ fun Modifier.cyberOrnaments(skin: CyberSkin): Modifier = this.drawWithContent {
             drawStarCross(length, size.height - length, secColor)
             drawStarCross(size.width - length, size.height - length, secColor)
         }
+        CyberSkin.GAUDI_VANGOGH -> {
+            // Elegant organic Gaudi curves and Van Gogh starry arcs
+            drawArc(
+                color = color,
+                startAngle = 180f,
+                sweepAngle = 90f,
+                useCenter = false,
+                topLeft = Offset(-length / 2, -length / 2),
+                size = androidx.compose.ui.geometry.Size(length, length),
+                style = Stroke(strokeWidth)
+            )
+            drawArc(
+                color = color,
+                startAngle = 270f,
+                sweepAngle = 90f,
+                useCenter = false,
+                topLeft = Offset(size.width - length / 2, -length / 2),
+                size = androidx.compose.ui.geometry.Size(length, length),
+                style = Stroke(strokeWidth)
+            )
+            drawArc(
+                color = secColor,
+                startAngle = 90f,
+                sweepAngle = 90f,
+                useCenter = false,
+                topLeft = Offset(-length / 2, size.height - length / 2),
+                size = androidx.compose.ui.geometry.Size(length, length),
+                style = Stroke(strokeWidth)
+            )
+            drawArc(
+                color = secColor,
+                startAngle = 0f,
+                sweepAngle = 90f,
+                useCenter = false,
+                topLeft = Offset(size.width - length / 2, size.height - length / 2),
+                size = androidx.compose.ui.geometry.Size(length, length),
+                style = Stroke(strokeWidth)
+            )
+        }
+        else -> {
+            drawLine(color, Offset(0f, 0f), Offset(length, 0f), strokeWidth)
+            drawLine(color, Offset(0f, 0f), Offset(0f, length), strokeWidth)
+            drawLine(secColor, Offset(size.width, size.height), Offset(size.width - length, size.height), strokeWidth)
+            drawLine(secColor, Offset(size.width, size.height), Offset(size.width, size.height - length), strokeWidth)
+        }
     }
 }
 
@@ -284,35 +331,35 @@ fun CyberEyeAnimation(
         val path = Path().apply {
             // Draw Main Central Lobe
             moveTo(centerX, centerY + 80.dp.toPx() * scale)
-            quadraticBezierTo(centerX - 35.dp.toPx() * scale, centerY - 10.dp.toPx() * scale, centerX - 10.dp.toPx() * scale, centerY - 100.dp.toPx() * scale)
-            quadraticBezierTo(centerX, centerY - 120.dp.toPx() * scale, centerX, centerY - 125.dp.toPx() * scale) // tip
-            quadraticBezierTo(centerX, centerY - 120.dp.toPx() * scale, centerX + 10.dp.toPx() * scale, centerY - 100.dp.toPx() * scale)
-            quadraticBezierTo(centerX + 35.dp.toPx() * scale, centerY - 10.dp.toPx() * scale, centerX, centerY + 80.dp.toPx() * scale)
+            quadraticTo(centerX - 35.dp.toPx() * scale, centerY - 10.dp.toPx() * scale, centerX - 10.dp.toPx() * scale, centerY - 100.dp.toPx() * scale)
+            quadraticTo(centerX, centerY - 120.dp.toPx() * scale, centerX, centerY - 125.dp.toPx() * scale) // tip
+            quadraticTo(centerX, centerY - 120.dp.toPx() * scale, centerX + 10.dp.toPx() * scale, centerY - 100.dp.toPx() * scale)
+            quadraticTo(centerX + 35.dp.toPx() * scale, centerY - 10.dp.toPx() * scale, centerX, centerY + 80.dp.toPx() * scale)
 
             // Draw Left Lobe
             moveTo(centerX, centerY + 50.dp.toPx() * scale)
-            quadraticBezierTo(centerX - 60.dp.toPx() * scale, centerY + 10.dp.toPx() * scale, centerX - 90.dp.toPx() * scale, centerY - 40.dp.toPx() * scale)
-            quadraticBezierTo(centerX - 80.dp.toPx() * scale, centerY - 50.dp.toPx() * scale, centerX - 70.dp.toPx() * scale, centerY - 45.dp.toPx() * scale)
-            quadraticBezierTo(centerX - 35.dp.toPx() * scale, centerY + 10.dp.toPx() * scale, centerX, centerY + 50.dp.toPx() * scale)
+            quadraticTo(centerX - 60.dp.toPx() * scale, centerY + 10.dp.toPx() * scale, centerX - 90.dp.toPx() * scale, centerY - 40.dp.toPx() * scale)
+            quadraticTo(centerX - 80.dp.toPx() * scale, centerY - 50.dp.toPx() * scale, centerX - 70.dp.toPx() * scale, centerY - 45.dp.toPx() * scale)
+            quadraticTo(centerX - 35.dp.toPx() * scale, centerY + 10.dp.toPx() * scale, centerX, centerY + 50.dp.toPx() * scale)
 
             // Draw Right Lobe
             moveTo(centerX, centerY + 50.dp.toPx() * scale)
-            quadraticBezierTo(centerX + 60.dp.toPx() * scale, centerY + 10.dp.toPx() * scale, centerX + 90.dp.toPx() * scale, centerY - 40.dp.toPx() * scale)
-            quadraticBezierTo(centerX + 80.dp.toPx() * scale, centerY - 50.dp.toPx() * scale, centerX + 70.dp.toPx() * scale, centerY - 45.dp.toPx() * scale)
-            quadraticBezierTo(centerX + 35.dp.toPx() * scale, centerY + 10.dp.toPx() * scale, centerX, centerY + 50.dp.toPx() * scale)
+            quadraticTo(centerX + 60.dp.toPx() * scale, centerY + 10.dp.toPx() * scale, centerX + 90.dp.toPx() * scale, centerY - 40.dp.toPx() * scale)
+            quadraticTo(centerX + 80.dp.toPx() * scale, centerY - 50.dp.toPx() * scale, centerX + 70.dp.toPx() * scale, centerY - 45.dp.toPx() * scale)
+            quadraticTo(centerX + 35.dp.toPx() * scale, centerY + 10.dp.toPx() * scale, centerX, centerY + 50.dp.toPx() * scale)
 
             // Draw Bottom Left Small Lobe
             if (openProgress > 0.4f) {
                 moveTo(centerX, centerY + 65.dp.toPx() * scale)
-                quadraticBezierTo(centerX - 70.dp.toPx() * scale, centerY + 60.dp.toPx() * scale, centerX - 80.dp.toPx() * scale, centerY + 20.dp.toPx() * scale)
-                quadraticBezierTo(centerX - 65.dp.toPx() * scale, centerY + 15.dp.toPx() * scale, centerX, centerY + 65.dp.toPx() * scale)
+                quadraticTo(centerX - 70.dp.toPx() * scale, centerY + 60.dp.toPx() * scale, centerX - 80.dp.toPx() * scale, centerY + 20.dp.toPx() * scale)
+                quadraticTo(centerX - 65.dp.toPx() * scale, centerY + 15.dp.toPx() * scale, centerX, centerY + 65.dp.toPx() * scale)
             }
 
             // Draw Bottom Right Small Lobe
             if (openProgress > 0.4f) {
                 moveTo(centerX, centerY + 65.dp.toPx() * scale)
-                quadraticBezierTo(centerX + 70.dp.toPx() * scale, centerY + 60.dp.toPx() * scale, centerX + 80.dp.toPx() * scale, centerY + 20.dp.toPx() * scale)
-                quadraticBezierTo(centerX + 65.dp.toPx() * scale, centerY + 15.dp.toPx() * scale, centerX, centerY + 65.dp.toPx() * scale)
+                quadraticTo(centerX + 70.dp.toPx() * scale, centerY + 60.dp.toPx() * scale, centerX + 80.dp.toPx() * scale, centerY + 20.dp.toPx() * scale)
+                quadraticTo(centerX + 65.dp.toPx() * scale, centerY + 15.dp.toPx() * scale, centerX, centerY + 65.dp.toPx() * scale)
             }
         }
 
@@ -440,8 +487,8 @@ fun CyberOrnamentalHeader(title: String, skin: CyberSkin, modifier: Modifier = M
         ContrastText(
             text = title.uppercase(),
             color = Color.White,
-            fontSize = 14.sp,
-            fontFamily = FontFamily.Monospace,
+            fontSize = 16.sp,
+            fontFamily = OrbitronFontFamily,
             fontWeight = FontWeight.Black,
             modifier = Modifier.padding(horizontal = 8.dp)
         )
@@ -630,6 +677,23 @@ fun Modifier.cyberButtonBackground(
             val midY = size.height / 2f
             drawCircle(col1.copy(alpha = 0.12f), radius = size.height * 0.45f, center = Offset(midX, midY), style = Stroke(1.dp.toPx()))
         }
+        CyberSkin.GAUDI_VANGOGH -> {
+            drawRect(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color(0xFF04060E), Color(0xFF0B1226))
+                )
+            )
+            val midX = size.width / 2f
+            val midY = size.height / 2f
+            drawCircle(col1.copy(alpha = 0.18f), radius = size.height * 0.45f, center = Offset(midX, midY), style = Stroke(1.dp.toPx()))
+        }
+        else -> {
+            drawRect(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(col1.copy(alpha = 0.22f), col2.copy(alpha = 0.28f))
+                )
+            )
+        }
     }
     
     drawContent()
@@ -698,7 +762,7 @@ fun CyberTextButton(
         AutoResizingText(
             text = text,
             color = Color.White,
-            fontFamily = FontFamily.Monospace,
+            fontFamily = RajdhaniFontFamily,
             fontWeight = fontWeight,
             letterSpacing = letterSpacing,
             targetTextSize = doubledTarget,
@@ -713,78 +777,59 @@ fun CyberTextButton(
 @Composable
 fun CyberTarotDashboard(viewModel: TarotViewModel) {
     var selectedTab by remember { mutableStateOf(0) }
-    var splashStep by remember { mutableStateOf(SplashStep.EYE_PULSING) }
-    var openProgress by remember { mutableStateOf(0f) }
+    var splashStep by remember { mutableStateOf(SplashStep.CONNECT_SCREEN) }
 
-    val infiniteTransition = rememberInfiniteTransition(label = "pulse")
-    val pulseScale by infiniteTransition.animateFloat(
-        initialValue = 0.85f,
-        targetValue = 1.15f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1200, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "pulse_scale"
-    )
-
-    // Language switch and state transition for pulsing closed eye
-    LaunchedEffect(splashStep) {
-        if (splashStep == SplashStep.EYE_PULSING) {
-            val systemLang = LocalizationHelper.getSystemDefaultLanguage()
-            viewModel.updateSystemLanguage(systemLang)
-            delay(2500)
-            splashStep = SplashStep.EYE_OPENING
-        }
-    }
-
-    // Eye opening animation transition
-    LaunchedEffect(splashStep) {
-        if (splashStep == SplashStep.EYE_OPENING) {
-            animate(
-                initialValue = 0f,
-                targetValue = 1f,
-                animationSpec = tween(durationMillis = 1500, easing = LinearEasing)
-            ) { value, _ ->
-                openProgress = value
-            }
-            splashStep = SplashStep.CONNECT_SCREEN
-        }
-    }
-    
     val currentSkin by viewModel.currentSkin.collectAsStateWithLifecycle()
     val profile by viewModel.userProfile.collectAsStateWithLifecycle()
     val notification by viewModel.uiNotification.collectAsStateWithLifecycle()
     val isLocked by viewModel.isAppLocked.collectAsStateWithLifecycle()
     val isSafeMode by viewModel.isSafeBotanicalMode.collectAsStateWithLifecycle()
     val showBlessingsPortal by viewModel.showBlessingsPortal.collectAsStateWithLifecycle()
-    var isDuelModeOpen by remember { mutableStateOf(false) }
     var showOnboarding by remember { mutableStateOf(false) }
     val isSecured = profile?.isSecured ?: false
     val lang = profile?.systemLanguage ?: "en"
 
+    // Detect system language and determine app title: "ШМАЛЬ" for ru & uk, "SHMALL" for all others
+    val detectedSystemLang = remember { LocalizationHelper.getSystemDefaultLanguage() }
+    val isRuOrUk = detectedSystemLang in listOf("ru", "uk") || lang in listOf("ru", "uk")
+    val appBrandTitle = "CYBERTAROT"
+    val appBrandSubtitle = "(ORACLE & COSMIC MYSTIC)"
+    var splashStatusText by remember { mutableStateOf(if (isRuOrUk) "Проверка профиля BIP-39..." else "Validating BIP-39 profile...") }
+
+    // Automatic profile verification during splash
+    LaunchedEffect(splashStep, profile) {
+        if (splashStep == SplashStep.CONNECT_SCREEN) {
+            viewModel.updateSystemLanguage(detectedSystemLang)
+            delay(1200)
+            splashStatusText = if (isRuOrUk) "Синхронизация мастер-ключа..." else "Synchronizing master key..."
+            delay(1000)
+            val profileSecured = profile?.isSecured == true && !profile?.pinCode.isNullOrBlank()
+            if (!profileSecured) {
+                splashStatusText = if (isRuOrUk) "Профиль не найден. Запуск создания..." else "No profile detected. Launching setup..."
+                delay(400)
+                showOnboarding = true
+                splashStep = SplashStep.DONE
+            } else {
+                splashStatusText = if (isRuOrUk) "Профиль подтвержден. Вход..." else "Profile confirmed. Unlocking..."
+                delay(400)
+                splashStep = SplashStep.DONE
+            }
+        }
+    }
+
+    // 5 Streamlined Primary Navigation Tabs: ORACLE, CARDS, ARENA, CRYPTO, SETTINGS
     val tabs = listOf(
-        LocalizationHelper.getString(lang, "tab_divination") to Icons.Default.Bolt,
-        LocalizationHelper.getString(lang, "tab_vault") to Icons.Default.Shield,
-        LocalizationHelper.getString(lang, "tab_market") to Icons.Default.Storefront,
-        LocalizationHelper.getString(lang, "tab_netops") to Icons.Default.Hub,
-        LocalizationHelper.getString(lang, "tab_deck") to Icons.Default.Memory,
+        LocalizationHelper.getString(lang, "tab_divination") to Icons.Default.AutoAwesome,
+        LocalizationHelper.getString(lang, "tab_cards") to Icons.Default.Style,
+        LocalizationHelper.getString(lang, "tab_arena") to Icons.Default.Shield,
+        LocalizationHelper.getString(lang, "tab_crypto") to Icons.Default.CurrencyBitcoin,
         LocalizationHelper.getString(lang, "tab_settings") to Icons.Default.Settings
     )
 
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        if (isDuelModeOpen) {
-            com.example.duel.DuelArenaScreen(
-                viewModel = viewModel,
-                onBack = { isDuelModeOpen = false }
-            )
-        } else if (showBlessingsPortal) {
-            BlessingQuestsHubDialog(
-                viewModel = viewModel,
-                onDismiss = { viewModel.setBlessingsPortalVisible(false) }
-            )
-        }
+        val radioState by com.example.audio.CyberRadioPlayer.state.collectAsStateWithLifecycle()
 
         if (isSafeMode) {
             SafeBotanicalModeScreen(viewModel)
@@ -795,9 +840,17 @@ fun CyberTarotDashboard(viewModel: TarotViewModel) {
             })
         } else {
             // Full screen skin wallpaper in post-impressionist Van Gogh style
+            val tabBackgroundRes = when (selectedTab) {
+                0 -> R.drawable.img_bg_tarot_altar
+                1 -> R.drawable.img_bg_oracle_temple
+                2 -> R.drawable.img_bg_synth_lab
+                3 -> R.drawable.img_bg_lunar_calendar
+                else -> currentSkin.backgroundResId
+            }
             VanGoghGanjaBackground(
                 skin = currentSkin,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                overrideBgResId = tabBackgroundRes
             )
             // Translucent overlay shroud (frosted glass/matte shading layer)
             Box(
@@ -814,54 +867,71 @@ fun CyberTarotDashboard(viewModel: TarotViewModel) {
             )
 
             Scaffold(
-            bottomBar = {
-                NavigationBar(
-                    containerColor = Color(0x990A0A12), // translucent navigation bar
-                    tonalElevation = 0.dp,
-                    modifier = Modifier
-                        .windowInsetsPadding(WindowInsets.navigationBars)
-                        .testTag("bottom_nav_bar")
-                        .drawBehind {
-                            drawLine(
-                                color = currentSkin.primaryColor.copy(alpha = 0.15f),
-                                start = Offset(0f, 0f),
-                                end = Offset(size.width, 0f),
-                                strokeWidth = 1.dp.toPx()
-                            )
+                contentWindowInsets = WindowInsets.statusBars,
+                bottomBar = {
+                    if (!isLocked) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            // Floating Cyber Radio Mini Bar if stream is active or buffering
+                            if (radioState.isPlaying || radioState.isBuffering) {
+                                com.example.ui.components.CyberRadioMiniBar(
+                                    modifier = Modifier
+                                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                                    onOpenConsole = { com.example.audio.CyberRadioPlayer.openConsole() }
+                                )
+                            }
+
+                            NavigationBar(
+                                containerColor = Color(0xDD0A0A12), // translucent navigation bar
+                                tonalElevation = 0.dp,
+                                windowInsets = NavigationBarDefaults.windowInsets,
+                                modifier = Modifier
+                                    .testTag("bottom_nav_bar")
+                                    .drawBehind {
+                                        drawLine(
+                                            color = currentSkin.primaryColor.copy(alpha = 0.15f),
+                                            start = Offset(0f, 0f),
+                                            end = Offset(size.width, 0f),
+                                            strokeWidth = 1.dp.toPx()
+                                        )
+                                    }
+                            ) {
+                                tabs.forEachIndexed { index, (title, icon) ->
+                                    val isSelected = selectedTab == index
+                                    NavigationBarItem(
+                                        selected = isSelected,
+                                        onClick = { selectedTab = index },
+                                        icon = {
+                                            Icon(
+                                                imageVector = icon,
+                                                contentDescription = title,
+                                                tint = if (isSelected) currentSkin.primaryColor else Color(0xFFB0B0C5)
+                                            )
+                                        },
+                                        label = {
+                                            Text(
+                                                text = title,
+                                                fontFamily = OrbitronFontFamily,
+                                                fontSize = 12.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                color = if (isSelected) currentSkin.primaryColor else Color(0xFFB0B0C5),
+                                                letterSpacing = 0.5.sp,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis
+                                            )
+                                        },
+                                        colors = NavigationBarItemDefaults.colors(
+                                            indicatorColor = Color.Transparent
+                                        )
+                                    )
+                                }
+                            }
                         }
-                ) {
-                    tabs.forEachIndexed { index, (title, icon) ->
-                        val isSelected = selectedTab == index
-                        NavigationBarItem(
-                            selected = isSelected,
-                            onClick = { selectedTab = index },
-                            icon = {
-                                Icon(
-                                    imageVector = icon,
-                                    contentDescription = title,
-                                    tint = if (isSelected) currentSkin.primaryColor else Color(0xFF555566)
-                                )
-                            },
-                            label = {
-                                Text(
-                                    text = title,
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (isSelected) currentSkin.primaryColor else Color(0xFF888899),
-                                    letterSpacing = 0.2.sp,
-                                    maxLines = 1
-                                )
-                            },
-                            colors = NavigationBarItemDefaults.colors(
-                                indicatorColor = Color.Transparent
-                            )
-                        )
                     }
-                }
-            },
-            containerColor = Color.Transparent // Scaffold is transparent to let wallpaper bleed through
-        ) { innerPadding ->
+                },
+                containerColor = Color.Transparent // Scaffold is transparent to let wallpaper bleed through
+            ) { innerPadding ->
             CompositionLocalProvider(
                 LocalTextStyle provides LocalTextStyle.current.merge(
                     TextStyle(
@@ -881,58 +951,59 @@ fun CyberTarotDashboard(viewModel: TarotViewModel) {
                 ) {
                     // Content according to selected tab, blocked by lock screen if enabled
                     if (isLocked) {
-                        PinLockScreen(viewModel)
+                        PinLockScreen(viewModel, onRestoreRequest = { showOnboarding = true })
                     } else {
                         when (selectedTab) {
                             0 -> DivinationScreen(viewModel)
-                            1 -> VaultScreen(viewModel)
-                            2 -> MarketScreen(viewModel)
-                            3 -> NetOpsScreen(viewModel)
-                            4 -> DeckScreen(viewModel)
-                            5 -> SecurityScreen(viewModel)
+                            1 -> UnifiedCardsScreen(viewModel)
+                            2 -> com.example.duel.DuelArenaScreen(viewModel = viewModel, onBack = { selectedTab = 0 })
+                            3 -> CryptoHubScreen(viewModel)
+                            4 -> SecurityScreen(viewModel)
                         }
                     }
 
-                // Top Status Bar Overlay (User Name & Credits)
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            Brush.verticalGradient(
-                                colors = listOf(Color(0xE60A0A12), Color.Transparent)
+                // Top Status Bar Overlay (User Name & Credits) - only shown when unlocked and not in duel
+                if (!isLocked && selectedTab != 2) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(Color(0xF00A0A12), Color(0xCC0A0A12), Color.Transparent)
+                                )
                             )
-                        )
-                        .padding(horizontal = 16.dp, vertical = 10.dp)
-                        .align(Alignment.TopCenter),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
+                            .padding(horizontal = 16.dp, vertical = 10.dp)
+                            .align(Alignment.TopCenter),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = if (lang == "ru") "ШМАЛЬ" else "WEED GURU",
-                            fontSize = 11.sp,
+                            text = "🌿 $appBrandTitle",
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = currentSkin.primaryColor,
-                            letterSpacing = 1.sp,
-                            fontFamily = FontFamily.Monospace,
-                            maxLines = 1
+                            letterSpacing = 1.2.sp,
+                            fontFamily = OrbitronFontFamily,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = when (selectedTab) {
-                                0 -> if (lang == "ru") "Ботанический Расклад" else "Botanical Oracle"
-                                1 -> if (lang == "ru") "Оранжерея и Сад" else "Greenhouse Garden"
-                                2 -> if (lang == "ru") "Диспенсер Маркет" else "Dispensary Market"
-                                3 -> if (lang == "ru") "Садовые Гроу-Опс" else "Grow-Ops Network"
-                                4 -> if (lang == "ru") "Сорта и Родословная" else "Strain Lineage"
-                                else -> if (lang == "ru") "Настройки Теплицы" else "Greenhouse Settings"
+                                0 -> if (isRuOrUk) "Ботанический Оракул" else "Botanical Oracle"
+                                1 -> if (isRuOrUk) "Карты и Священные Колоды" else "Cards & Sacred Decks"
+                                2 -> if (isRuOrUk) "Боевая Арена Дуэлей" else "Combat Duel Arena"
+                                3 -> if (isRuOrUk) "Лунный Календарь и Хаб" else "Lunar Calendar & Hub"
+                                else -> if (isRuOrUk) "Настройки и Безопасность" else "Settings & Security"
                             },
                             fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White,
-                            fontFamily = FontFamily.SansSerif,
-                            letterSpacing = (-0.5).sp,
-                            maxLines = 1
+                            fontWeight = FontWeight.SemiBold,
+                            color = NeonCyan,
+                            fontFamily = RajdhaniFontFamily,
+                            letterSpacing = 0.5.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
 
@@ -940,61 +1011,50 @@ fun CyberTarotDashboard(viewModel: TarotViewModel) {
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        // TCG Duel Arena Launcher
-                        Surface(
-                            shape = RoundedCornerShape(14.dp),
-                            color = Color(0xFF1E1035),
-                            border = BorderStroke(1.dp, Color(0xFFBD00FF).copy(alpha = 0.6f)),
-                            modifier = Modifier
-                                .clickable { isDuelModeOpen = true }
-                                .testTag("top_open_duel_button")
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 9.dp, vertical = 6.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                Text("⚔️", fontSize = 12.sp)
-                                Text(
-                                    text = if (lang == "ru") "ДУЭЛЬ" else "DUEL",
-                                    color = Color(0xFF00F5FF),
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        }
 
-                        val isSoundOn by com.example.audio.CyberNoirSynthPlayer.isAmbientOn.collectAsStateWithLifecycle()
+                        // DI.FM Cyber Radio Console Launcher Button
                         IconButton(
                             onClick = {
-                                val nextState = !isSoundOn
-                                com.example.audio.CyberNoirSynthPlayer.toggleAmbient(nextState)
-                                if (nextState) {
-                                    com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.SUCCESS_CHIME)
-                                } else {
-                                    com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.CLICK)
-                                }
+                                com.example.audio.CyberRadioPlayer.toggleConsole()
                             },
                             modifier = Modifier
                                 .size(36.dp)
                                 .background(
-                                    if (isSoundOn) currentSkin.primaryColor.copy(alpha = 0.15f) else Color(0x10FFFFFF),
+                                    if (radioState.isPlaying) currentSkin.primaryColor.copy(alpha = 0.25f) else Color(0x10FFFFFF),
                                     CircleShape
                                 )
                                 .border(
                                     1.dp,
-                                    if (isSoundOn) currentSkin.primaryColor.copy(alpha = 0.5f) else Color(0x20FFFFFF),
+                                    if (radioState.isPlaying) currentSkin.primaryColor else Color(0x20FFFFFF),
                                     CircleShape
                                 )
-                                .testTag("sound_ambient_toggle")
+                                .testTag("cyber_radio_toggle_button")
                         ) {
-                            Icon(
-                                imageVector = if (isSoundOn) Icons.Default.MusicNote else Icons.Default.MusicOff,
-                                contentDescription = "Ambient Sound Toggle",
-                                tint = if (isSoundOn) currentSkin.primaryColor else Color.Gray,
-                                modifier = Modifier.size(16.dp)
-                            )
+                            if (radioState.isPlaying) {
+                                Row(
+                                    modifier = Modifier
+                                        .width(16.dp)
+                                        .height(13.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(1.5.dp),
+                                    verticalAlignment = Alignment.Bottom
+                                ) {
+                                    radioState.visualizerBars.take(3).forEach { bar ->
+                                        Box(
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .fillMaxHeight(bar.coerceIn(0.25f, 1f))
+                                                .background(currentSkin.primaryColor)
+                                        )
+                                    }
+                                }
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Default.Radio,
+                                    contentDescription = "DI.FM Cyber Radio",
+                                    tint = if (radioState.isBuffering) Color(0xFFFFB800) else Color.LightGray,
+                                    modifier = Modifier.size(17.dp)
+                                )
+                            }
                         }
 
                         Row(
@@ -1015,12 +1075,13 @@ fun CyberTarotDashboard(viewModel: TarotViewModel) {
                             Text(
                                 text = "${profile?.weed ?: 0} WEED",
                                 color = Color.White,
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 11.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold
                             )
                         }
                     }
+                }
                 }
 
                 // Centralized Notification Snackbar / Banner
@@ -1028,7 +1089,12 @@ fun CyberTarotDashboard(viewModel: TarotViewModel) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 70.dp)
+                            .padding(
+                                start = 16.dp,
+                                end = 16.dp,
+                                top = 16.dp,
+                                bottom = if (radioState.isPlaying || radioState.isBuffering) 120.dp else 68.dp
+                            )
                             .align(Alignment.BottomCenter)
                     ) {
                         Card(
@@ -1046,8 +1112,8 @@ fun CyberTarotDashboard(viewModel: TarotViewModel) {
                                 Text(
                                     text = msg,
                                     color = Color.White,
-                                    fontSize = 12.sp,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 16.sp,
+                                    fontFamily = RajdhaniFontFamily,
                                     modifier = Modifier.weight(1f)
                                 )
                                 IconButton(
@@ -1070,7 +1136,20 @@ fun CyberTarotDashboard(viewModel: TarotViewModel) {
         }
         }
 
-        // Full Screen Splash / Welcome Onboarding Screen overlay
+        if (showBlessingsPortal) {
+            BlessingQuestsHubDialog(
+                viewModel = viewModel,
+                onDismiss = { viewModel.setBlessingsPortalVisible(false) }
+            )
+        }
+
+        if (radioState.isConsoleOpen) {
+            com.example.ui.components.CyberRadioConsoleDialog(
+                onDismiss = { com.example.audio.CyberRadioPlayer.closeConsole() }
+            )
+        }
+
+        // Full Screen Splash / Welcome Screen overlay with static Van Gogh + Gaudi cannabis bouquet
         if (splashStep != SplashStep.DONE && !showOnboarding && !isSafeMode) {
             Box(
                 modifier = Modifier
@@ -1078,163 +1157,701 @@ fun CyberTarotDashboard(viewModel: TarotViewModel) {
                     .background(Color(0xFF020205)),
                 contentAlignment = Alignment.Center
             ) {
-                VanGoghGanjaBackground(
-                    skin = currentSkin,
-                    modifier = Modifier.fillMaxSize()
+                // Static Masterpiece: Cannabis bouquet in Van Gogh's Sunflowers style in a Gaudi mosaic vase
+                Image(
+                    painter = painterResource(id = R.drawable.img_splash_ganja_sunflowers),
+                    contentDescription = "Van Gogh Ganja Sunflowers in Gaudi Vase",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
                 )
-                // Beautiful translucent shroud
+
+                // Translucent contrast shroud & cyber vignette
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.72f))
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(
+                                    Color.Black.copy(alpha = 0.65f),
+                                    Color(0xFF04060E).copy(alpha = 0.45f),
+                                    Color.Black.copy(alpha = 0.88f)
+                                )
+                            )
+                        )
                 )
 
-                if (splashStep == SplashStep.EYE_PULSING || splashStep == SplashStep.EYE_OPENING) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 24.dp, vertical = 28.dp)
+                        .windowInsetsPadding(WindowInsets.systemBars),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    // Top Title overlay determined dynamically after system language check
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 24.dp, vertical = 44.dp)
-                            .windowInsetsPadding(WindowInsets.systemBars),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        modifier = Modifier.padding(top = 16.dp)
                     ) {
                         Text(
-                            text = if (splashStep == SplashStep.EYE_PULSING) {
-                                if (lang == "ru") "УСТАНОВКА ЗАЩИЩЕННОГО СОЕДИНЕНИЯ..." else "INITIATING SECURE CHANNEL..."
-                            } else {
-                                if (lang == "ru") "ТЕРМИНАЛ ГОТОВ. ОТКРЫТИЕ СВЯЗИ..." else "TERMINAL READY. OPENING INTUITIVE LINK..."
-                            },
-                            fontFamily = FontFamily.Monospace,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 22.sp,
-                            color = currentSkin.primaryColor.copy(alpha = 0.85f),
+                            text = appBrandTitle,
+                            fontFamily = RajdhaniFontFamily,
+                            fontWeight = FontWeight.Black,
+                            fontSize = 46.sp,
+                            color = currentSkin.primaryColor,
+                            letterSpacing = 4.sp,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(bottom = 36.dp)
+                            style = TextStyle(
+                                shadow = Shadow(
+                                    color = Color(0xFF00FF88).copy(alpha = 0.7f),
+                                    offset = Offset(0f, 0f),
+                                    blurRadius = 24f
+                                )
+                            ),
+                            modifier = Modifier.fillMaxWidth()
                         )
-
-                        CyberEyeAnimation(
-                            openProgress = if (splashStep == SplashStep.EYE_OPENING) openProgress else 0f,
-                            pulseScale = pulseScale,
-                            primaryColor = currentSkin.primaryColor,
-                            secondaryColor = currentSkin.secondaryColor
-                        )
-
-                        Spacer(modifier = Modifier.height(36.dp))
-
+                        Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = if (splashStep == SplashStep.EYE_PULSING) {
-                                if (lang == "ru") "Определение языковой локализации..." else "Detecting neural pathway localization dialect..."
-                            } else {
-                                if (lang == "ru") "Сигнатура откалибрована. Интерфейс настроен." else "Calibration signature locked. Interface configured."
-                            },
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 16.sp,
-                            color = Color.LightGray,
+                            text = appBrandSubtitle,
+                            fontFamily = RajdhaniFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                            color = Color.White.copy(alpha = 0.95f),
+                            letterSpacing = 2.sp,
                             textAlign = TextAlign.Center
                         )
-                    }
-                } else if (splashStep == SplashStep.CONNECT_SCREEN) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 24.dp, vertical = 44.dp)
-                            .windowInsetsPadding(WindowInsets.systemBars),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        // Header Area
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(top = 24.dp)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Surface(
+                            shape = RoundedCornerShape(20.dp),
+                            color = Color(0x66000000),
+                            border = BorderStroke(1.dp, currentSkin.primaryColor.copy(alpha = 0.4f))
                         ) {
-                            AutoSizeText(
-                                text = LocalizationHelper.getString(lang, "splash_title"),
-                                fontFamily = FontFamily.Monospace,
-                                fontWeight = FontWeight.Black,
-                                initialFontSize = 72.sp,
-                                color = currentSkin.primaryColor,
-                                letterSpacing = 6.sp,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = LocalizationHelper.getString(lang, "splash_subtitle"),
-                                fontFamily = FontFamily.Monospace,
+                                text = "CYBERPUNK • VAN GOGH • GAUDÍ",
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp,
-                                color = Color.White.copy(alpha = 0.9f),
-                                letterSpacing = 2.sp,
-                                textAlign = TextAlign.Center
+                                color = Color(0xFFFFD700),
+                                letterSpacing = 1.sp,
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
                             )
                         }
+                    }
 
-                        // Gorgeous Marijuana Leaf Image occupying full screen width
-                        Image(
-                            painter = painterResource(id = R.drawable.img_marijuana_leaf_splash_1783890299066),
-                            contentDescription = "Ganja Leaf Splash",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(380.dp)
-                                .padding(vertical = 12.dp),
-                            contentScale = ContentScale.Fit
-                        )
-
-                        // Bottom trigger button
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 24.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                    // Bottom Area: Status & Quick Action Button
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        // Status indicator
+                        Surface(
+                            shape = RoundedCornerShape(12.dp),
+                            color = Color(0xB30B0F1C),
+                            border = BorderStroke(1.dp, Color(0x33FFFFFF))
                         ) {
-                            CyberButton(
-                                onClick = {
-                                    com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.SUCCESS_CHIME)
-                                    splashStep = SplashStep.DONE
-                                },
-                                skin = currentSkin,
-                                modifier = Modifier
-                                    .fillMaxWidth(0.98f)
-                                    .height(140.dp)
+                            Row(
+                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center,
-                                    modifier = Modifier.fillMaxWidth()
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(14.dp),
+                                    strokeWidth = 2.dp,
+                                    color = currentSkin.primaryColor
+                                )
+                                Text(
+                                    text = splashStatusText,
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 16.sp,
+                                    color = Color.LightGray
+                                )
+                            }
+                        }
+
+                        // Enter Button
+                        CyberButton(
+                            onClick = {
+                                com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.SUCCESS_CHIME)
+                                val profileSecured = profile?.isSecured == true && !profile?.pinCode.isNullOrBlank()
+                                if (!profileSecured) {
+                                    showOnboarding = true
+                                }
+                                splashStep = SplashStep.DONE
+                            },
+                            skin = currentSkin,
+                            modifier = Modifier
+                                .fillMaxWidth(0.94f)
+                                .height(64.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = if (isRuOrUk) "⚡ ВОЙТИ • ENTER" else "⚡ ENTER • CHILL LINK",
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontWeight = FontWeight.Black,
+                                    color = currentSkin.primaryColor,
+                                    fontSize = 16.sp,
+                                    letterSpacing = 2.sp,
+                                    textAlign = TextAlign.Center,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Unified Cards Hub: seamlessly toggle between Card Vault Gallery and Battle Deck Builder
+ */
+@Composable
+fun UnifiedCardsScreen(viewModel: TarotViewModel) {
+    val currentSkin by viewModel.currentSkin.collectAsStateWithLifecycle()
+    val profile by viewModel.userProfile.collectAsStateWithLifecycle()
+    val lang = profile?.systemLanguage ?: "en"
+    val isRu = lang in listOf("ru", "uk")
+    var cardSubTab by remember { mutableStateOf(0) } // 0: Vault (Collection), 1: Deck (Forge)
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 54.dp)
+    ) {
+        // Segmented selector: Collection vs Deck
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 6.dp)
+                .background(Color(0xFF0D0D18), RoundedCornerShape(12.dp))
+                .border(1.dp, currentSkin.primaryColor.copy(alpha = 0.25f), RoundedCornerShape(12.dp))
+                .padding(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            val subTabs = if (isRu) {
+                listOf("🎴 МОЯ КОЛЛЕКЦИЯ" to 0, "⚔️ БОЕВАЯ КОЛОДА" to 1)
+            } else {
+                listOf("🎴 CARD VAULT" to 0, "⚔️ BATTLE DECK" to 1)
+            }
+            subTabs.forEach { (title, idx) ->
+                val isSelected = cardSubTab == idx
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(38.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(if (isSelected) currentSkin.primaryColor.copy(alpha = 0.2f) else Color.Transparent)
+                        .border(
+                            1.dp,
+                            if (isSelected) currentSkin.primaryColor else Color.Transparent,
+                            RoundedCornerShape(8.dp)
+                        )
+                        .clickable {
+                            com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.CLICK)
+                            cardSubTab = idx
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = title,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (isSelected) currentSkin.primaryColor else Color.LightGray
+                    )
+                }
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
+            if (cardSubTab == 0) {
+                VaultScreen(viewModel)
+            } else {
+                DeckScreen(viewModel)
+            }
+        }
+    }
+}
+
+/**
+ * Unified Crypto Hub: Decentralized Wallet Balances, Instant AMM Swap, NFT Market, and On-chain Ledger
+ */
+@Composable
+fun CryptoHubScreen(viewModel: TarotViewModel) {
+    val currentSkin by viewModel.currentSkin.collectAsStateWithLifecycle()
+    val profile by viewModel.userProfile.collectAsStateWithLifecycle()
+    val lang = profile?.systemLanguage ?: "en"
+    val isRu = lang in listOf("ru", "uk")
+    var cryptoTab by remember { mutableStateOf(0) } // 0: Wallet & Swap, 1: NFT Market & Mint, 2: Ledger
+
+    // AMM DEX Swap state
+    var fromToken by remember { mutableStateOf("WEED") }
+    var toToken by remember { mutableStateOf("TON") }
+    var swapAmountInput by remember { mutableStateOf("100") }
+    var slippageTolerance by remember { mutableStateOf("0.5%") }
+    val userWeed = profile?.weed ?: 0
+    val userTon = profile?.balanceTon ?: 50.0
+    val userEth = profile?.balanceEth ?: 0.5
+    val userSol = profile?.balanceSol ?: 2.0
+    val userUsdc = 250.0
+
+    // Swap rate calculation
+    val inputNum = swapAmountInput.toDoubleOrNull() ?: 0.0
+    val estimatedOutput = remember(fromToken, toToken, inputNum) {
+        when {
+            fromToken == "WEED" && toToken == "TON" -> inputNum * 0.005
+            fromToken == "WEED" && toToken == "ETH" -> inputNum * 0.00035
+            fromToken == "WEED" && toToken == "USDC" -> inputNum * 0.1
+            fromToken == "TON" && toToken == "WEED" -> inputNum * 200.0
+            fromToken == "ETH" && toToken == "WEED" -> inputNum * 2850.0
+            fromToken == "USDC" && toToken == "WEED" -> inputNum * 10.0
+            else -> inputNum * 1.0
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 54.dp)
+    ) {
+        // Top Crypto Navigation Bar
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 6.dp)
+                .background(Color(0xFF0C0E1A), RoundedCornerShape(12.dp))
+                .border(1.dp, currentSkin.primaryColor.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
+                .padding(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            val subTabs = if (isRu) {
+                listOf("💰 КОШЕЛЕК & ОБМЕН" to 0, "💎 NFT МАРКЕТ" to 1, "📜 РЕЕСТР" to 2)
+            } else {
+                listOf("💰 WALLET & SWAP" to 0, "💎 NFT MARKET" to 1, "📜 LEDGER" to 2)
+            }
+            subTabs.forEach { (title, idx) ->
+                val isSelected = cryptoTab == idx
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(38.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(if (isSelected) currentSkin.primaryColor.copy(alpha = 0.2f) else Color.Transparent)
+                        .border(
+                            1.dp,
+                            if (isSelected) currentSkin.primaryColor else Color.Transparent,
+                            RoundedCornerShape(8.dp)
+                        )
+                        .clickable {
+                            com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.CLICK)
+                            cryptoTab = idx
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = title,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (isSelected) currentSkin.primaryColor else Color.LightGray,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+        }
+
+        when (cryptoTab) {
+            0 -> {
+                // Wallet Balances & Instant AMM DEX Swap
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    contentPadding = PaddingValues(top = 8.dp, bottom = 80.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp)
+                ) {
+                    // Balances Overview Card
+                    item {
+                        Card(
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFF0E1222)),
+                            border = BorderStroke(1.5.dp, Brush.linearGradient(listOf(currentSkin.primaryColor, Color(0xFF00E5FF)))),
+                            shape = RoundedCornerShape(14.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    val isRussian = lang == "ru"
-                                    AutoResizingText(
-                                        text = LocalizationHelper.getString(lang, "splash_connect_btn_1"),
-                                        fontFamily = FontFamily.Monospace,
-                                        fontWeight = FontWeight.Black,
-                                        color = currentSkin.primaryColor,
-                                        targetTextSize = if (isRussian) 32.sp else 52.sp,
-                                        letterSpacing = if (isRussian) 4.sp else 12.sp,
-                                        maxLines = 1,
-                                        textAlign = TextAlign.Center,
-                                        modifier = Modifier.fillMaxWidth()
-                                    )
-                                    AutoResizingText(
-                                        text = LocalizationHelper.getString(lang, "splash_connect_btn_2"),
-                                        fontFamily = FontFamily.Monospace,
+                                    Column {
+                                        Text(
+                                            text = if (isRu) "НЕКАСТОДИАЛЬНЫЙ КОШЕЛЕК" else "SELF-CUSTODIAL WALLET",
+                                            fontFamily = RajdhaniFontFamily,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = currentSkin.primaryColor,
+                                            letterSpacing = 1.sp
+                                        )
+                                        Text(
+                                            text = "${profile?.weed ?: 0} \$WEED",
+                                            fontFamily = RajdhaniFontFamily,
+                                            fontSize = 24.sp,
+                                            fontWeight = FontWeight.Black,
+                                            color = Color.White
+                                        )
+                                    }
+                                    CyberButton(
+                                        onClick = {
+                                            viewModel.addWeedCredits(50)
+                                            com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.SUCCESS_CHIME)
+                                        },
+                                        skin = currentSkin,
+                                        modifier = Modifier.height(38.dp)
+                                    ) {
+                                        Text(
+                                            text = if (isRu) "+50 ХАРВЕСТ 🌿" else "+50 HARVEST 🌿",
+                                            fontFamily = RajdhaniFontFamily,
+                                            fontSize = 15.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color.White
+                                        )
+                                    }
+                                }
+
+                                HorizontalDivider(color = Color(0x22FFFFFF))
+
+                                // Multi-token asset balances
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Text("TON", fontSize = 15.sp, color = Color(0xFFB0B0C5), fontFamily = RajdhaniFontFamily)
+                                        Text(String.format(Locale.US, "%.1f", userTon), fontSize = 17.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0098EA), fontFamily = RajdhaniFontFamily)
+                                    }
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Text("ETH", fontSize = 15.sp, color = Color(0xFFB0B0C5), fontFamily = RajdhaniFontFamily)
+                                        Text(String.format(Locale.US, "%.3f", userEth), fontSize = 17.sp, fontWeight = FontWeight.Bold, color = Color(0xFF8C8C8C), fontFamily = RajdhaniFontFamily)
+                                    }
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Text("SOL", fontSize = 15.sp, color = Color(0xFFB0B0C5), fontFamily = RajdhaniFontFamily)
+                                        Text(String.format(Locale.US, "%.2f", userSol), fontSize = 17.sp, fontWeight = FontWeight.Bold, color = Color(0xFF14F195), fontFamily = RajdhaniFontFamily)
+                                    }
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Text("USDC", fontSize = 15.sp, color = Color(0xFFB0B0C5), fontFamily = RajdhaniFontFamily)
+                                        Text(String.format(Locale.US, "%.1f", userUsdc), fontSize = 17.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2775CA), fontFamily = RajdhaniFontFamily)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // AMM DEX Instant Swap Card
+                    item {
+                        Card(
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFF090D18)),
+                            border = BorderStroke(1.dp, Color(0x3300FF88)),
+                            shape = RoundedCornerShape(14.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = if (isRu) "⚡ МГНОВЕННЫЙ ОБМЕН (AMM SWAP)" else "⚡ INSTANT DEX SWAP",
+                                        fontFamily = RajdhaniFontFamily,
                                         fontWeight = FontWeight.Bold,
-                                        color = Color.White.copy(alpha = 0.95f),
-                                        targetTextSize = 30.sp,
-                                        letterSpacing = 6.sp,
-                                        maxLines = 1,
-                                        textAlign = TextAlign.Center,
-                                        modifier = Modifier.fillMaxWidth()
+                                        fontSize = 17.sp,
+                                        color = NeonGreen
+                                    )
+                                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                        listOf("0.5%", "1.0%", "2.5%").forEach { slip ->
+                                            val isSelected = slippageTolerance == slip
+                                            Box(
+                                                modifier = Modifier
+                                                    .clip(RoundedCornerShape(4.dp))
+                                                    .background(if (isSelected) NeonGreen.copy(alpha = 0.2f) else Color(0xFF161A28))
+                                                    .border(1.dp, if (isSelected) NeonGreen else Color.Transparent, RoundedCornerShape(4.dp))
+                                                    .clickable { slippageTolerance = slip }
+                                                    .padding(horizontal = 6.dp, vertical = 2.dp)
+                                            ) {
+                                                Text(slip, fontSize = 14.sp, fontFamily = RajdhaniFontFamily, color = Color.White)
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // From Token
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(Color(0xFF131726), RoundedCornerShape(10.dp))
+                                        .padding(10.dp)
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(if (isRu) "Вы отдаете:" else "You Pay:", fontSize = 16.sp, color = Color(0xFFB0B0C5), fontFamily = RajdhaniFontFamily)
+                                        Text(
+                                            text = if (isRu) "Баланс: $userWeed" else "Bal: $userWeed",
+                                            fontSize = 16.sp,
+                                            color = currentSkin.primaryColor,
+                                            fontFamily = RajdhaniFontFamily,
+                                            modifier = Modifier.clickable { swapAmountInput = userWeed.toString() }
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        OutlinedTextField(
+                                            value = swapAmountInput,
+                                            onValueChange = { swapAmountInput = it },
+                                            singleLine = true,
+                                            modifier = Modifier.weight(1f).height(50.dp),
+                                            textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp, color = Color.White),
+                                            colors = OutlinedTextFieldDefaults.colors(
+                                                unfocusedBorderColor = Color.Transparent,
+                                                focusedBorderColor = Color.Transparent
+                                            )
+                                        )
+                                        Surface(
+                                            shape = RoundedCornerShape(8.dp),
+                                            color = Color(0xFF1E2438),
+                                            border = BorderStroke(1.dp, Color(0x33FFFFFF)),
+                                            modifier = Modifier.clickable {
+                                                fromToken = if (fromToken == "WEED") "TON" else "WEED"
+                                            }
+                                        ) {
+                                            Text(
+                                                text = "🪙 $fromToken ▾",
+                                                fontFamily = RajdhaniFontFamily,
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 16.sp,
+                                                color = Color.White,
+                                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                                            )
+                                        }
+                                    }
+                                }
+
+                                // Swap direction toggle icon
+                                Box(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    IconButton(
+                                        onClick = {
+                                            val tmp = fromToken
+                                            fromToken = toToken
+                                            toToken = tmp
+                                            com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.CLICK)
+                                        },
+                                        modifier = Modifier
+                                            .size(36.dp)
+                                            .background(Color(0xFF1E2438), CircleShape)
+                                            .border(1.dp, currentSkin.primaryColor, CircleShape)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.SwapVert,
+                                            contentDescription = "Swap",
+                                            tint = currentSkin.primaryColor,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
+                                }
+
+                                // To Token
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(Color(0xFF131726), RoundedCornerShape(10.dp))
+                                        .padding(10.dp)
+                                ) {
+                                    Text(if (isRu) "Вы получаете (оценочно):" else "You Receive (estimated):", fontSize = 16.sp, color = Color(0xFFB0B0C5), fontFamily = RajdhaniFontFamily)
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = String.format(Locale.US, "%.4f", estimatedOutput),
+                                            fontFamily = RajdhaniFontFamily,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 18.sp,
+                                            color = NeonGreen
+                                        )
+                                        Surface(
+                                            shape = RoundedCornerShape(8.dp),
+                                            color = Color(0xFF1E2438),
+                                            border = BorderStroke(1.dp, Color(0x33FFFFFF)),
+                                            modifier = Modifier.clickable {
+                                                toToken = if (toToken == "TON") "ETH" else if (toToken == "ETH") "USDC" else "TON"
+                                            }
+                                        ) {
+                                            Text(
+                                                text = "🪙 $toToken ▾",
+                                                fontFamily = RajdhaniFontFamily,
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 16.sp,
+                                                color = Color.White,
+                                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                                            )
+                                        }
+                                    }
+                                }
+
+                                // Execute Swap Button
+                                CyberButton(
+                                    onClick = {
+                                        if (inputNum > 0) {
+                                            if (fromToken == "WEED") {
+                                                if (userWeed >= inputNum.toInt()) {
+                                                    viewModel.deductWeedCredits(inputNum.toInt())
+                                                    com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.SUCCESS_CHIME)
+                                                    viewModel.postNotification(
+                                                        if (isRu) "✔️ Обмен завершен: -$inputNum \$WEED ➔ +${String.format(Locale.US, "%.4f", estimatedOutput)} $toToken"
+                                                        else "✔️ Swap executed: -$inputNum \$WEED ➔ +${String.format(Locale.US, "%.4f", estimatedOutput)} $toToken"
+                                                    )
+                                                } else {
+                                                    viewModel.postNotification(if (isRu) "❌ Недостаточно \$WEED для обмена" else "❌ Insufficient \$WEED for swap")
+                                                }
+                                            } else {
+                                                viewModel.addWeedCredits(estimatedOutput.toInt())
+                                                com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.SUCCESS_CHIME)
+                                                viewModel.postNotification(
+                                                    if (isRu) "✔️ Обмен завершен: -$inputNum $fromToken ➔ +${estimatedOutput.toInt()} \$WEED"
+                                                    else "✔️ Swap executed: -$inputNum $fromToken ➔ +${estimatedOutput.toInt()} \$WEED"
+                                                )
+                                            }
+                                        }
+                                    },
+                                    skin = currentSkin,
+                                    modifier = Modifier.fillMaxWidth().height(48.dp)
+                                ) {
+                                    Text(
+                                        text = if (isRu) "⚡ СОВЕРШИТЬ ОБМЕН В ПУЛЕ" else "⚡ EXECUTE AMM SWAP",
+                                        fontFamily = RajdhaniFontFamily,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp,
+                                        color = Color.White
                                     )
                                 }
                             }
-                            Spacer(modifier = Modifier.height(20.dp))
-                            Text(
-                                text = LocalizationHelper.getString(lang, "splash_status"),
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 16.sp,
-                                color = Color.LightGray,
-                                textAlign = TextAlign.Center
-                            )
+                        }
+                    }
+                }
+            }
+            1 -> {
+                // NFT Market & Minting
+                MarketScreen(viewModel)
+            }
+            2 -> {
+                // Ledger & On-Chain History
+                val transactionLogs by viewModel.transactionLogs.collectAsStateWithLifecycle()
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+                    contentPadding = PaddingValues(top = 8.dp, bottom = 80.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    item {
+                        Text(
+                            text = if (isRu) "📜 ДЕЦЕНТРАЛИЗОВАННЫЙ РЕЕСТР" else "📜 ON-CHAIN LEDGER",
+                            fontFamily = RajdhaniFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            color = NeonCyan
+                        )
+                        Text(
+                            text = if (isRu) "Хроника транзакций, смарт-контрактов и минтинга карт в сети." else "Audit trail of cryptographically verified NFT mints & transfers.",
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFFB0B0C5)
+                        )
+                    }
+
+                    if (transactionLogs.isEmpty()) {
+                        item {
+                            Box(
+                                modifier = Modifier.fillMaxWidth().height(150.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = if (isRu) "Реестр пуст. Совершите первую сделку или минт." else "Ledger clear. Execute a swap or mint to record.",
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 16.sp,
+                                    color = Color(0xFFB0B0C5)
+                                )
+                            }
+                        }
+                    } else {
+                        items(transactionLogs) { log ->
+                            Card(
+                                colors = CardDefaults.cardColors(containerColor = Color(0xFF0C101D)),
+                                border = BorderStroke(1.dp, Color(0x22FFFFFF)),
+                                shape = RoundedCornerShape(10.dp),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(12.dp).fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Column {
+                                        Text(
+                                            text = log.type,
+                                            fontFamily = RajdhaniFontFamily,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 16.sp,
+                                            color = currentSkin.primaryColor
+                                        )
+                                        Text(
+                                            text = "${log.targetParty} • ${log.rarity}",
+                                            fontFamily = RajdhaniFontFamily,
+                                            fontSize = 15.sp,
+                                            color = Color.LightGray
+                                        )
+                                    }
+                                    Column(horizontalAlignment = Alignment.End) {
+                                        Text(
+                                            text = "${log.price} WEED",
+                                            fontFamily = RajdhaniFontFamily,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 16.sp,
+                                            color = NeonGreen
+                                        )
+                                        Text(
+                                            text = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date(log.timestamp)),
+                                            fontFamily = RajdhaniFontFamily,
+                                            fontSize = 14.sp,
+                                            color = Color(0xFFB0B0C5)
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -1284,21 +1901,23 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     item {
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
                         Text(
-                            text = "ORACLE",
-                            fontSize = 24.sp,
-                            color = NeonMagenta,
-                            fontFamily = FontFamily.Monospace,
+                            text = if (lang == "ru" || lang == "uk") "🔮 КИБЕР-ОРАКУЛ // CYBERTAROT" else "🔮 CYBER ORACLE // CYBERTAROT",
+                            fontSize = 26.sp,
+                            color = currentSkin.primaryColor,
+                            fontFamily = OrbitronFontFamily,
                             fontWeight = FontWeight.Bold,
+                            letterSpacing = 1.0.sp,
                             modifier = Modifier.testTag("divination_title")
                         )
                         Text(
-                            text = "Query the database nodes",
-                            fontSize = 11.sp,
-                            color = Color.Gray,
-                            fontFamily = FontFamily.Monospace,
-                            modifier = Modifier.padding(top = 4.dp, bottom = 8.dp)
+                            text = if (lang == "ru" || lang == "uk") "Священная матрица Таро • Лунный гровер-оракул" else "Sacred Tarot Matrix • Lunar Grower Oracle",
+                            fontSize = 16.sp,
+                            color = NeonCyan,
+                            fontFamily = RajdhaniFontFamily,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
                         )
 
                         Card(
@@ -1334,7 +1953,7 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                         color = Color.White,
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Bold,
-                                        fontFamily = FontFamily.Monospace
+                                        fontFamily = RajdhaniFontFamily
                                     ),
                                     colors = OutlinedTextFieldDefaults.colors(
                                         focusedTextColor = Color.White,
@@ -1403,7 +2022,7 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                             ) {
                                                 AutoResizingText(
                                                     text = "SINGLE (1)",
-                                                    fontFamily = FontFamily.Monospace,
+                                                    fontFamily = RajdhaniFontFamily,
                                                     fontWeight = FontWeight.Black,
                                                     maxLines = 1,
                                                     targetTextSize = 13.sp,
@@ -1411,8 +2030,8 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                                 )
                                                 Text(
                                                     text = if (lang == "ru") "Быстрый разбор" else "Quick Diagnosis",
-                                                    fontSize = 9.sp,
-                                                    fontFamily = FontFamily.Monospace,
+                                                    fontSize = 14.sp,
+                                                    fontFamily = RajdhaniFontFamily,
                                                     color = if (selectedCardsCount == 1) CyberObsidian.copy(alpha = 0.8f) else Color.LightGray
                                                 )
                                             }
@@ -1434,7 +2053,7 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                             ) {
                                                 AutoResizingText(
                                                     text = "FLOW (3)",
-                                                    fontFamily = FontFamily.Monospace,
+                                                    fontFamily = RajdhaniFontFamily,
                                                     fontWeight = FontWeight.Black,
                                                     maxLines = 1,
                                                     targetTextSize = 13.sp,
@@ -1442,8 +2061,8 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                                 )
                                                 Text(
                                                     text = if (lang == "ru") "Потоки времени" else "Timeline Mapping",
-                                                    fontSize = 9.sp,
-                                                    fontFamily = FontFamily.Monospace,
+                                                    fontSize = 14.sp,
+                                                    fontFamily = RajdhaniFontFamily,
                                                     color = if (selectedCardsCount == 3) CyberObsidian.copy(alpha = 0.8f) else Color.LightGray
                                                 )
                                             }
@@ -1478,9 +2097,9 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                                     Text(
                                                         text = "ROMANTIC (5)",
-                                                        fontFamily = FontFamily.Monospace,
+                                                        fontFamily = RajdhaniFontFamily,
                                                         fontWeight = FontWeight.Black,
-                                                        fontSize = 11.sp,
+                                                        fontSize = 16.sp,
                                                         color = if (selectedCardsCount == 5) CyberObsidian else if (isVipUnlocked) Color.White else NeonMagenta
                                                     )
                                                     if (!isVipUnlocked) {
@@ -1495,8 +2114,8 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                                 }
                                                 Text(
                                                     text = if (lang == "ru") "Совместимость" else "Relational Sync",
-                                                    fontSize = 9.sp,
-                                                    fontFamily = FontFamily.Monospace,
+                                                    fontSize = 14.sp,
+                                                    fontFamily = RajdhaniFontFamily,
                                                     color = if (selectedCardsCount == 5) CyberObsidian.copy(alpha = 0.8f) else Color.LightGray
                                                 )
                                             }
@@ -1525,9 +2144,9 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                                     Text(
                                                         text = "CELTIC (10)",
-                                                        fontFamily = FontFamily.Monospace,
+                                                        fontFamily = RajdhaniFontFamily,
                                                         fontWeight = FontWeight.Black,
-                                                        fontSize = 11.sp,
+                                                        fontSize = 16.sp,
                                                         color = if (selectedCardsCount == 10) CyberObsidian else if (isVipUnlocked) Color.White else NeonMagenta
                                                     )
                                                     if (!isVipUnlocked) {
@@ -1542,8 +2161,8 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                                 }
                                                 Text(
                                                     text = if (lang == "ru") "Кельтский Крест" else "Celtic Cross Matrix",
-                                                    fontSize = 9.sp,
-                                                    fontFamily = FontFamily.Monospace,
+                                                    fontSize = 14.sp,
+                                                    fontFamily = RajdhaniFontFamily,
                                                     color = if (selectedCardsCount == 10) CyberObsidian.copy(alpha = 0.8f) else Color.LightGray
                                                 )
                                             }
@@ -1559,9 +2178,9 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                         5 -> if (lang == "ru") "🔮 Награда +250 WEED. Глубокий анализ отношений." else "🔮 Premium Channel. Rewards +250 WEED. Full relational sync."
                                         else -> if (lang == "ru") "👑 Награда +500 WEED. Абсолютная расшифровка." else "👑 Master Oracle Spread. Rewards +500 WEED. Ultimate comprehensive decryption."
                                     },
-                                    fontSize = 11.sp,
+                                    fontSize = 16.sp,
                                     color = if (selectedCardsCount >= 5) NeonMagenta else NeonGreen,
-                                    fontFamily = FontFamily.Monospace
+                                    fontFamily = RajdhaniFontFamily
                                 )
                             }
                         }
@@ -1591,14 +2210,14 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = Color.White,
-                                        fontFamily = FontFamily.Monospace
+                                        fontFamily = RajdhaniFontFamily
                                     )
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Text(
                                         text = if (lang == "ru") "Забирайте награды за квесты, бустите майнинг и открывайте Premium расклады!" else "Claim quest rewards, boost passive income, and unlock VIP channels.",
-                                        fontSize = 11.sp,
+                                        fontSize = 16.sp,
                                         color = Color.LightGray,
-                                        fontFamily = FontFamily.Monospace
+                                        fontFamily = RajdhaniFontFamily
                                     )
                                 }
                                 Icon(
@@ -1620,7 +2239,7 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                         fontSize = 15.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = NeonMagenta,
-                                        fontFamily = FontFamily.Monospace
+                                        fontFamily = RajdhaniFontFamily
                                     )
                                 },
                                 text = {
@@ -1630,9 +2249,9 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                         } else {
                                             "This premium layout (${count} cards) requires advanced node bandwidth. You can deduct ${if (count == 5) 100 else 200} WEED credits for a single decrypt scan, or open the Blessings Portal for permanent VIP channel access."
                                         },
-                                        fontSize = 12.sp,
+                                        fontSize = 16.sp,
                                         color = Color.LightGray,
-                                        fontFamily = FontFamily.Monospace
+                                        fontFamily = RajdhaniFontFamily
                                     )
                                 },
                                 confirmButton = {
@@ -1660,9 +2279,9 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                     ) {
                                         Text(
                                             text = if (lang == "ru") "Списать ${if (count == 5) 100 else 200}" else "Spend ${if (count == 5) 100 else 200}",
-                                            fontSize = 11.sp,
+                                            fontSize = 16.sp,
                                             fontWeight = FontWeight.Bold,
-                                            fontFamily = FontFamily.Monospace
+                                            fontFamily = RajdhaniFontFamily
                                         )
                                     }
                                 },
@@ -1678,9 +2297,9 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                     ) {
                                         Text(
                                             text = if (lang == "ru") "Портал Даров" else "Blessing Portal",
-                                            fontSize = 11.sp,
+                                            fontSize = 16.sp,
                                             fontWeight = FontWeight.Bold,
-                                            fontFamily = FontFamily.Monospace
+                                            fontFamily = RajdhaniFontFamily
                                         )
                                     }
                                 },
@@ -1727,7 +2346,7 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                 AutoResizingText(
                                     text = "INITIALIZE SCAN",
                                     fontWeight = FontWeight.Black,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     targetTextSize = 24.sp,
                                     letterSpacing = 1.sp,
                                     textAlign = TextAlign.Center
@@ -1742,7 +2361,7 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                     if (historyReadings.isNotEmpty()) {
                         item {
                             Spacer(modifier = Modifier.height(24.dp))
-                            Divider(color = currentSkin.secondaryColor.copy(alpha = 0.25f))
+                            HorizontalDivider(color = currentSkin.secondaryColor.copy(alpha = 0.25f))
                             Spacer(modifier = Modifier.height(16.dp))
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -1759,7 +2378,7 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                     text = if (lang == "ru") "ИСТОРИЯ РАСКЛАДОВ" else "DIVINATION HISTORY",
                                     fontSize = 14.sp,
                                     color = NeonMagenta,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
@@ -1814,15 +2433,15 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                             Spacer(modifier = Modifier.height(4.dp))
                                             Text(
                                                 text = java.text.SimpleDateFormat("dd.MM.yyyy HH:mm", java.util.Locale.getDefault()).format(java.util.Date(reading.timestamp)),
-                                                fontSize = 10.sp,
-                                                fontFamily = FontFamily.Monospace,
-                                                color = Color.Gray
+                                                fontSize = 15.sp,
+                                                fontFamily = RajdhaniFontFamily,
+                                                color = Color(0xFFB0B0C5)
                                             )
                                         }
                                         Icon(
                                             imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                                             contentDescription = "Toggle",
-                                            tint = if (isExpanded) NeonMagenta else Color.Gray,
+                                            tint = if (isExpanded) NeonMagenta else Color(0xFFB0B0C5),
                                             modifier = Modifier.size(24.dp)
                                         )
                                     }
@@ -1845,9 +2464,9 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                                 ) {
                                                     Text(
                                                         text = cardName + (if (isUpright) "" else " (Rev)"),
-                                                        fontSize = 9.sp,
+                                                        fontSize = 14.sp,
                                                         color = currentSkin.primaryColor,
-                                                        fontFamily = FontFamily.Monospace
+                                                        fontFamily = RajdhaniFontFamily
                                                     )
                                                 }
                                             }
@@ -1872,15 +2491,15 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                         }
 
                                         Spacer(modifier = Modifier.height(14.dp))
-                                        Divider(color = currentSkin.primaryColor.copy(alpha = 0.2f))
+                                        HorizontalDivider(color = currentSkin.primaryColor.copy(alpha = 0.2f))
                                         Spacer(modifier = Modifier.height(10.dp))
 
                                         // Interpreted matrix output text
                                         Text(
                                             text = reading.report,
-                                            fontSize = 13.sp,
+                                            fontSize = 17.sp,
                                             color = Color.White.copy(alpha = 0.95f),
-                                            fontFamily = FontFamily.Monospace,
+                                            fontFamily = RajdhaniFontFamily,
                                             lineHeight = 18.sp
                                         )
 
@@ -1948,7 +2567,7 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                     Spacer(modifier = Modifier.height(32.dp))
                     Text(
                         text = "SYNCING NEURAL CONNECTIVITY...",
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = RajdhaniFontFamily,
                         fontSize = 14.sp,
                         color = NeonCyan,
                         fontWeight = FontWeight.Bold
@@ -1979,8 +2598,8 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                         }
                         Text(
                             text = "> $logText",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 11.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
                             color = NeonGreen
                         )
                     }
@@ -2004,7 +2623,7 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                 text = "DECRYPTION COMPLETE",
                                 fontSize = 16.sp,
                                 color = NeonGreen,
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 fontWeight = FontWeight.Bold
                             )
 
@@ -2030,7 +2649,7 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                         text = "New Scan",
                                         targetTextSize = 11.sp,
                                         color = Color.White,
-                                        fontFamily = FontFamily.Monospace,
+                                        fontFamily = RajdhaniFontFamily,
                                         textAlign = TextAlign.Center
                                     )
                                 }
@@ -2040,8 +2659,8 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                         Text(
                             text = "Question: \"${state.question}\"",
                             color = Color.LightGray,
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily.Monospace,
+                            fontSize = 16.sp,
+                            fontFamily = RajdhaniFontFamily,
                             textAlign = TextAlign.Start,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -2116,9 +2735,9 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                             } else {
                                                 if (lang == "ru") "СИНТЕЗИРОВАТЬ ГОЛОС ОРАКУЛА" else "SYNTHESIZE ORACLE VOICE"
                                             },
-                                            fontSize = 11.sp,
+                                            fontSize = 16.sp,
                                             fontWeight = FontWeight.Bold,
-                                            fontFamily = FontFamily.Monospace,
+                                            fontFamily = RajdhaniFontFamily,
                                             color = Color.White
                                         )
                                     }
@@ -2131,7 +2750,7 @@ fun DivinationScreen(viewModel: TarotViewModel) {
                                     color = Color.White,
                                     fontSize = 15.sp,
                                     lineHeight = 22.sp,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     fontWeight = FontWeight.Medium,
                                     modifier = Modifier.fillMaxWidth()
                                 )
@@ -2262,16 +2881,16 @@ fun InteractiveCyberCard(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
                                 text = card.series.uppercase(),
-                                fontSize = 9.sp,
-                                fontFamily = FontFamily.Monospace,
+                                fontSize = 14.sp,
+                                fontFamily = RajdhaniFontFamily,
                                 color = NeonCyan,
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             ContrastText(
                                 text = "[TAP TO REVEAL]",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 11.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 16.sp,
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold
                             )
@@ -2280,44 +2899,42 @@ fun InteractiveCyberCard(
                 }
             } else {
                 // Card Front (Decrypted Node)
-                Column(
+                Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .graphicsLayer {
                             rotationY = 180f
                         }
-                        .padding(12.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    // Header (Rarity Badge & Index)
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                    CyberRarityShaderOverlay(
+                        rarity = card.defaultRarity,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(12.dp))
+                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.SpaceBetween
                     ) {
-                        ContrastText(
-                            text = "NODE #${String.format("%02d", card.index)}",
-                            fontSize = 11.sp,
-                            fontFamily = FontFamily.Monospace,
-                            color = Color.White
-                        )
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(4.dp))
-                                .background(rarityColor.copy(alpha = 0.3f))
-                                .border(1.5.dp, rarityColor, RoundedCornerShape(4.dp))
-                                .padding(horizontal = 6.dp, vertical = 2.dp)
+                        // Header (Rarity Badge & Index)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             ContrastText(
-                                text = card.defaultRarity.uppercase(),
-                                fontSize = 9.sp,
-                                color = rarityColor,
-                                fontFamily = FontFamily.Monospace,
-                                fontWeight = FontWeight.Bold
+                                text = "NODE #${String.format("%02d", card.index)}",
+                                fontSize = 16.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                color = Color.White
+                            )
+                            CyberRarityGlowBadge(
+                                rarity = card.defaultRarity
                             )
                         }
-                    }
 
                     val imageResId = getCardImage(card.index)
                     if (imageResId != null) {
@@ -2414,7 +3031,7 @@ fun InteractiveCyberCard(
                             text = localizedName.uppercase(),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.ExtraBold,
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             color = Color.White,
                             textAlign = TextAlign.Center,
                             maxLines = 1,
@@ -2422,8 +3039,8 @@ fun InteractiveCyberCard(
                         )
                         ContrastText(
                             text = "($localizedTraditional)",
-                            fontSize = 10.sp,
-                            fontFamily = FontFamily.Monospace,
+                            fontSize = 15.sp,
+                            fontFamily = RajdhaniFontFamily,
                             color = Color.Yellow,
                             textAlign = TextAlign.Center
                         )
@@ -2432,13 +3049,14 @@ fun InteractiveCyberCard(
                     // Orientation Status
                     ContrastText(
                         text = if (isUpright) "UPRIGHT" else "REVERSED",
-                        fontSize = 10.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontSize = 15.sp,
+                        fontFamily = RajdhaniFontFamily,
                         color = if (isUpright) Color(0xFF39FF14) else Color(0xFFFF3366),
                         fontWeight = FontWeight.Bold
                     )
                 }
             }
+        }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -2474,7 +3092,7 @@ fun InteractiveCyberCard(
                             text = "MINT NFT (200 N$)",
                             targetTextSize = 10.sp,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -2490,8 +3108,8 @@ fun InteractiveCyberCard(
                     Text(
                         "MINTED SECURELY",
                         color = NeonGreen,
-                        fontSize = 9.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontSize = 14.sp,
+                        fontFamily = RajdhaniFontFamily,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -2525,6 +3143,25 @@ fun VaultScreen(viewModel: TarotViewModel) {
     var isNftMintingMode by remember { mutableStateOf(false) }
     var testnetWalletInput by remember { mutableStateOf("0x9E88d6C7BaF8F4f3183f233f6329686259e7ab9C") }
     var cardToInspectReview by remember { mutableStateOf<MintedCard?>(null) }
+    var showLunarCycleModal by remember { mutableStateOf(false) }
+
+    val todayCal = remember { java.util.Calendar.getInstance() }
+    val todayLunarDay = remember(lang) {
+        LunarCalendarService.getLunarDayInfo(
+            todayCal.get(java.util.Calendar.YEAR),
+            todayCal.get(java.util.Calendar.MONTH) + 1,
+            todayCal.get(java.util.Calendar.DAY_OF_MONTH),
+            lang
+        )
+    }
+    val todayLunarMinting = remember(lang) {
+        LunarCalendarService.getTarotMintingWindow(
+            todayCal.get(java.util.Calendar.YEAR),
+            todayCal.get(java.util.Calendar.MONTH) + 1,
+            todayCal.get(java.util.Calendar.DAY_OF_MONTH),
+            lang
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -2537,17 +3174,78 @@ fun VaultScreen(viewModel: TarotViewModel) {
             text = "VAULT",
             fontSize = 24.sp,
             color = NeonCyan,
-            fontFamily = FontFamily.Monospace,
+            fontFamily = RajdhaniFontFamily,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.testTag("vault_title")
         )
         Text(
             text = "Cryptographic Nodes",
-            fontSize = 11.sp,
-            color = Color.Gray,
-            fontFamily = FontFamily.Monospace,
-            modifier = Modifier.padding(top = 4.dp, bottom = 16.dp)
+            fontSize = 16.sp,
+            color = Color(0xFFB0B0C5),
+            fontFamily = RajdhaniFontFamily,
+            modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
         )
+
+        // Auspicious Lunar Cycle Minting Bar
+        val lunarStatusColor = when (todayLunarMinting.tier) {
+            MintingAuspiciousnessTier.AUSPICIOUS -> Color(0xFF00FF66)
+            MintingAuspiciousnessTier.BALANCED -> Color(0xFF00F5FF)
+            MintingAuspiciousnessTier.CHALLENGING -> Color(0xFFFF3366)
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 14.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color(0xFF070A14))
+                .border(1.dp, lunarStatusColor.copy(alpha = 0.6f), RoundedCornerShape(10.dp))
+                .clickable { showLunarCycleModal = true }
+                .padding(horizontal = 12.dp, vertical = 9.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = todayLunarDay.phaseIcon, fontSize = 22.sp)
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column {
+                        Text(
+                            text = "${todayLunarDay.phaseName.uppercase()} • ${todayLunarDay.illumination}%",
+                            fontSize = 16.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = Color.White
+                        )
+                        Text(
+                            text = todayLunarMinting.badgeLabel,
+                            fontSize = 14.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            color = lunarStatusColor
+                        )
+                    }
+                }
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = if (lang == "ru") "ЦИКЛ" else "CYCLE",
+                        fontSize = 15.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        color = NeonCyan
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Icon(
+                        imageVector = Icons.Default.CalendarMonth,
+                        contentDescription = "Lunar Cycle",
+                        tint = NeonCyan,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+        }
 
         if (mintedCards.isEmpty()) {
             // Empty Vault state
@@ -2567,15 +3265,15 @@ fun VaultScreen(viewModel: TarotViewModel) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "VAULT SECURED - 0 CARDS OWNED",
-                    fontSize = 12.sp,
-                    fontFamily = FontFamily.Monospace,
-                    color = Color.Gray,
+                    fontSize = 16.sp,
+                    fontFamily = RajdhaniFontFamily,
+                    color = Color(0xFFB0B0C5),
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = "Perform a divination scan and mint drawn cards to get started.",
-                    fontSize = 10.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontSize = 15.sp,
+                    fontFamily = RajdhaniFontFamily,
                     color = Color.DarkGray,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(horizontal = 32.dp).padding(top = 4.dp)
@@ -2619,40 +3317,35 @@ fun VaultScreen(viewModel: TarotViewModel) {
                                 cardToInspectReview = mintedCard
                             }
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(12.dp)
-                        ) {
-                            // Rarity Badge & Number
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            CyberRarityShaderOverlay(
+                                rarity = mintedCard.rarity,
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .clip(RoundedCornerShape(12.dp))
+                            )
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(12.dp)
                             ) {
-                                Box(
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(4.dp))
-                                        .background(rarityColor.copy(alpha = 0.3f))
-                                        .border(1.5.dp, rarityColor, RoundedCornerShape(4.dp))
-                                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                                // Rarity Badge & Number
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
+                                    CyberRarityGlowBadge(
+                                        rarity = mintedCard.rarity
+                                    )
+
                                     ContrastText(
-                                        text = mintedCard.rarity.uppercase(),
-                                        fontSize = 9.sp,
-                                        color = rarityColor,
-                                        fontFamily = FontFamily.Monospace,
-                                        fontWeight = FontWeight.Bold
+                                        text = "#${String.format("%04d", mintedCard.mintNumber)}",
+                                        fontSize = 16.sp,
+                                        fontFamily = RajdhaniFontFamily,
+                                        color = Color.White
                                     )
                                 }
-
-                                ContrastText(
-                                    text = "#${String.format("%04d", mintedCard.mintNumber)}",
-                                    fontSize = 11.sp,
-                                    fontFamily = FontFamily.Monospace,
-                                    color = Color.White
-                                )
-                            }
 
                             Spacer(modifier = Modifier.height(10.dp))
 
@@ -2692,19 +3385,19 @@ fun VaultScreen(viewModel: TarotViewModel) {
                                 text = localizedName.uppercase(),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.ExtraBold,
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 color = Color.White,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
                             ContrastText(
                                 text = "Mapped: $localizedTraditional",
-                                fontSize = 12.sp,
-                                fontFamily = FontFamily.Monospace,
+                                fontSize = 16.sp,
+                                fontFamily = RajdhaniFontFamily,
                                 color = Color.Yellow
                             )
 
-                            Divider(color = rarityColor.copy(alpha = 0.3f), modifier = Modifier.padding(vertical = 8.dp))
+                            HorizontalDivider(color = rarityColor.copy(alpha = 0.3f), modifier = Modifier.padding(vertical = 8.dp))
 
                             // Market Listing Status
                             if (mintedCard.isListed) {
@@ -2715,30 +3408,31 @@ fun VaultScreen(viewModel: TarotViewModel) {
                                 ) {
                                     ContrastText(
                                         "LISTED",
-                                        fontSize = 10.sp,
+                                        fontSize = 15.sp,
                                         color = NeonGold,
-                                        fontFamily = FontFamily.Monospace,
+                                        fontFamily = RajdhaniFontFamily,
                                         fontWeight = FontWeight.Bold
                                     )
                                     ContrastText(
                                         "${mintedCard.listPrice} N$",
-                                        fontSize = 10.sp,
+                                        fontSize = 15.sp,
                                         color = NeonGold,
-                                        fontFamily = FontFamily.Monospace,
+                                        fontFamily = RajdhaniFontFamily,
                                         fontWeight = FontWeight.Bold
                                     )
                                 }
                             } else {
                                 ContrastText(
                                     "SECURED IN COLD VAULT",
-                                    fontSize = 10.sp,
+                                    fontSize = 15.sp,
                                     color = NeonCyan,
-                                    fontFamily = FontFamily.Monospace
+                                    fontFamily = RajdhaniFontFamily
                                 )
                             }
                         }
                     }
                 }
+            }
             }
         }
     }
@@ -2770,22 +3464,22 @@ fun VaultScreen(viewModel: TarotViewModel) {
                         Text(
                             text = localizedName.uppercase(),
                             color = Color.White,
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 18.sp
                         )
                         Text(
                             text = "Rider-Waite: $localizedTraditional",
-                            color = Color.Gray,
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 11.sp
+                            color = Color(0xFFB0B0C5),
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp
                         )
                     }
 
                     Text(
                         text = "#${String.format("%04d", mintedCard.mintNumber)}",
                         color = Color.White,
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = RajdhaniFontFamily,
                         fontSize = 14.sp
                     )
                 }
@@ -2793,21 +3487,21 @@ fun VaultScreen(viewModel: TarotViewModel) {
             text = {
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
                     item {
-                        Divider(color = CyberMutedBlue, modifier = Modifier.padding(bottom = 12.dp))
+                        HorizontalDivider(color = CyberMutedBlue, modifier = Modifier.padding(bottom = 12.dp))
 
                         // Hardware Specs
                         Text(
                             "NODE SPECIFICATION LORE",
                             color = rarityColor,
-                            fontSize = 11.sp,
-                            fontFamily = FontFamily.Monospace,
+                            fontSize = 16.sp,
+                            fontFamily = RajdhaniFontFamily,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = localizedDesc,
                             color = Color.White,
-                            fontSize = 11.sp,
-                            fontFamily = FontFamily.Monospace,
+                            fontSize = 16.sp,
+                            fontFamily = RajdhaniFontFamily,
                             modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
                         )
 
@@ -2815,20 +3509,20 @@ fun VaultScreen(viewModel: TarotViewModel) {
                         Row(modifier = Modifier.fillMaxWidth()) {
                             Text(
                                 "Hardware Core: ",
-                                color = Color.Gray,
-                                fontSize = 11.sp,
-                                fontFamily = FontFamily.Monospace,
+                                color = Color(0xFFB0B0C5),
+                                fontSize = 16.sp,
+                                fontFamily = RajdhaniFontFamily,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
                                 "`" + localizedCircuitry + "`",
                                 color = NeonCyan,
-                                fontSize = 11.sp,
-                                fontFamily = FontFamily.Monospace
+                                fontSize = 16.sp,
+                                fontFamily = RajdhaniFontFamily
                             )
                         }
 
-                        Divider(color = CyberMutedBlue, modifier = Modifier.padding(vertical = 12.dp))
+                        HorizontalDivider(color = CyberMutedBlue, modifier = Modifier.padding(vertical = 12.dp))
 
                         if (!isListingMode) {
                             // Display Standard Actions
@@ -2890,7 +3584,7 @@ fun VaultScreen(viewModel: TarotViewModel) {
                                             Spacer(modifier = Modifier.width(6.dp))
                                             AutoResizingText(
                                                 text = "INSTANT SELL TO BROKER ($brokerPrice N$)",
-                                                fontFamily = FontFamily.Monospace,
+                                                fontFamily = RajdhaniFontFamily,
                                                 targetTextSize = 11.sp,
                                                 fontWeight = FontWeight.Bold,
                                                 textAlign = TextAlign.Center
@@ -2923,7 +3617,7 @@ fun VaultScreen(viewModel: TarotViewModel) {
                                                 Spacer(modifier = Modifier.width(6.dp))
                                                 AutoResizingText(
                                                     text = "MINT AS TESTNET NFT",
-                                                    fontFamily = FontFamily.Monospace,
+                                                    fontFamily = RajdhaniFontFamily,
                                                     targetTextSize = 11.sp,
                                                     fontWeight = FontWeight.Bold,
                                                     textAlign = TextAlign.Center
@@ -2941,15 +3635,15 @@ fun VaultScreen(viewModel: TarotViewModel) {
                                             Text(
                                                 "ON-CHAIN WALLET DESTINATION",
                                                 color = NeonMagenta,
-                                                fontSize = 10.sp,
-                                                fontFamily = FontFamily.Monospace,
+                                                fontSize = 15.sp,
+                                                fontFamily = RajdhaniFontFamily,
                                                 fontWeight = FontWeight.Bold
                                             )
                                             Spacer(modifier = Modifier.height(4.dp))
                                             OutlinedTextField(
                                                 value = testnetWalletInput,
                                                 onValueChange = { testnetWalletInput = it },
-                                                placeholder = { Text("0x...", color = Color.White.copy(alpha = 0.6f), fontSize = 13.sp, fontWeight = FontWeight.Bold) },
+                                                placeholder = { Text("0x...", color = Color.White.copy(alpha = 0.6f), fontSize = 17.sp, fontWeight = FontWeight.Bold) },
                                                 colors = OutlinedTextFieldDefaults.colors(
                                                     focusedTextColor = Color.White,
                                                     unfocusedTextColor = Color.White,
@@ -2958,7 +3652,7 @@ fun VaultScreen(viewModel: TarotViewModel) {
                                                     focusedContainerColor = Color.Black.copy(alpha = 0.65f),
                                                     unfocusedContainerColor = Color.Black.copy(alpha = 0.45f)
                                                 ),
-                                                textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 13.sp, fontWeight = FontWeight.Bold),
+                                                textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 17.sp, fontWeight = FontWeight.Bold),
                                                 modifier = Modifier.fillMaxWidth()
                                             )
                                             
@@ -3007,8 +3701,8 @@ fun VaultScreen(viewModel: TarotViewModel) {
                                 Text(
                                     "SET ASK PRICE (WEED)",
                                     color = Color.White,
-                                    fontSize = 11.sp,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 16.sp,
+                                    fontFamily = RajdhaniFontFamily,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
@@ -3064,7 +3758,7 @@ fun VaultScreen(viewModel: TarotViewModel) {
             },
             confirmButton = {
                 TextButton(onClick = { selectedMintedCard = null }) {
-                    Text("CLOSE", color = NeonCyan, fontFamily = FontFamily.Monospace)
+                    Text("CLOSE", color = NeonCyan, fontFamily = RajdhaniFontFamily)
                 }
             }
         )
@@ -3084,6 +3778,44 @@ fun VaultScreen(viewModel: TarotViewModel) {
                 isListingMode = false
                 listPriceInput = ""
                 cardToInspectReview = null
+            }
+        )
+    }
+
+    if (showLunarCycleModal) {
+        AlertDialog(
+            onDismissRequest = { showLunarCycleModal = false },
+            properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            containerColor = Color(0xFF070812),
+            text = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CyberLunarCycleWidget(
+                        systemLanguage = lang,
+                        currentSkin = currentSkin,
+                        onMintClick = {
+                            showLunarCycleModal = false
+                            viewModel.resetDivination()
+                        }
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showLunarCycleModal = false }) {
+                    Text(
+                        text = if (lang == "ru") "ЗАКРЫТЬ" else "CLOSE",
+                        color = NeonCyan,
+                        fontFamily = RajdhaniFontFamily,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         )
     }
@@ -3121,15 +3853,15 @@ fun MarketScreen(viewModel: TarotViewModel) {
                 text = "EXCHANGE",
                 fontSize = 24.sp,
                 color = NeonGold,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = RajdhaniFontFamily,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.testTag("exchange_title")
             )
             Text(
                 text = "P2P Transactions",
-                fontSize = 11.sp,
-                color = Color.Gray,
-                fontFamily = FontFamily.Monospace,
+                fontSize = 16.sp,
+                color = Color(0xFFB0B0C5),
+                fontFamily = RajdhaniFontFamily,
                 modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
             )
 
@@ -3151,15 +3883,15 @@ fun MarketScreen(viewModel: TarotViewModel) {
                             Text(
                                 "HARVESTER",
                                 color = NeonGreen,
-                                fontSize = 13.sp,
-                                fontFamily = FontFamily.Monospace,
+                                fontSize = 17.sp,
+                                fontFamily = RajdhaniFontFamily,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
                                 "Harvest Weed credits",
-                                color = Color.Gray,
-                                fontSize = 10.sp,
-                                fontFamily = FontFamily.Monospace
+                                color = Color(0xFFB0B0C5),
+                                fontSize = 15.sp,
+                                fontFamily = RajdhaniFontFamily
                             )
                         }
 
@@ -3173,9 +3905,9 @@ fun MarketScreen(viewModel: TarotViewModel) {
                             ) {
                                 Text(
                                     text = "00:${String.format("%02d", miningCooldown)} COOLDOWN",
-                                    fontSize = 10.sp,
+                                    fontSize = 15.sp,
                                     color = NeonGold,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
@@ -3204,7 +3936,7 @@ fun MarketScreen(viewModel: TarotViewModel) {
                                         text = "HARVEST (+350 N$)",
                                         targetTextSize = 10.sp,
                                         fontWeight = FontWeight.Bold,
-                                        fontFamily = FontFamily.Monospace,
+                                        fontFamily = RajdhaniFontFamily,
                                         textAlign = TextAlign.Center
                                     )
                                 }
@@ -3282,9 +4014,9 @@ fun MarketScreen(viewModel: TarotViewModel) {
                     ) {
                         Text(
                             text = r.uppercase(),
-                            fontSize = 10.sp,
-                            color = if (isSelected) badgeColor else Color.Gray,
-                            fontFamily = FontFamily.Monospace,
+                            fontSize = 15.sp,
+                            color = if (isSelected) badgeColor else Color(0xFFB0B0C5),
+                            fontFamily = RajdhaniFontFamily,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -3305,9 +4037,9 @@ fun MarketScreen(viewModel: TarotViewModel) {
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         "NO TRANSACTIONS IN DOCK",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 11.sp,
-                        color = Color.Gray,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
+                        color = Color(0xFFB0B0C5),
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -3341,9 +4073,16 @@ fun MarketScreen(viewModel: TarotViewModel) {
                         .background(cardBgBrush, RoundedCornerShape(12.dp))
                         .clickable { cardToInspectReview = listing }
                 ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        CyberRarityShaderOverlay(
+                            rarity = listing.rarity,
+                            modifier = Modifier
+                                .matchParentSize()
+                                .clip(RoundedCornerShape(12.dp))
+                        )
+                        Column(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
                         // Card Illustration occupies the whole card field width (full-bleed top banner)
                         val thumbnailResId = getCardImage(card.index)
                         if (thumbnailResId != null) {
@@ -3381,26 +4120,14 @@ fun MarketScreen(viewModel: TarotViewModel) {
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Box(
-                                        modifier = Modifier
-                                            .clip(RoundedCornerShape(4.dp))
-                                            .background(rarityColor.copy(alpha = 0.3f))
-                                            .border(1.5.dp, rarityColor, RoundedCornerShape(4.dp))
-                                            .padding(horizontal = 8.dp, vertical = 3.dp)
-                                    ) {
-                                        ContrastText(
-                                            text = listing.rarity.uppercase(),
-                                            fontSize = 11.sp,
-                                            color = rarityColor,
-                                            fontFamily = FontFamily.Monospace,
-                                            fontWeight = FontWeight.ExtraBold
-                                        )
-                                    }
+                                    CyberRarityGlowBadge(
+                                        rarity = listing.rarity
+                                    )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     ContrastText(
                                         text = "#${String.format("%04d", listing.mintNumber)}",
-                                        fontSize = 13.sp,
-                                        fontFamily = FontFamily.Monospace,
+                                        fontSize = 17.sp,
+                                        fontFamily = RajdhaniFontFamily,
                                         color = Color.White,
                                         fontWeight = FontWeight.Bold
                                     )
@@ -3410,7 +4137,7 @@ fun MarketScreen(viewModel: TarotViewModel) {
                                     text = "${listing.price} N$",
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.ExtraBold,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     color = NeonGold
                                 )
                             }
@@ -3422,7 +4149,7 @@ fun MarketScreen(viewModel: TarotViewModel) {
                                 text = localizedName.uppercase(),
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.ExtraBold,
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 color = Color.White
                             )
                             
@@ -3430,8 +4157,8 @@ fun MarketScreen(viewModel: TarotViewModel) {
                             
                             ContrastText(
                                 text = "Seller: ${listing.sellerName}",
-                                fontSize = 12.sp,
-                                fontFamily = FontFamily.Monospace,
+                                fontSize = 16.sp,
+                                fontFamily = RajdhaniFontFamily,
                                 color = NeonGold,
                                 fontWeight = FontWeight.Bold
                             )
@@ -3469,11 +4196,12 @@ fun MarketScreen(viewModel: TarotViewModel) {
                     }
                 }
             }
+            }
         }
 
         // Transaction Logs Title
         item {
-            Divider(color = CyberMutedBlue, modifier = Modifier.padding(vertical = 16.dp))
+            HorizontalDivider(color = CyberMutedBlue, modifier = Modifier.padding(vertical = 16.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -3482,9 +4210,9 @@ fun MarketScreen(viewModel: TarotViewModel) {
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     "NEURAL LEDGER SYNCED",
-                    fontSize = 11.sp,
+                    fontSize = 16.sp,
                     color = NeonCyan,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = RajdhaniFontFamily,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -3496,8 +4224,8 @@ fun MarketScreen(viewModel: TarotViewModel) {
             item {
                 Text(
                     "Initializing ledger sync records...",
-                    fontSize = 10.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontSize = 15.sp,
+                    fontFamily = RajdhaniFontFamily,
                     color = Color.DarkGray
                 )
             }
@@ -3515,8 +4243,8 @@ fun MarketScreen(viewModel: TarotViewModel) {
                 ) {
                     Text(
                         text = "[$dateString] ${log.type}: $cardName -> ${log.targetParty}",
-                        fontSize = 9.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontSize = 14.sp,
+                        fontFamily = RajdhaniFontFamily,
                         color = when (log.type) {
                             "BUY" -> NeonCyan
                             "SELL" -> NeonGold
@@ -3530,8 +4258,8 @@ fun MarketScreen(viewModel: TarotViewModel) {
                     )
                     Text(
                         text = "${if (log.type == "BUY" || log.type == "MINT") "-" else "+"}${log.price} N$",
-                        fontSize = 9.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontSize = 14.sp,
+                        fontFamily = RajdhaniFontFamily,
                         color = if (log.type == "BUY" || log.type == "MINT") NeonRed else NeonGreen
                     )
                 }
@@ -3564,7 +4292,7 @@ fun MarketScreen(viewModel: TarotViewModel) {
                 Text(
                     text = "AUTHORIZE TRANSACTION",
                     color = NeonGold,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = RajdhaniFontFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
                 )
@@ -3573,8 +4301,8 @@ fun MarketScreen(viewModel: TarotViewModel) {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = "Do you want to authorize secure credit escrow transfer for this node?",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 12.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         color = Color.White
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -3588,21 +4316,21 @@ fun MarketScreen(viewModel: TarotViewModel) {
                         Column {
                             Text(
                                 text = "NODE: ${card.name.uppercase()}",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 11.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 16.sp,
                                 color = NeonCyan,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
                                 text = "SERIAL: #${String.format("%04d", listing.mintNumber)}",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 10.sp,
-                                color = Color.Gray
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 15.sp,
+                                color = Color(0xFFB0B0C5)
                             )
                             Text(
                                 text = "RARITY: ${listing.rarity.uppercase()}",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 10.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 15.sp,
                                 color = when (listing.rarity) {
                                     "Legend" -> NeonGold
                                     "Epic" -> NeonMagenta
@@ -3610,21 +4338,21 @@ fun MarketScreen(viewModel: TarotViewModel) {
                                     else -> NeonGreen
                                 }
                             )
-                            Divider(color = Color.DarkGray, modifier = Modifier.padding(vertical = 8.dp))
+                            HorizontalDivider(color = Color.DarkGray, modifier = Modifier.padding(vertical = 8.dp))
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
                                     "ESCROW DEBT:",
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 11.sp,
-                                    color = Color.Gray
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 16.sp,
+                                    color = Color(0xFFB0B0C5)
                                 )
                                 Text(
                                     "${listing.price} N$",
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 12.sp,
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 16.sp,
                                     color = NeonGold,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -3702,7 +4430,7 @@ fun getCardBackImage(series: String): Int {
         "Genesis Series" -> R.drawable.back_genesis_series_1792151368530
         "Amber Series" -> R.drawable.back_amber_series_1792151382337
         "Seas & Oceans" -> R.drawable.back_ocean_series_1792151396531
-        else -> R.drawable.back_cyber_botanica_1792151356014
+        else -> R.drawable.img_card_back_cyber_luxury
     }
 }
 
@@ -3832,21 +4560,25 @@ fun DeckScreen(viewModel: TarotViewModel) {
             .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "DECK",
-            fontSize = 24.sp,
-            color = NeonMagenta,
-            fontFamily = FontFamily.Monospace,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.testTag("deck_title")
-        )
-        Text(
-            text = "Rider-Waite Symbols",
-            fontSize = 11.sp,
-            color = Color.Gray,
-            fontFamily = FontFamily.Monospace,
-            modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
-        )
+        if (currentDeckSubTab == 0) {
+            Text(
+                text = "DECK",
+                fontSize = 24.sp,
+                color = NeonMagenta,
+                fontFamily = RajdhaniFontFamily,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.testTag("deck_title")
+            )
+            Text(
+                text = "Rider-Waite Symbols",
+                fontSize = 16.sp,
+                color = Color(0xFFB0B0C5),
+                fontFamily = RajdhaniFontFamily,
+                modifier = Modifier.padding(top = 4.dp, bottom = 10.dp)
+            )
+        } else {
+            Spacer(modifier = Modifier.height(4.dp))
+        }
 
         // SubTab Selection Bar
         Row(
@@ -3887,10 +4619,10 @@ fun DeckScreen(viewModel: TarotViewModel) {
                 ) {
                     Text(
                         title,
-                        color = if (isSelected) Color.White else Color.Gray,
-                        fontFamily = FontFamily.Monospace,
+                        color = if (isSelected) Color.White else Color(0xFFB0B0C5),
+                        fontFamily = RajdhaniFontFamily,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 9.sp
+                        fontSize = 14.sp
                     )
                 }
             }
@@ -3908,7 +4640,7 @@ fun DeckScreen(viewModel: TarotViewModel) {
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
-                    label = { Text("Search Cyber Deck", fontFamily = FontFamily.Monospace) },
+                    label = { Text("Search Cyber Deck", fontFamily = RajdhaniFontFamily) },
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = NeonCyan,
@@ -3918,7 +4650,7 @@ fun DeckScreen(viewModel: TarotViewModel) {
                         focusedTextColor = Color.White,
                         unfocusedTextColor = Color.White
                     ),
-                    textStyle = androidx.compose.ui.text.TextStyle(fontFamily = FontFamily.Monospace, fontSize = 11.sp),
+                    textStyle = androidx.compose.ui.text.TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp),
                     modifier = Modifier.weight(1f)
                 )
 
@@ -3962,7 +4694,7 @@ fun DeckScreen(viewModel: TarotViewModel) {
                                 "CSS GRID ENGINE CONFIGURATION",
                                 color = NeonCyan,
                                 fontSize = 14.sp,
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 fontWeight = FontWeight.Bold
                             )
                             Row(
@@ -3976,7 +4708,7 @@ fun DeckScreen(viewModel: TarotViewModel) {
                                     },
                                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
                                 ) {
-                                    Text("FLIP ALL", fontSize = 13.sp, color = NeonGreen, fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold)
+                                    Text("FLIP ALL", fontSize = 17.sp, color = NeonGreen, fontFamily = RajdhaniFontFamily, fontWeight = FontWeight.Bold)
                                 }
                                 TextButton(
                                     onClick = {
@@ -3984,7 +4716,7 @@ fun DeckScreen(viewModel: TarotViewModel) {
                                     },
                                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
                                 ) {
-                                    Text("LOCK ALL", fontSize = 13.sp, color = NeonRed, fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold)
+                                    Text("LOCK ALL", fontSize = 17.sp, color = NeonRed, fontFamily = RajdhaniFontFamily, fontWeight = FontWeight.Bold)
                                 }
                             }
                         }
@@ -3996,7 +4728,7 @@ fun DeckScreen(viewModel: TarotViewModel) {
                             text = "grid-template-columns: repeat(${columnCount}, 1fr);",
                             color = Color.LightGray,
                             fontSize = 14.sp,
-                            fontFamily = FontFamily.Monospace
+                            fontFamily = RajdhaniFontFamily
                         )
                         Row(
                             modifier = Modifier
@@ -4014,7 +4746,7 @@ fun DeckScreen(viewModel: TarotViewModel) {
                                         .padding(vertical = 12.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Text("${col} Col", fontSize = 13.sp, color = if (columnCount == col) NeonCyan else Color.Gray, fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold)
+                                    Text("${col} Col", fontSize = 17.sp, color = if (columnCount == col) NeonCyan else Color(0xFFB0B0C5), fontFamily = RajdhaniFontFamily, fontWeight = FontWeight.Bold)
                                 }
                             }
                         }
@@ -4028,8 +4760,8 @@ fun DeckScreen(viewModel: TarotViewModel) {
                                 Text(
                                     text = "grid-gap: ${gridGap.toInt()}dp;",
                                     color = Color.LightGray,
-                                    fontSize = 12.sp,
-                                    fontFamily = FontFamily.Monospace
+                                    fontSize = 16.sp,
+                                    fontFamily = RajdhaniFontFamily
                                 )
                                 Slider(
                                     value = gridGap,
@@ -4047,8 +4779,8 @@ fun DeckScreen(viewModel: TarotViewModel) {
                                 Text(
                                     text = "box-shadow: ${glowSpread.toInt()}dp glow;",
                                     color = Color.LightGray,
-                                    fontSize = 12.sp,
-                                    fontFamily = FontFamily.Monospace
+                                    fontSize = 16.sp,
+                                    fontFamily = RajdhaniFontFamily
                                 )
                                 Slider(
                                     value = glowSpread,
@@ -4072,7 +4804,7 @@ fun DeckScreen(viewModel: TarotViewModel) {
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             Column(modifier = Modifier.weight(1f)) {
-                                Text("GRID-STYLE", color = Color.Gray, fontSize = 11.sp, fontFamily = FontFamily.Monospace)
+                                Text("GRID-STYLE", color = Color(0xFFB0B0C5), fontSize = 16.sp, fontFamily = RajdhaniFontFamily)
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -4095,14 +4827,14 @@ fun DeckScreen(viewModel: TarotViewModel) {
                                                 .padding(vertical = 8.dp),
                                             contentAlignment = Alignment.Center
                                         ) {
-                                            Text(abbr, fontSize = 11.sp, color = if (isSel) NeonMagenta else Color.Gray, fontFamily = FontFamily.Monospace)
+                                            Text(abbr, fontSize = 16.sp, color = if (isSel) NeonMagenta else Color(0xFFB0B0C5), fontFamily = RajdhaniFontFamily)
                                         }
                                     }
                                 }
                             }
 
                             Column(modifier = Modifier.weight(1f)) {
-                                Text("GLOW-COLOR", color = Color.Gray, fontSize = 11.sp, fontFamily = FontFamily.Monospace)
+                                Text("GLOW-COLOR", color = Color(0xFFB0B0C5), fontSize = 16.sp, fontFamily = RajdhaniFontFamily)
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -4125,7 +4857,7 @@ fun DeckScreen(viewModel: TarotViewModel) {
                                                 .padding(vertical = 8.dp),
                                             contentAlignment = Alignment.Center
                                         ) {
-                                            Text(abbr, fontSize = 11.sp, color = if (isSel) NeonGreen else Color.Gray, fontFamily = FontFamily.Monospace)
+                                            Text(abbr, fontSize = 16.sp, color = if (isSel) NeonGreen else Color(0xFFB0B0C5), fontFamily = RajdhaniFontFamily)
                                         }
                                     }
                                 }
@@ -4140,7 +4872,7 @@ fun DeckScreen(viewModel: TarotViewModel) {
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text("CARD DISPLAY MODE:", color = Color.Gray, fontSize = 12.sp, fontFamily = FontFamily.Monospace)
+                            Text("CARD DISPLAY MODE:", color = Color(0xFFB0B0C5), fontSize = 16.sp, fontFamily = RajdhaniFontFamily)
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
@@ -4153,7 +4885,7 @@ fun DeckScreen(viewModel: TarotViewModel) {
                                             .clickable { infoMode = mode }
                                             .padding(horizontal = 10.dp, vertical = 8.dp)
                                     ) {
-                                        Text(mode, fontSize = 11.sp, color = if (isSel) Color.White else Color.Gray, fontFamily = FontFamily.Monospace)
+                                        Text(mode, fontSize = 16.sp, color = if (isSel) Color.White else Color(0xFFB0B0C5), fontFamily = RajdhaniFontFamily)
                                     }
                                 }
                             }
@@ -4195,9 +4927,9 @@ fun DeckScreen(viewModel: TarotViewModel) {
                     ) {
                         Text(
                             text = seriesName.uppercase(),
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 10.sp,
-                            color = if (isSelected) seriesColor else Color.Gray,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 15.sp,
+                            color = if (isSelected) seriesColor else Color(0xFFB0B0C5),
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                         )
                     }
@@ -4238,9 +4970,9 @@ fun DeckScreen(viewModel: TarotViewModel) {
                     ) {
                         Text(
                             text = rarity.uppercase(),
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 10.sp,
-                            color = if (isSelected) filterColor else Color.Gray,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 15.sp,
+                            color = if (isSelected) filterColor else Color(0xFFB0B0C5),
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                         )
                     }
@@ -4376,14 +5108,14 @@ fun DeckScreen(viewModel: TarotViewModel) {
                                         ) {
                                             Text(
                                                 text = if (presetStyle == "Holographic Command Table") "[$coordLabel]" else "NODE #${String.format("%02d", card.index)}",
-                                                fontSize = 9.sp,
-                                                fontFamily = FontFamily.Monospace,
-                                                color = if (presetStyle == "Holographic Command Table") NeonCyan else Color.Gray
+                                                fontSize = 14.sp,
+                                                fontFamily = RajdhaniFontFamily,
+                                                color = if (presetStyle == "Holographic Command Table") NeonCyan else Color(0xFFB0B0C5)
                                             )
                                             Text(
                                                 text = card.defaultRarity.uppercase(),
-                                                fontSize = 8.sp,
-                                                fontFamily = FontFamily.Monospace,
+                                                fontSize = 17.sp,
+                                                fontFamily = RajdhaniFontFamily,
                                                 color = rarityColor,
                                                 fontWeight = FontWeight.Bold
                                             )
@@ -4430,15 +5162,15 @@ fun DeckScreen(viewModel: TarotViewModel) {
                                             text = if (infoMode == "Digital Analog") localizedName else localizedTraditional,
                                             fontSize = 14.sp,
                                             fontWeight = FontWeight.ExtraBold,
-                                            fontFamily = FontFamily.Monospace,
+                                            fontFamily = RajdhaniFontFamily,
                                             color = Color.White,
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis
                                         )
                                         Text(
                                             text = if (infoMode == "Digital Analog") "($localizedTraditional)" else "($localizedName)",
-                                            fontSize = 11.sp,
-                                            fontFamily = FontFamily.Monospace,
+                                            fontSize = 16.sp,
+                                            fontFamily = RajdhaniFontFamily,
                                             color = Color.Yellow,
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis
@@ -4462,7 +5194,7 @@ fun DeckScreen(viewModel: TarotViewModel) {
                                             text = "INSPECT ⛶",
                                             targetTextSize = 9.sp,
                                             fontWeight = FontWeight.Bold,
-                                            fontFamily = FontFamily.Monospace,
+                                            fontFamily = RajdhaniFontFamily,
                                             textAlign = TextAlign.Center
                                         )
                                     }
@@ -4496,8 +5228,8 @@ fun DeckScreen(viewModel: TarotViewModel) {
                                     ) {
                                         Text(
                                             text = card.series.uppercase(),
-                                            fontSize = 9.sp,
-                                            fontFamily = FontFamily.Monospace,
+                                            fontSize = 14.sp,
+                                            fontFamily = RajdhaniFontFamily,
                                             color = Color.White,
                                             fontWeight = FontWeight.Bold
                                         )
@@ -4580,15 +5312,15 @@ fun CardSynthesisView(viewModel: TarotViewModel) {
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
                             color = NeonGold,
-                            fontFamily = FontFamily.Monospace
+                            fontFamily = RajdhaniFontFamily
                         )
                     }
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         "Fuse lower rarity cards into higher tiers according to the Genesis Formula. 10 Epic cards fuse into 1 Gold Genesis Series card ('Начало Начал').",
-                        fontSize = 11.sp,
+                        fontSize = 16.sp,
                         color = Color.LightGray,
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = RajdhaniFontFamily,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -4708,25 +5440,25 @@ fun SynthesisRecipeCard(
             ) {
                 Text(
                     title,
-                    fontSize = 13.sp,
+                    fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
                     color = targetColor,
-                    fontFamily = FontFamily.Monospace
+                    fontFamily = RajdhaniFontFamily
                 )
                 Text(
                     "AVAILABLE: $ownedCount / $requiredCount",
-                    fontSize = 11.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = if (canFuse) NeonGreen else Color.Gray,
-                    fontFamily = FontFamily.Monospace
+                    color = if (canFuse) NeonGreen else Color(0xFFB0B0C5),
+                    fontFamily = RajdhaniFontFamily
                 )
             }
 
             Text(
                 subtitle,
-                fontSize = 10.sp,
+                fontSize = 15.sp,
                 color = Color.LightGray,
-                fontFamily = FontFamily.Monospace
+                fontFamily = RajdhaniFontFamily
             )
 
             Button(
@@ -4745,9 +5477,9 @@ fun SynthesisRecipeCard(
             ) {
                 Text(
                     if (isFusing) "SYNTHESIZING..." else buttonText,
-                    fontSize = 10.sp,
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Monospace
+                    fontFamily = RajdhaniFontFamily
                 )
             }
         }
@@ -4801,7 +5533,7 @@ fun CustomBigKeypad(
                     ) {
                         Text(
                             text = key,
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 22.sp,
                             color = if (key == "⌫") NeonRed else if (key == "C") Color.LightGray else skin.primaryColor
@@ -4814,10 +5546,11 @@ fun CustomBigKeypad(
 }
 
 @Composable
-fun PinLockScreen(viewModel: TarotViewModel) {
+fun PinLockScreen(viewModel: TarotViewModel, onRestoreRequest: () -> Unit = {}) {
     val currentSkin by viewModel.currentSkin.collectAsStateWithLifecycle()
     val profile by viewModel.userProfile.collectAsStateWithLifecycle()
     val lang = profile?.systemLanguage ?: "en"
+    val isRu = lang in listOf("ru", "uk")
     var pinInput by remember { mutableStateOf("") }
     var pinError by remember { mutableStateOf(false) }
 
@@ -4825,8 +5558,7 @@ fun PinLockScreen(viewModel: TarotViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF030307))
-            .padding(24.dp)
-            .windowInsetsPadding(WindowInsets.systemBars),
+            .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -4844,7 +5576,7 @@ fun PinLockScreen(viewModel: TarotViewModel) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = LocalizationHelper.getString(lang, "pin_required_title"),
-                fontFamily = FontFamily.Monospace,
+                fontFamily = RajdhaniFontFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
                 color = NeonRed,
@@ -4853,9 +5585,9 @@ fun PinLockScreen(viewModel: TarotViewModel) {
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = LocalizationHelper.getString(lang, "pin_required_desc"),
-                fontFamily = FontFamily.Monospace,
-                fontSize = 12.sp,
-                color = Color.Gray,
+                fontFamily = RajdhaniFontFamily,
+                fontSize = 16.sp,
+                color = Color(0xFFB0B0C5),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
@@ -4878,7 +5610,7 @@ fun PinLockScreen(viewModel: TarotViewModel) {
                             .size(18.dp)
                             .clip(CircleShape)
                             .background(if (filled) currentSkin.primaryColor else Color(0x22FFFFFF))
-                            .border(1.5.dp, if (filled) currentSkin.primaryColor else Color.Gray, CircleShape)
+                            .border(1.5.dp, if (filled) currentSkin.primaryColor else Color(0xFFB0B0C5), CircleShape)
                     )
                 }
             }
@@ -4886,8 +5618,8 @@ fun PinLockScreen(viewModel: TarotViewModel) {
             if (pinError) {
                 Text(
                     text = LocalizationHelper.getString(lang, "pin_error"),
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 12.sp,
+                    fontFamily = RajdhaniFontFamily,
+                    fontSize = 16.sp,
                     color = NeonRed,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 4.dp)
@@ -4896,37 +5628,55 @@ fun PinLockScreen(viewModel: TarotViewModel) {
         }
 
         // Keypad area
-        CustomBigKeypad(
-            skin = currentSkin,
-            onDigitClick = { digit ->
-                if (pinInput.length < 8) {
-                    pinInput += digit
-                    pinError = false
-                    if (pinInput.length == 8) {
-                        val success = viewModel.unlockApp(pinInput)
-                        if (!success) {
-                            pinError = true
-                            pinInput = ""
-                            com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.SCAN_BEEP)
-                        } else {
-                            com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.SUCCESS_CHIME)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+        ) {
+            CustomBigKeypad(
+                skin = currentSkin,
+                onDigitClick = { digit ->
+                    if (pinInput.length < 8) {
+                        pinInput += digit
+                        pinError = false
+                        if (pinInput.length == 8) {
+                            val success = viewModel.unlockApp(pinInput)
+                            if (!success) {
+                                pinError = true
+                                pinInput = ""
+                                com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.SCAN_BEEP)
+                            } else {
+                                com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.SUCCESS_CHIME)
+                            }
                         }
                     }
-                }
-            },
-            onDeleteClick = {
-                if (pinInput.isNotEmpty()) {
-                    pinInput = pinInput.dropLast(1)
-                }
-            },
-            onClearClick = {
-                pinInput = ""
-                pinError = false
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp)
-        )
+                },
+                onDeleteClick = {
+                    if (pinInput.isNotEmpty()) {
+                        pinInput = pinInput.dropLast(1)
+                    }
+                },
+                onClearClick = {
+                    pinInput = ""
+                    pinError = false
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            TextButton(
+                onClick = onRestoreRequest,
+                modifier = Modifier.padding(vertical = 4.dp)
+            ) {
+                Text(
+                    text = if (isRu) "🔑 Забыли ПИН? Восстановить из сид-фразы" else "🔑 Forgot PIN? Restore from Seed Phrase",
+                    color = currentSkin.primaryColor,
+                    fontFamily = RajdhaniFontFamily,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
     }
 }
 
@@ -4967,21 +5717,21 @@ fun SafeBotanicalModeScreen(viewModel: TarotViewModel) {
             Column {
                 Text(
                     text = "BOTANICAL SAFE ASSISTANT",
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = RajdhaniFontFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
                     color = Color.White
                 )
                 Text(
                     text = "Encrypted Local Herbology Core v2.4",
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 10.sp,
-                    color = Color.Gray
+                    fontFamily = RajdhaniFontFamily,
+                    fontSize = 15.sp,
+                    color = Color(0xFFB0B0C5)
                 )
             }
         }
 
-        Divider(color = Color(0x3300FF00), thickness = 1.dp, modifier = Modifier.padding(bottom = 12.dp))
+        HorizontalDivider(color = Color(0x3300FF00), thickness = 1.dp, modifier = Modifier.padding(bottom = 12.dp))
 
         // Chats list
         LazyColumn(
@@ -5005,8 +5755,8 @@ fun SafeBotanicalModeScreen(viewModel: TarotViewModel) {
                     ) {
                         Text(
                             text = msg,
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 13.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 17.sp,
                             color = Color.White,
                             modifier = Modifier.padding(12.dp)
                         )
@@ -5043,8 +5793,8 @@ fun SafeBotanicalModeScreen(viewModel: TarotViewModel) {
                 ) {
                     Text(
                         text = topic,
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 11.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         color = NeonGreen
                     )
                 }
@@ -5062,7 +5812,7 @@ fun SafeBotanicalModeScreen(viewModel: TarotViewModel) {
             OutlinedTextField(
                 value = chatInput,
                 onValueChange = { chatInput = it },
-                placeholder = { Text("Ask about botanical care...", color = Color.Gray, fontSize = 12.sp) },
+                placeholder = { Text("Ask about botanical care...", color = Color(0xFFB0B0C5), fontSize = 16.sp) },
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = NeonGreen,
@@ -5070,7 +5820,7 @@ fun SafeBotanicalModeScreen(viewModel: TarotViewModel) {
                     focusedTextColor = Color.White,
                     unfocusedTextColor = Color.White
                 ),
-                textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 13.sp),
+                textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 17.sp),
                 modifier = Modifier.weight(1f)
             )
 
@@ -5123,6 +5873,10 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
     val currentSkin by viewModel.currentSkin.collectAsStateWithLifecycle()
     val profile by viewModel.userProfile.collectAsStateWithLifecycle()
     var currentStep by remember { mutableStateOf(0) } // 0: Lang & Security Notice, 1: Mnemonic Seed, 2: Seed Verification, 3: Alias/Avatar, 4: Container/P2P, 5: PIN setup
+    var isRestoreMode by remember { mutableStateOf(false) }
+    var restoreSeedInput by remember { mutableStateOf("") }
+    var restorePinInput by remember { mutableStateOf("") }
+    var restoreError by remember { mutableStateOf("") }
 
     val tempLang = remember { mutableStateOf(profile?.systemLanguage ?: "en") }
     val aliasInput = remember { mutableStateOf("") }
@@ -5176,6 +5930,221 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
 
     val t = { key: String -> LocalizationHelper.getString(tempLang.value, key) }
 
+    if (isRestoreMode) {
+        // Dedicated Seed Phrase Restore Screen
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFF030308))
+                .windowInsetsPadding(WindowInsets.systemBars)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = if (tempLang.value in listOf("ru", "uk")) "🔑 ВОССТАНОВЛЕНИЕ ИЗ СИД-ФРАЗЫ" else "🔑 BIP-39 SEED RESTORATION",
+                    fontFamily = RajdhaniFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 15.sp,
+                    color = NeonCyan
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = if (tempLang.value in listOf("ru", "uk")) "Введите 12 или 24 слова вашей мнемоники и задайте новый 8-значный ПИН для быстрого входа." else "Enter your 12 or 24-word seed phrase and set a new 8-digit PIN for quick access.",
+                    fontFamily = RajdhaniFontFamily,
+                    fontSize = 16.sp,
+                    color = Color(0xFFB0B0C5),
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                OutlinedTextField(
+                    value = restoreSeedInput,
+                    onValueChange = {
+                        restoreSeedInput = it
+                        restoreError = ""
+                    },
+                    placeholder = {
+                        Text(
+                            if (tempLang.value in listOf("ru", "uk")) "Вставьте или введите 12/24 слов через пробел..." else "Paste or type 12/24 words separated by spaces...",
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFFB0B0C5)
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp),
+                    textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp, color = Color.White),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = NeonCyan,
+                        unfocusedBorderColor = Color(0x33FFFFFF)
+                    )
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    val wordCount = restoreSeedInput.trim().split(Regex("\\s+")).filter { it.isNotBlank() }.size
+                    Text(
+                        text = if (tempLang.value in listOf("ru", "uk")) "Слов: $wordCount / 24" else "Words: $wordCount / 24",
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
+                        color = if (wordCount == 12 || wordCount == 24) NeonGreen else Color.LightGray
+                    )
+                    TextButton(
+                        onClick = {
+                            val clip = clipboardManager.getText()?.text ?: ""
+                            if (clip.isNotBlank()) {
+                                restoreSeedInput = clip.trim()
+                            }
+                        }
+                    ) {
+                        Text(
+                            text = if (tempLang.value in listOf("ru", "uk")) "📋 ВСТАВИТЬ" else "📋 PASTE",
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
+                            color = NeonCyan,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+
+                // PIN indicator
+                Text(
+                    text = if (tempLang.value in listOf("ru", "uk")) "🔢 ЗАДАЙТЕ 8-ЗНАЧНЫЙ ПИН-КОД ДЛЯ ВХОДА" else "🔢 CONFIGURE 8-DIGIT ENTRY PIN",
+                    fontFamily = RajdhaniFontFamily,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    modifier = Modifier.padding(vertical = 4.dp)
+                ) {
+                    for (i in 0 until 8) {
+                        val filled = restorePinInput.length > i
+                        Box(
+                            modifier = Modifier
+                                .size(16.dp)
+                                .clip(CircleShape)
+                                .background(if (filled) NeonCyan else Color(0x22FFFFFF))
+                                .border(1.5.dp, if (filled) NeonCyan else Color(0xFFB0B0C5), CircleShape)
+                        )
+                    }
+                }
+
+                if (restoreError.isNotBlank()) {
+                    Text(
+                        text = restoreError,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
+                        color = NeonRed,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                CustomBigKeypad(
+                    skin = currentSkin,
+                    onDigitClick = { digit ->
+                        if (restorePinInput.length < 8) {
+                            restorePinInput += digit
+                            restoreError = ""
+                        }
+                    },
+                    onDeleteClick = {
+                        if (restorePinInput.isNotEmpty()) {
+                            restorePinInput = restorePinInput.dropLast(1)
+                        }
+                    },
+                    onClearClick = {
+                        restorePinInput = ""
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            // Bottom Actions for Restore
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                CyberButton(
+                    onClick = { isRestoreMode = false },
+                    skin = currentSkin,
+                    modifier = Modifier
+                        .width(120.dp)
+                        .height(44.dp)
+                ) {
+                    Text(
+                        text = if (tempLang.value in listOf("ru", "uk")) "⬅️ НАЗАД" else "⬅️ BACK",
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+
+                val wordsList = restoreSeedInput.trim().split(Regex("\\s+")).filter { it.isNotBlank() }
+                val isRestoreValid = (wordsList.size == 12 || wordsList.size == 24) && restorePinInput.length == 8
+
+                CyberButton(
+                    onClick = {
+                        if (!com.example.data.Bip39Helper.validateWords(wordsList)) {
+                            restoreError = if (tempLang.value in listOf("ru", "uk")) "❌ Некорректные слова мнемоники BIP-39" else "❌ Invalid BIP-39 mnemonic words"
+                        } else if (restorePinInput.length != 8) {
+                            restoreError = if (tempLang.value in listOf("ru", "uk")) "❌ ПИН должен содержать ровно 8 цифр" else "❌ PIN must be exactly 8 digits"
+                        } else {
+                            viewModel.saveSecuredProfileWithPin(
+                                dob = "01-01-1970",
+                                first = "Restored",
+                                last = "Secured",
+                                pin = restorePinInput,
+                                pinSafe = "11111111",
+                                pinPanic = "22222222",
+                                aliasVal = "Grower",
+                                avatarIdx = 0,
+                                customWords = wordsList
+                            )
+                            com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.SUCCESS_CHIME)
+                            onComplete()
+                        }
+                    },
+                    skin = currentSkin,
+                    modifier = Modifier
+                        .width(160.dp)
+                        .height(44.dp)
+                        .graphicsLayer { alpha = if (isRestoreValid) 1f else 0.4f },
+                    enabled = isRestoreValid
+                ) {
+                    Text(
+                        text = if (tempLang.value in listOf("ru", "uk")) "ВОССТАНОВИТЬ 🔓" else "RESTORE 🔓",
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+            }
+        }
+        return
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -5194,9 +6163,9 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
             ) {
                 Text(
                     text = "STEP ${currentStep + 1} OF 6",
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = RajdhaniFontFamily,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 11.sp,
+                    fontSize = 16.sp,
                     color = currentSkin.primaryColor
                 )
                 Text(
@@ -5208,10 +6177,10 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                         4 -> "📦 DECENTRALIZED CONTAINERS"
                         else -> "🔢 SECURITY INTERLOCK"
                     },
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = RajdhaniFontFamily,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 11.sp,
-                    color = Color.Gray
+                    fontSize = 16.sp,
+                    color = Color(0xFFB0B0C5)
                 )
             }
             Row(
@@ -5248,7 +6217,7 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                     ) {
                         Text(
                             text = "🌐 LOCALIZATION DISCOVERY SCAN",
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp,
                             color = Color.White
@@ -5300,12 +6269,12 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                                                     modifier = Modifier
                                                         .size(8.dp)
                                                         .clip(CircleShape)
-                                                        .background(if (isSelected) currentSkin.primaryColor else Color.Gray)
+                                                        .background(if (isSelected) currentSkin.primaryColor else Color(0xFFB0B0C5))
                                                 )
                                                 Text(
                                                     text = name,
-                                                    fontFamily = FontFamily.Monospace,
-                                                    fontSize = 12.sp,
+                                                    fontFamily = RajdhaniFontFamily,
+                                                    fontSize = 16.sp,
                                                     fontWeight = FontWeight.Bold,
                                                     color = if (isSelected) Color.White else Color.LightGray
                                                 )
@@ -5339,9 +6308,9 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                                     )
                                     Text(
                                         text = if (tempLang.value == "ru") "⚠️ ВАЖНОЕ ПРЕДУПРЕЖДЕНИЕ БЕЗОПАСНОСТИ" else "⚠️ CRITICAL SECURITY WARNING",
-                                        fontFamily = FontFamily.Monospace,
+                                        fontFamily = RajdhaniFontFamily,
                                         fontWeight = FontWeight.Bold,
-                                        fontSize = 12.sp,
+                                        fontSize = 16.sp,
                                         color = NeonRed
                                     )
                                 }
@@ -5357,10 +6326,46 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                                         "• If you lose your seed phrase, NO ONE can recover your wallet or access your WEED assets.\n" +
                                         "• All lost data is gone forever."
                                     },
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 11.sp,
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 16.sp,
                                     color = Color.LightGray,
                                     lineHeight = 15.sp
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Quick restore seed phrase trigger
+                        Surface(
+                            shape = RoundedCornerShape(12.dp),
+                            color = Color(0xFF0C1425),
+                            border = BorderStroke(1.5.dp, NeonCyan.copy(alpha = 0.7f)),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    com.example.audio.CyberNoirSynthPlayer.triggerFX(com.example.audio.CyberNoirSynthPlayer.FXType.CLICK)
+                                    isRestoreMode = true
+                                }
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Key,
+                                    contentDescription = "Restore",
+                                    tint = NeonCyan,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = if (tempLang.value in listOf("ru", "uk")) "🔑 У МЕНЯ ЕСТЬ СИД • ВОССТАНОВИТЬ" else "🔑 HAVE A SEED PHRASE? RESTORE",
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 16.sp,
+                                    color = NeonCyan
                                 )
                             }
                         }
@@ -5375,16 +6380,16 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                     ) {
                         Text(
                             text = t("bip39_header"),
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 15.sp,
                             color = Color.White
                         )
                         Text(
                             text = if (tempLang.value == "ru") "Запишите эту мнемоническую фразу из 24 слов на бумагу и сохраните в надежном месте." else "Please write down this 24-word mnemonic seed phrase on paper and save it securely.",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 11.sp,
-                            color = Color.Gray,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFFB0B0C5),
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
@@ -5401,14 +6406,14 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                             Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                                 Text(
                                     text = "⚠️ " + t("seed_warning"),
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 10.sp,
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 15.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = NeonRed,
                                     textAlign = TextAlign.Center,
                                     modifier = Modifier.fillMaxWidth()
                                 )
-                                Divider(color = Color(0x22FFFFFF), thickness = 1.dp)
+                                HorizontalDivider(color = Color(0x22FFFFFF), thickness = 1.dp)
 
                                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                                     generatedMnemonicList.chunked(3).forEach { chunk ->
@@ -5429,8 +6434,8 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                                                 ) {
                                                     Text(
                                                         text = "$idx. $word",
-                                                        fontFamily = FontFamily.Monospace,
-                                                        fontSize = 11.sp,
+                                                        fontFamily = RajdhaniFontFamily,
+                                                        fontSize = 16.sp,
                                                         fontWeight = FontWeight.Bold,
                                                         color = Color.White
                                                     )
@@ -5454,9 +6459,9 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                                 ) {
                                     Text(
                                         text = t("btn_copy"),
-                                        fontFamily = FontFamily.Monospace,
+                                        fontFamily = RajdhaniFontFamily,
                                         fontWeight = FontWeight.Bold,
-                                        fontSize = 13.sp,
+                                        fontSize = 17.sp,
                                         color = Color.White
                                     )
                                 }
@@ -5473,16 +6478,16 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                     ) {
                         Text(
                             text = if (tempLang.value == "ru") "🧠 ПРОВЕРКА СИД-ФРАЗЫ" else "🧠 NEURAL SEED VERIFICATION",
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 15.sp,
                             color = Color.White
                         )
                         Text(
                             text = if (tempLang.value == "ru") "Выберите правильные слова для проверки, что вы действительно сохранили мнемонику." else "Select the correct words to verify you have securely saved your seed phrase.",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 11.sp,
-                            color = Color.Gray,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFFB0B0C5),
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
@@ -5503,8 +6508,8 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                                 Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                     Text(
                                         text = if (tempLang.value == "ru") "Какое слово идет под номером #${testIdx + 1}?" else "Identify Word #${testIdx + 1}:",
-                                        fontFamily = FontFamily.Monospace,
-                                        fontSize = 12.sp,
+                                        fontFamily = RajdhaniFontFamily,
+                                        fontSize = 16.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = Color.White
                                     )
@@ -5531,8 +6536,8 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                                             ) {
                                                 Text(
                                                     text = option,
-                                                    fontFamily = FontFamily.Monospace,
-                                                    fontSize = 11.sp,
+                                                    fontFamily = RajdhaniFontFamily,
+                                                    fontSize = 16.sp,
                                                     fontWeight = FontWeight.Bold,
                                                     color = Color.White
                                                 )
@@ -5562,8 +6567,8 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                                             ) {
                                                 Text(
                                                     text = option,
-                                                    fontFamily = FontFamily.Monospace,
-                                                    fontSize = 11.sp,
+                                                    fontFamily = RajdhaniFontFamily,
+                                                    fontSize = 16.sp,
                                                     fontWeight = FontWeight.Bold,
                                                     color = Color.White
                                                 )
@@ -5592,7 +6597,7 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                     ) {
                         Text(
                             text = "👤 CHOOSE LOCAL GROWER IDENTITY",
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 15.sp,
                             color = Color.White
@@ -5603,7 +6608,7 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                         OutlinedTextField(
                             value = aliasInput.value,
                             onValueChange = { aliasInput.value = it },
-                            label = { Text("Local Alias (Username)", color = Color.Gray, fontSize = 11.sp, fontFamily = FontFamily.Monospace) },
+                            label = { Text("Local Alias (Username)", color = Color(0xFFB0B0C5), fontSize = 16.sp, fontFamily = RajdhaniFontFamily) },
                             singleLine = true,
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = currentSkin.primaryColor,
@@ -5611,7 +6616,7 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                                 focusedTextColor = Color.White,
                                 unfocusedTextColor = Color.White
                             ),
-                            textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 14.sp),
+                            textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 14.sp),
                             modifier = Modifier.fillMaxWidth().testTag("onboarding_alias_input")
                         )
 
@@ -5649,7 +6654,7 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                                                     modifier = Modifier
                                                         .size(28.dp)
                                                         .clip(CircleShape)
-                                                        .background(if (isSelected) currentSkin.primaryColor else Color.Gray),
+                                                        .background(if (isSelected) currentSkin.primaryColor else Color(0xFFB0B0C5)),
                                                     contentAlignment = Alignment.Center
                                                 ) {
                                                     Icon(
@@ -5661,8 +6666,8 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                                                 }
                                                 Text(
                                                     text = avName,
-                                                    fontFamily = FontFamily.Monospace,
-                                                    fontSize = 11.sp,
+                                                    fontFamily = RajdhaniFontFamily,
+                                                    fontSize = 16.sp,
                                                     fontWeight = FontWeight.Bold,
                                                     color = if (isSelected) Color.White else Color.LightGray
                                                 )
@@ -5684,16 +6689,16 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                     ) {
                         Text(
                             text = "📦 DECENTRALIZED CRYPTO-CONTAINER",
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 15.sp,
                             color = Color.White
                         )
                         Text(
                             text = "Choose your storage allocation to connect to the peer-to-peer Tor .onion grower grid network.",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 11.sp,
-                            color = Color.Gray,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFFB0B0C5),
                             textAlign = TextAlign.Center
                         )
 
@@ -5709,9 +6714,9 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                             Column(modifier = Modifier.padding(14.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(
                                     text = "ALLOCATE STORAGE SPACE: ${allocatedStorageGb.value.toInt()} GB",
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 12.sp,
+                                    fontSize = 16.sp,
                                     color = currentSkin.primaryColor
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
@@ -5742,12 +6747,12 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                        Text("P2P SHARED", fontSize = 10.sp, color = Color.Gray, fontFamily = FontFamily.Monospace)
-                                        Text("${allocatedStorageGb.value.toInt()} GB", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.White, fontFamily = FontFamily.Monospace)
+                                        Text("P2P SHARED", fontSize = 15.sp, color = Color(0xFFB0B0C5), fontFamily = RajdhaniFontFamily)
+                                        Text("${allocatedStorageGb.value.toInt()} GB", fontSize = 17.sp, fontWeight = FontWeight.Bold, color = Color.White, fontFamily = RajdhaniFontFamily)
                                     }
                                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                        Text("CLOUD BACKUP", fontSize = 10.sp, color = Color.Gray, fontFamily = FontFamily.Monospace)
-                                        Text("${cloudEarned.toInt()} GB", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = NeonGreen, fontFamily = FontFamily.Monospace)
+                                        Text("CLOUD BACKUP", fontSize = 15.sp, color = Color(0xFFB0B0C5), fontFamily = RajdhaniFontFamily)
+                                        Text("${cloudEarned.toInt()} GB", fontSize = 17.sp, fontWeight = FontWeight.Bold, color = NeonGreen, fontFamily = RajdhaniFontFamily)
                                     }
                                 }
                             }
@@ -5765,26 +6770,26 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                             Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                 Text(
                                     text = "📖 DECENTRALIZED CRYPTO-CLOUD STUDY",
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 11.sp,
+                                    fontSize = 16.sp,
                                     color = NeonGreen
                                 )
                                 Text(
                                     text = "This application hosts redundant botanical logs securely over a peer-to-peer Tor .onion address overlay network using modern concepts similar to Filecoin, IPFS, and Storj. No centralized logging server exists.",
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 10.sp,
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 15.sp,
                                     color = Color.LightGray
                                 )
-                                Divider(color = Color(0x2200FF00), thickness = 1.dp)
+                                HorizontalDivider(color = Color(0x2200FF00), thickness = 1.dp)
                                 Text(
                                     text = "• INTEGRITY: All archives are cryptographically hashed and duplicated into 5 remote replicas + 1 standby replica across the global node grid.\n" +
                                            "• MONITORING: Node connection cycles are evaluated every 15 minutes. An offline duration >15m shifts node status to \"Questionable\".\n" +
                                            "• OUTAGES: If a peer node remains offline for over 1 hour, it is classified as \"Frozen\". All hosted replicas on that node are flagged for deletion to maintain network health, penalizing reputation and WEED.\n" +
                                            "• PENALTY CONTROL: Closing or migrating nodes safely without penalties can be initialized inside Settings at any time.",
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 9.sp,
-                                    color = Color.Gray
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 14.sp,
+                                    color = Color(0xFFB0B0C5)
                                 )
                             }
                         }
@@ -5807,7 +6812,7 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                                 0 -> "🔢 1. MASTER ENTRY PIN"
                                 else -> "🚨 2. EMERGENCY PANIC PIN"
                             },
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp,
                             color = if (pinSubStep.value == 1) NeonRed else currentSkin.primaryColor
@@ -5818,9 +6823,9 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                                 0 -> "Set up your main 8-digit PIN code to lock, decrypt, and authorize fast entry into the app."
                                 else -> "Set an emergency PIN that immediately wipes all database tables, wipes RAM cache, and restarts instantly."
                             },
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 11.sp,
-                            color = Color.Gray,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFFB0B0C5),
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(horizontal = 12.dp)
                         )
@@ -5837,7 +6842,7 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                                         .size(16.dp)
                                         .clip(CircleShape)
                                         .background(if (filled) currentSkin.primaryColor else Color(0x22FFFFFF))
-                                        .border(1.5.dp, if (filled) currentSkin.primaryColor else Color.Gray, CircleShape)
+                                        .border(1.5.dp, if (filled) currentSkin.primaryColor else Color(0xFFB0B0C5), CircleShape)
                                 )
                             }
                         }
@@ -5845,8 +6850,8 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                         if (setupError.isNotBlank()) {
                             Text(
                                 text = setupError,
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 11.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 16.sp,
                                 color = NeonRed,
                                 fontWeight = FontWeight.Bold
                             )
@@ -5904,8 +6909,8 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
                 ) {
                     Text(
                         text = "⬅️ BACK",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 11.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
@@ -5973,8 +6978,8 @@ fun OnboardingWizard(viewModel: TarotViewModel, onComplete: () -> Unit) {
             ) {
                 Text(
                     text = nextText,
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 11.sp,
+                    fontFamily = RajdhaniFontFamily,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
@@ -6053,7 +7058,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
         item {
             Text(
                 text = t("settings_header"),
-                fontFamily = FontFamily.Monospace,
+                fontFamily = RajdhaniFontFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
                 color = NeonCyan,
@@ -6061,9 +7066,9 @@ fun SecurityScreen(viewModel: TarotViewModel) {
             )
             Text(
                 text = "Secure your local core, configure routing gateways, and manage decentralized cloud backup nodes.",
-                fontFamily = FontFamily.Monospace,
-                fontSize = 12.sp,
-                color = Color.Gray,
+                fontFamily = RajdhaniFontFamily,
+                fontSize = 16.sp,
+                color = Color(0xFFB0B0C5),
                 modifier = Modifier.padding(top = 4.dp, bottom = 8.dp)
             )
         }
@@ -6089,7 +7094,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "NEURAL COSMIC SKINS",
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 15.sp,
                             color = Color.White,
@@ -6098,9 +7103,9 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                     }
                     Text(
                         text = "Calibrate the visual wavelength of your oracle interface. Wallpapers dynamically bleed through system cards.",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 11.sp,
-                        color = Color.Gray,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
+                        color = Color(0xFFB0B0C5),
                         modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
                     )
 
@@ -6167,16 +7172,16 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                     Spacer(modifier = Modifier.height(6.dp))
                                     Text(
                                         text = skin.getLocalizedName(lang),
-                                        fontFamily = FontFamily.Monospace,
+                                        fontFamily = RajdhaniFontFamily,
                                         fontWeight = FontWeight.Bold,
-                                        fontSize = 11.sp,
+                                        fontSize = 16.sp,
                                         color = if (isSelected) skin.primaryColor else Color.White
                                     )
                                     Text(
                                         text = skin.id.uppercase(),
-                                        fontFamily = FontFamily.Monospace,
-                                        fontSize = 8.sp,
-                                        color = Color.Gray
+                                        fontFamily = RajdhaniFontFamily,
+                                        fontSize = 17.sp,
+                                        color = Color(0xFFB0B0C5)
                                     )
                                 }
                             }
@@ -6186,15 +7191,15 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = (if (lang == "ru") "Активная палитра: " else if (lang == "es") "Paleta activa: " else "Active Palette: ") + currentSkin.getLocalizedName(lang),
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 10.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 15.sp,
                         fontWeight = FontWeight.Bold,
                         color = currentSkin.primaryColor
                     )
                     Text(
                         text = currentSkin.getLocalizedDescription(lang),
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 9.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 14.sp,
                         color = Color.LightGray
                     )
                 }
@@ -6261,7 +7266,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                         title = {
                             Text(
                                 "NEURAL AVATAR COMPILER v2.4",
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 fontWeight = FontWeight.Bold,
                                 color = NeonCyan,
                                 fontSize = 16.sp
@@ -6271,8 +7276,8 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                             Column {
                                 Text(
                                     "Select visual design language style for neural synthesis of user ${aliasText}:",
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 11.sp,
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 16.sp,
                                     color = Color.LightGray,
                                     modifier = Modifier.padding(bottom = 12.dp)
                                 )
@@ -6291,16 +7296,16 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                         Column(modifier = Modifier.padding(10.dp)) {
                                             Text(
                                                 styleName.uppercase(),
-                                                fontFamily = FontFamily.Monospace,
+                                                fontFamily = RajdhaniFontFamily,
                                                 fontWeight = FontWeight.Bold,
                                                 color = if (isStyleSelected) NeonCyan else Color.White,
-                                                fontSize = 12.sp
+                                                fontSize = 16.sp
                                             )
                                             Text(
                                                 desc,
-                                                fontFamily = FontFamily.Monospace,
-                                                color = Color.Gray,
-                                                fontSize = 9.sp,
+                                                fontFamily = RajdhaniFontFamily,
+                                                color = Color(0xFFB0B0C5),
+                                                fontSize = 14.sp,
                                                 modifier = Modifier.padding(top = 2.dp)
                                             )
                                         }
@@ -6318,12 +7323,12 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                 modifier = Modifier.height(36.dp),
                                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
                             ) {
-                                Text("COMPILE", fontFamily = FontFamily.Monospace, fontSize = 11.sp)
+                                Text("COMPILE", fontFamily = RajdhaniFontFamily, fontSize = 16.sp)
                             }
                         },
                         dismissButton = {
                             TextButton(onClick = { showAiGeneratorDialog = false }) {
-                                Text("CANCEL", fontFamily = FontFamily.Monospace, color = Color.Gray, fontSize = 11.sp)
+                                Text("CANCEL", fontFamily = RajdhaniFontFamily, color = Color(0xFFB0B0C5), fontSize = 16.sp)
                             }
                         }
                     )
@@ -6345,7 +7350,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = "USER NEURAL IDENTITY",
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 14.sp,
                                 color = Color.White
@@ -6417,7 +7422,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                 OutlinedTextField(
                                     value = aliasText,
                                     onValueChange = { aliasText = it },
-                                    label = { Text("Neural Alias", fontSize = 10.sp, fontFamily = FontFamily.Monospace) },
+                                    label = { Text("Neural Alias", fontSize = 15.sp, fontFamily = RajdhaniFontFamily) },
                                     singleLine = true,
                                     colors = OutlinedTextFieldDefaults.colors(
                                         focusedTextColor = Color.White,
@@ -6425,22 +7430,22 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                         focusedBorderColor = NeonCyan,
                                         unfocusedBorderColor = Color.DarkGray
                                     ),
-                                    textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 12.sp),
+                                    textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp),
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             } else {
                                 Text(
                                     text = aliasText.uppercase(),
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 16.sp,
                                     color = if (profile?.customAvatarUri != null) NeonCyan else avatarList.getOrElse(selectedAvatar) { avatarList[0] }.second
                                 )
                                 Text(
                                     text = if (profile?.customAvatarUri != null) "Matrix Class: Custom AI Avatar" else "Matrix Class: ${avatarList.getOrElse(selectedAvatar) { avatarList[0] }.first}",
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 11.sp,
-                                    color = Color.Gray,
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 16.sp,
+                                    color = Color(0xFFB0B0C5),
                                     modifier = Modifier.padding(top = 2.dp)
                                 )
                             }
@@ -6454,7 +7459,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                         OutlinedTextField(
                             value = bioText,
                             onValueChange = { bioText = it },
-                            label = { Text("Short Bio / Userinfo Matrix", fontSize = 10.sp, fontFamily = FontFamily.Monospace) },
+                            label = { Text("Short Bio / Userinfo Matrix", fontSize = 15.sp, fontFamily = RajdhaniFontFamily) },
                             maxLines = 3,
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedTextColor = Color.White,
@@ -6462,14 +7467,14 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                 focusedBorderColor = NeonCyan,
                                 unfocusedBorderColor = Color.DarkGray
                             ),
-                            textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 11.sp),
+                            textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp),
                             modifier = Modifier.fillMaxWidth()
                         )
                     } else {
                         Text(
                             text = bioText,
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 11.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
                             color = Color.LightGray,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -6484,9 +7489,9 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                     if (isEditing) {
                         Text(
                             text = "CUSTOM IDENTITY AVATAR ENGINE",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 10.sp,
-                            color = Color.Gray,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 15.sp,
+                            color = Color(0xFFB0B0C5),
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(bottom = 6.dp)
                         )
@@ -6506,7 +7511,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                 modifier = Modifier.weight(1f).height(36.dp),
                                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
                             ) {
-                                Text("DEVICE FILE", fontFamily = FontFamily.Monospace, fontSize = 10.sp)
+                                Text("DEVICE FILE", fontFamily = RajdhaniFontFamily, fontSize = 15.sp)
                             }
                             CyberButton(
                                 onClick = {
@@ -6516,7 +7521,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                 modifier = Modifier.weight(1f).height(36.dp),
                                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
                             ) {
-                                Text("AI GENERATE", fontFamily = FontFamily.Monospace, fontSize = 10.sp)
+                                Text("AI GENERATE", fontFamily = RajdhaniFontFamily, fontSize = 15.sp)
                             }
                         }
                         
@@ -6530,15 +7535,15 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                 modifier = Modifier.fillMaxWidth().height(36.dp),
                                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
                             ) {
-                                Text("RESTORE STANDARD PRESETS", fontFamily = FontFamily.Monospace, fontSize = 10.sp, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+                                Text("RESTORE STANDARD PRESETS", fontFamily = RajdhaniFontFamily, fontSize = 15.sp, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                             }
                         } else {
                             Spacer(modifier = Modifier.height(12.dp))
                             Text(
                                 text = "CHOOSE AVATAR PRESET",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 10.sp,
-                                color = Color.Gray,
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 15.sp,
+                                color = Color(0xFFB0B0C5),
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(bottom = 6.dp)
                             )
@@ -6564,7 +7569,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                         Icon(
                                             imageVector = triple.third,
                                             contentDescription = triple.first,
-                                            tint = if (isSelected) triple.second else Color.Gray,
+                                            tint = if (isSelected) triple.second else Color(0xFFB0B0C5),
                                             modifier = Modifier.size(20.dp)
                                         )
                                     }
@@ -6592,8 +7597,8 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                         ) {
                             Text(
                                 text = "GLOBAL DECK RATING",
-                                fontSize = 8.sp,
-                                fontFamily = FontFamily.Monospace,
+                                fontSize = 17.sp,
+                                fontFamily = RajdhaniFontFamily,
                                 color = NeonGold,
                                 fontWeight = FontWeight.Bold
                             )
@@ -6601,7 +7606,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                             Text(
                                 text = "★ $deckRating",
                                 fontSize = 16.sp,
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 color = NeonGold,
                                 fontWeight = FontWeight.Bold
                             )
@@ -6618,8 +7623,8 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                         ) {
                             Text(
                                 text = "APPROX DECK VALUE",
-                                fontSize = 8.sp,
-                                fontFamily = FontFamily.Monospace,
+                                fontSize = 17.sp,
+                                fontFamily = RajdhaniFontFamily,
                                 color = NeonCyan,
                                 fontWeight = FontWeight.Bold
                             )
@@ -6627,7 +7632,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                             Text(
                                 text = "$deckApproxCost N$",
                                 fontSize = 16.sp,
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 color = NeonCyan,
                                 fontWeight = FontWeight.Bold
                             )
@@ -6655,7 +7660,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = t("lang_header"),
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp,
                             color = Color.White
@@ -6664,9 +7669,9 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = t("lang_desc"),
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 11.sp,
-                        color = Color.Gray
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
+                        color = Color(0xFFB0B0C5)
                     )
                     Spacer(modifier = Modifier.height(12.dp))
 
@@ -6699,8 +7704,8 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                         ) {
                                             Text(
                                                 text = name,
-                                                fontFamily = FontFamily.Monospace,
-                                                fontSize = 11.sp,
+                                                fontFamily = RajdhaniFontFamily,
+                                                fontSize = 16.sp,
                                                 color = if (isActive) NeonCyan else Color.White,
                                                 fontWeight = if (isActive) FontWeight.Bold else FontWeight.Normal
                                             )
@@ -6735,7 +7740,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = t("bip39_header"),
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp,
                             color = if (profile?.isSecured == true) NeonCyan else Color.White
@@ -6748,23 +7753,23 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                         // SECURED TERMINAL BADGE
                         Text(
                             text = "✔️ " + t("secured_badge") + " TERMINAL CONFIGURATION ACTIVE",
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 12.sp,
+                            fontSize = 16.sp,
                             color = NeonCyan
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = "Owner: ${profile?.securedFirst?.replaceRange(1, (profile?.securedFirst?.length ?: 2) - 1, "*")} " +
                                    "${profile?.securedLast?.replaceRange(1, (profile?.securedLast?.length ?: 2) - 1, "*")}",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 11.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
                             color = Color.LightGray
                         )
                         Text(
                             text = "Birthdate: ${profile?.securedDob?.replaceRange(5, (profile?.securedDob?.length ?: 6) - 1, "**-**")}",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 11.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
                             color = Color.LightGray
                         )
                         
@@ -6781,8 +7786,8 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                         }
                         Text(
                             text = "Seed Hash: $seedHash",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 11.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
                             color = Color.DarkGray
                         )
 
@@ -6799,16 +7804,16 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                 Column {
                                     Text(
                                         "RECOVERY MNEMONIC (24 WORDS):",
-                                        fontFamily = FontFamily.Monospace,
+                                        fontFamily = RajdhaniFontFamily,
                                         fontWeight = FontWeight.Bold,
-                                        fontSize = 10.sp,
+                                        fontSize = 15.sp,
                                         color = NeonCyan
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(
                                         profile?.seedPhrase ?: "Error loading mnemonic",
-                                        fontFamily = FontFamily.Monospace,
-                                        fontSize = 12.sp,
+                                        fontFamily = RajdhaniFontFamily,
+                                        fontSize = 16.sp,
                                         color = Color.White
                                     )
                                     Spacer(modifier = Modifier.height(12.dp))
@@ -6865,16 +7870,16 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                 // Form inputs
                                 Text(
                                     text = t("bip39_desc"),
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 11.sp,
-                                    color = Color.Gray
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 16.sp,
+                                    color = Color(0xFFB0B0C5)
                                 )
                                 Spacer(modifier = Modifier.height(12.dp))
 
                                 OutlinedTextField(
                                     value = firstNameInput,
                                     onValueChange = { firstNameInput = it },
-                                    label = { Text("First Name", fontFamily = FontFamily.Monospace) },
+                                    label = { Text("First Name", fontFamily = RajdhaniFontFamily) },
                                     singleLine = true,
                                     colors = OutlinedTextFieldDefaults.colors(
                                         focusedBorderColor = NeonCyan,
@@ -6884,7 +7889,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                         focusedTextColor = Color.White,
                                         unfocusedTextColor = Color.White
                                     ),
-                                    textStyle = androidx.compose.ui.text.TextStyle(fontFamily = FontFamily.Monospace),
+                                    textStyle = androidx.compose.ui.text.TextStyle(fontFamily = RajdhaniFontFamily),
                                     modifier = Modifier.fillMaxWidth().testTag("first_name_input")
                                 )
 
@@ -6893,7 +7898,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                 OutlinedTextField(
                                     value = lastNameInput,
                                     onValueChange = { lastNameInput = it },
-                                    label = { Text("Last Name", fontFamily = FontFamily.Monospace) },
+                                    label = { Text("Last Name", fontFamily = RajdhaniFontFamily) },
                                     singleLine = true,
                                     colors = OutlinedTextFieldDefaults.colors(
                                         focusedBorderColor = NeonCyan,
@@ -6903,7 +7908,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                         focusedTextColor = Color.White,
                                         unfocusedTextColor = Color.White
                                     ),
-                                    textStyle = androidx.compose.ui.text.TextStyle(fontFamily = FontFamily.Monospace),
+                                    textStyle = androidx.compose.ui.text.TextStyle(fontFamily = RajdhaniFontFamily),
                                     modifier = Modifier.fillMaxWidth().testTag("last_name_input")
                                 )
 
@@ -6912,7 +7917,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                 OutlinedTextField(
                                     value = dobInput,
                                     onValueChange = { dobInput = it },
-                                    label = { Text("Date of Birth (YYYY-MM-DD)", fontFamily = FontFamily.Monospace) },
+                                    label = { Text("Date of Birth (YYYY-MM-DD)", fontFamily = RajdhaniFontFamily) },
                                     placeholder = { Text("1998-05-15", color = Color.DarkGray) },
                                     singleLine = true,
                                     colors = OutlinedTextFieldDefaults.colors(
@@ -6923,7 +7928,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                         focusedTextColor = Color.White,
                                         unfocusedTextColor = Color.White
                                     ),
-                                    textStyle = androidx.compose.ui.text.TextStyle(fontFamily = FontFamily.Monospace),
+                                    textStyle = androidx.compose.ui.text.TextStyle(fontFamily = RajdhaniFontFamily),
                                     modifier = Modifier.fillMaxWidth().testTag("dob_input")
                                 )
 
@@ -6935,8 +7940,8 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                     } else {
                                         "🛡️ ENTROPY SOURCE (5 words, up to 16 letters each):"
                                     },
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 11.sp,
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = NeonCyan,
                                     modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
@@ -6952,7 +7957,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                     OutlinedTextField(
                                         value = value,
                                         onValueChange = onValueChange,
-                                        label = { Text(label, fontFamily = FontFamily.Monospace, fontSize = 11.sp) },
+                                        label = { Text(label, fontFamily = RajdhaniFontFamily, fontSize = 16.sp) },
                                         singleLine = true,
                                         colors = OutlinedTextFieldDefaults.colors(
                                             focusedBorderColor = NeonCyan,
@@ -6962,7 +7967,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                             focusedTextColor = Color.White,
                                             unfocusedTextColor = Color.White
                                         ),
-                                        textStyle = androidx.compose.ui.text.TextStyle(fontFamily = FontFamily.Monospace, fontSize = 12.sp),
+                                        textStyle = androidx.compose.ui.text.TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp),
                                         modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp).testTag("entropy_word_${idx + 1}")
                                     )
                                 }
@@ -6988,7 +7993,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                         text = t("btn_generate"),
                                         targetTextSize = 11.sp,
                                         fontWeight = FontWeight.Bold,
-                                        fontFamily = FontFamily.Monospace,
+                                        fontFamily = RajdhaniFontFamily,
                                         textAlign = TextAlign.Center
                                     )
                                 }
@@ -6997,17 +8002,17 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                 // MNEMONIC SEED IMMEDIATE DISPLAY SCREEN (Copy first!)
                                 Text(
                                     text = "🔑 " + t("seed_generated_title"),
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     fontWeight = FontWeight.Bold,
                                     color = NeonCyan,
-                                    fontSize = 13.sp
+                                    fontSize = 17.sp
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
                                     text = t("seed_warning"),
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     color = NeonRed,
-                                    fontSize = 11.sp,
+                                    fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Spacer(modifier = Modifier.height(12.dp))
@@ -7039,15 +8044,15 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                                         Row(verticalAlignment = Alignment.CenterVertically) {
                                                             Text(
                                                                 "${wordIdx + 1}.",
-                                                                fontFamily = FontFamily.Monospace,
-                                                                fontSize = 8.sp,
-                                                                color = Color.Gray,
+                                                                fontFamily = RajdhaniFontFamily,
+                                                                fontSize = 17.sp,
+                                                                color = Color(0xFFB0B0C5),
                                                                 modifier = Modifier.width(14.dp)
                                                             )
                                                             Text(
                                                                 word,
-                                                                fontFamily = FontFamily.Monospace,
-                                                                fontSize = 10.sp,
+                                                                fontFamily = RajdhaniFontFamily,
+                                                                fontSize = 15.sp,
                                                                 color = Color.White,
                                                                 maxLines = 1,
                                                                 overflow = TextOverflow.Ellipsis
@@ -7100,16 +8105,16 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                 // MEMORY CHALLENGE SCREEN
                                 Text(
                                     text = "🔒 " + t("challenge_title"),
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     fontWeight = FontWeight.Bold,
                                     color = NeonCyan,
-                                    fontSize = 13.sp
+                                    fontSize = 17.sp
                                 )
                                 Text(
                                     text = t("challenge_desc"),
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 10.sp,
-                                    color = Color.Gray,
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 15.sp,
+                                    color = Color(0xFFB0B0C5),
                                     modifier = Modifier.padding(bottom = 12.dp)
                                 )
 
@@ -7117,8 +8122,8 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                     Column(modifier = Modifier.padding(vertical = 6.dp)) {
                                         Text(
                                             "Select Word #${targetIdx + 1}:",
-                                            fontFamily = FontFamily.Monospace,
-                                            fontSize = 11.sp,
+                                            fontFamily = RajdhaniFontFamily,
+                                            fontSize = 16.sp,
                                             color = Color.LightGray
                                         )
                                         Spacer(modifier = Modifier.height(4.dp))
@@ -7150,8 +8155,8 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                                 ) {
                                                     Text(
                                                         text = optionWord,
-                                                        fontFamily = FontFamily.Monospace,
-                                                        fontSize = 10.sp,
+                                                        fontFamily = RajdhaniFontFamily,
+                                                        fontSize = 15.sp,
                                                         color = if (isSelected) NeonCyan else Color.White,
                                                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                                                     )
@@ -7193,17 +8198,17 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                 // SET 8-DIGIT SECURITY PIN SCREEN
                                 Text(
                                     text = "🔢 " + t("pin_setup_title"),
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     fontWeight = FontWeight.Bold,
                                     color = NeonCyan,
-                                    fontSize = 13.sp
+                                    fontSize = 17.sp
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
                                     text = t("pin_setup_desc"),
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 11.sp,
-                                    color = Color.Gray
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 16.sp,
+                                    color = Color(0xFFB0B0C5)
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -7224,7 +8229,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                         unfocusedTextColor = Color.White
                                     ),
                                     textStyle = androidx.compose.ui.text.TextStyle(
-                                        fontFamily = FontFamily.Monospace,
+                                        fontFamily = RajdhaniFontFamily,
                                         fontSize = 18.sp,
                                         letterSpacing = 4.sp,
                                         textAlign = TextAlign.Center
@@ -7284,7 +8289,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = t("p2p_network_stats"),
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp,
                             color = if (profile?.isCloudAllocated == true) NeonCyan else Color.White
@@ -7294,9 +8299,9 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = t("cloud_alloc_desc"),
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 11.sp,
-                        color = Color.Gray
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
+                        color = Color(0xFFB0B0C5)
                     )
                     Spacer(modifier = Modifier.height(12.dp))
 
@@ -7305,14 +8310,14 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                     
                     Text(
                         text = "${t("free_space_label")} ${"%.2f".format(freeDiskSpace)} GB",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 11.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         color = Color.LightGray
                     )
                     Text(
                         text = "${t("cloud_max")} ${"%.2f".format(maxCloudAlloc)} GB",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 11.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         color = Color.LightGray
                     )
 
@@ -7327,9 +8332,9 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                         ) {
                             Text(
                                 "LOCAL PEER STATUS:",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 11.sp,
-                                color = Color.Gray
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 16.sp,
+                                color = Color(0xFFB0B0C5)
                             )
                             Box(
                                 modifier = Modifier
@@ -7339,8 +8344,8 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                             ) {
                                 Text(
                                     "ACTIVE ONLINE",
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 9.sp,
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 14.sp,
                                     color = Color(0xFF39FF14),
                                     fontWeight = FontWeight.Bold
                                 )
@@ -7352,8 +8357,8 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                         val currentSpace = profile?.allocatedDiskSpaceGb ?: 2.0f
                         Text(
                             text = "${t("cloud_status_allocated")} ${"%.2f".format(currentSpace)} GB",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 12.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
                             color = NeonCyan,
                             fontWeight = FontWeight.Bold
                         )
@@ -7386,14 +8391,14 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                         )
 
                         Spacer(modifier = Modifier.height(16.dp))
-                        Divider(color = Color(0x11FFFFFF))
+                        HorizontalDivider(color = Color(0x11FFFFFF))
                         Spacer(modifier = Modifier.height(8.dp))
 
                         // Active Sync redundant peer listings
                         Text(
                             "GLOBAL P2P SYNC PEERS [3/3 SYNCS]",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 10.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.LightGray
                         )
@@ -7412,17 +8417,17 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Box(modifier = Modifier.size(6.dp).background(NeonCyan, RoundedCornerShape(3.dp)))
                                     Spacer(modifier = Modifier.width(6.dp))
-                                    Text(peerName, fontFamily = FontFamily.Monospace, fontSize = 10.sp, color = Color.White)
+                                    Text(peerName, fontFamily = RajdhaniFontFamily, fontSize = 15.sp, color = Color.White)
                                 }
-                                Text("Uptime: $uptime | $status", fontFamily = FontFamily.Monospace, fontSize = 9.sp, color = Color.Gray)
+                                Text("Uptime: $uptime | $status", fontFamily = RajdhaniFontFamily, fontSize = 14.sp, color = Color(0xFFB0B0C5))
                             }
                         }
 
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
                             "DECENTRALIZED NODE SYNC LOGS:",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 10.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
                             color = NeonCyan
                         )
@@ -7442,8 +8447,8 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                 items(cloudLogs) { log ->
                                     Text(
                                         text = log,
-                                        fontFamily = FontFamily.Monospace,
-                                        fontSize = 9.sp,
+                                        fontFamily = RajdhaniFontFamily,
+                                        fontSize = 14.sp,
                                         color = if (log.contains("+")) Color(0xFF39FF14) else Color.LightGray
                                     )
                                 }
@@ -7454,8 +8459,8 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                         // CLOUD OFFLINE DISK ALLOCATOR SETUP
                         Text(
                             text = t("cloud_status_unallocated"),
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 11.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
                             color = NeonRed,
                             fontWeight = FontWeight.Bold
                         )
@@ -7499,7 +8504,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = t("proxy_header"),
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp,
                             color = if (isProxyActive) NeonCyan else Color.White
@@ -7509,15 +8514,15 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = t("proxy_desc"),
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = RajdhaniFontFamily,
                         fontSize = 14.sp,
-                        color = Color.Gray
+                        color = Color(0xFFB0B0C5)
                     )
                     Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
                         text = t("proxy_type_label") + " $proxyType",
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = RajdhaniFontFamily,
                         fontSize = 14.sp,
                         color = Color.LightGray
                     )
@@ -7549,7 +8554,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                 ) {
                                     Text(
                                         text = proto,
-                                        fontFamily = FontFamily.Monospace,
+                                        fontFamily = RajdhaniFontFamily,
                                         fontSize = 14.sp,
                                         color = if (isSelected) NeonCyan else Color.White,
                                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
@@ -7579,7 +8584,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                 ) {
                                     Text(
                                         text = proto,
-                                        fontFamily = FontFamily.Monospace,
+                                        fontFamily = RajdhaniFontFamily,
                                         fontSize = 14.sp,
                                         color = if (isSelected) NeonCyan else Color.White,
                                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
@@ -7599,7 +8604,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                             OutlinedTextField(
                                 value = proxyHost,
                                 onValueChange = { proxyHost = it },
-                                label = { Text("Proxy Host", fontFamily = FontFamily.Monospace, fontSize = 14.sp) },
+                                label = { Text("Proxy Host", fontFamily = RajdhaniFontFamily, fontSize = 14.sp) },
                                 singleLine = true,
                                 colors = OutlinedTextFieldDefaults.colors(
                                     focusedBorderColor = NeonCyan,
@@ -7607,14 +8612,14 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                     focusedTextColor = Color.White,
                                     unfocusedTextColor = Color.White
                                 ),
-                                textStyle = androidx.compose.ui.text.TextStyle(fontFamily = FontFamily.Monospace, fontSize = 15.sp),
+                                textStyle = androidx.compose.ui.text.TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 15.sp),
                                 modifier = Modifier.fillMaxWidth()
                             )
 
                             OutlinedTextField(
                                 value = proxyPortString,
                                 onValueChange = { proxyPortString = it },
-                                label = { Text("Port", fontFamily = FontFamily.Monospace, fontSize = 14.sp) },
+                                label = { Text("Port", fontFamily = RajdhaniFontFamily, fontSize = 14.sp) },
                                 singleLine = true,
                                 colors = OutlinedTextFieldDefaults.colors(
                                     focusedBorderColor = NeonCyan,
@@ -7622,7 +8627,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                                     focusedTextColor = Color.White,
                                     unfocusedTextColor = Color.White
                                 ),
-                                textStyle = androidx.compose.ui.text.TextStyle(fontFamily = FontFamily.Monospace, fontSize = 15.sp),
+                                textStyle = androidx.compose.ui.text.TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 15.sp),
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
@@ -7632,14 +8637,14 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                         OutlinedTextField(
                             value = proxyConfig,
                             onValueChange = { proxyConfig = it },
-                            label = { Text("Routing Config / Credentials", fontFamily = FontFamily.Monospace, fontSize = 14.sp) },
+                            label = { Text("Routing Config / Credentials", fontFamily = RajdhaniFontFamily, fontSize = 14.sp) },
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = NeonCyan,
                                 unfocusedBorderColor = Color.DarkGray,
                                 focusedTextColor = Color.White,
                                 unfocusedTextColor = Color.White
                             ),
-                            textStyle = androidx.compose.ui.text.TextStyle(fontFamily = FontFamily.Monospace, fontSize = 15.sp),
+                            textStyle = androidx.compose.ui.text.TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 15.sp),
                             modifier = Modifier.fillMaxWidth().height(100.dp)
                         )
 
@@ -7649,7 +8654,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                         proxyTestStatus?.let { status ->
                             Text(
                                 text = status,
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 fontSize = 14.sp,
                                 color = if (status.contains("Success")) Color(0xFF39FF14) else NeonRed,
                                 modifier = Modifier.padding(bottom = 8.dp)
@@ -7705,7 +8710,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
             title = {
                 Text(
                     text = "AUTHORIZE TERMINAL DECRYPTION",
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = RajdhaniFontFamily,
                     fontWeight = FontWeight.Bold,
                     color = NeonCyan,
                     fontSize = 14.sp
@@ -7715,15 +8720,15 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                 Column {
                     Text(
                         text = t("input_password_reveal"),
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 11.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         color = Color.LightGray
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = seedRequestPasswordInput,
                         onValueChange = { seedRequestPasswordInput = it },
-                        label = { Text("Password", fontFamily = FontFamily.Monospace) },
+                        label = { Text("Password", fontFamily = RajdhaniFontFamily) },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
@@ -7733,7 +8738,7 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                             focusedTextColor = Color.White,
                             unfocusedTextColor = Color.White
                         ),
-                        textStyle = androidx.compose.ui.text.TextStyle(fontFamily = FontFamily.Monospace),
+                        textStyle = androidx.compose.ui.text.TextStyle(fontFamily = RajdhaniFontFamily),
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -7748,12 +8753,12 @@ fun SecurityScreen(viewModel: TarotViewModel) {
                         }
                     }
                 ) {
-                    Text("AUTHORIZE", fontFamily = FontFamily.Monospace, color = NeonCyan)
+                    Text("AUTHORIZE", fontFamily = RajdhaniFontFamily, color = NeonCyan)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showSeedRequestPassword = false }) {
-                    Text("CANCEL", fontFamily = FontFamily.Monospace, color = Color.Gray)
+                    Text("CANCEL", fontFamily = RajdhaniFontFamily, color = Color(0xFFB0B0C5))
                 }
             },
             containerColor = CyberCharcoal,
@@ -7808,7 +8813,7 @@ fun NetOpsScreen(viewModel: TarotViewModel) {
                                 text = if (lang == "ru") "СЕТЕВЫЕ НАСТРОЙКИ" else "NETWORK SETTINGS",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 color = Color.White
                             )
                         }
@@ -7848,15 +8853,15 @@ fun NetOpsScreen(viewModel: TarotViewModel) {
                     text = LocalizationHelper.getString(lang, "tab_netops"),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = RajdhaniFontFamily,
                     color = Color.White,
                     letterSpacing = 1.sp
                 )
                 Text(
                     text = if (lang == "ru") "Системы оранжерей и лунные циклы" else if (lang == "es") "Sistemas de invernadero y ciclos lunares" else "Greenhouse Systems & Lunar Cycles",
-                    fontSize = 13.sp,
-                    fontFamily = FontFamily.Monospace,
-                    color = Color.Gray
+                    fontSize = 17.sp,
+                    fontFamily = RajdhaniFontFamily,
+                    color = Color(0xFFB0B0C5)
                 )
             }
             
@@ -7922,10 +8927,10 @@ fun NetOpsScreen(viewModel: TarotViewModel) {
                 ) {
                     Text(
                         text = title,
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 12.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                        color = if (isSelected) tabColor else Color.Gray
+                        color = if (isSelected) tabColor else Color(0xFFB0B0C5)
                     )
                 }
             }
@@ -7950,6 +8955,8 @@ fun NetOpsScreen(viewModel: TarotViewModel) {
 fun GrowerLunarCalendarPanel(viewModel: TarotViewModel) {
     val profile by viewModel.userProfile.collectAsStateWithLifecycle()
     val lang = profile?.systemLanguage ?: "en"
+    val currentSkin by viewModel.currentSkin.collectAsStateWithLifecycle()
+    var lunarSubTab by remember { mutableIntStateOf(0) } // 0: Tarot Minting Oracle, 1: Botanical Greenhouse
     val calendarDays = remember(lang) { LunarCalendarService.getLunarCalendarForCurrentMonth(lang) }
     val currentDayIndex = remember {
         val today = java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH)
@@ -7961,8 +8968,68 @@ fun GrowerLunarCalendarPanel(viewModel: TarotViewModel) {
         modifier = Modifier.fillMaxSize().testTag("grower_lunar_calendar_panel"),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Today's Moon Phase Hero Card
+        // Mode Selector: Tarot Minting Oracle vs Botanical Greenhouse
         item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFF0C0E1A), RoundedCornerShape(10.dp))
+                    .border(1.dp, currentSkin.primaryColor.copy(alpha = 0.4f), RoundedCornerShape(10.dp))
+                    .padding(4.dp)
+            ) {
+                // Tab 0: Tarot Minting Oracle
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(if (lunarSubTab == 0) currentSkin.primaryColor.copy(alpha = 0.25f) else Color.Transparent)
+                        .clickable { lunarSubTab = 0 }
+                        .padding(vertical = 10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = if (lang == "ru") "🔮 ОРАКУЛ ЧЕКАНКИ" else if (lang == "es") "🔮 ACUÑACIÓN TAROT" else "🔮 MINTING ORACLE",
+                        fontSize = 16.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        color = if (lunarSubTab == 0) currentSkin.primaryColor else Color(0xFFB0B0C5)
+                    )
+                }
+
+                // Tab 1: Botanical Greenhouse
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(if (lunarSubTab == 1) Color(0xFF00FF66).copy(alpha = 0.25f) else Color.Transparent)
+                        .clickable { lunarSubTab = 1 }
+                        .padding(vertical = 10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = if (lang == "ru") "🌱 ОРАНЖЕРЕЯ" else if (lang == "es") "🌱 INVERNADERO" else "🌱 GREENHOUSE",
+                        fontSize = 16.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        color = if (lunarSubTab == 1) Color(0xFF00FF66) else Color(0xFFB0B0C5)
+                    )
+                }
+            }
+        }
+
+        if (lunarSubTab == 0) {
+            item {
+                CyberLunarCycleWidget(
+                    systemLanguage = lang,
+                    currentSkin = currentSkin,
+                    onMintClick = {
+                        viewModel.resetDivination()
+                    }
+                )
+            }
+        } else {
+            // Today's Moon Phase Hero Card
+            item {
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color(0x66004D1A)),
                 border = BorderStroke(1.5.dp, Color(0xFF00FF66).copy(alpha = 0.4f)),
@@ -7978,8 +9045,8 @@ fun GrowerLunarCalendarPanel(viewModel: TarotViewModel) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = LocalizationHelper.getString(lang, "daily_advice_header"),
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 11.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF00FF66)
                             )
@@ -8000,7 +9067,7 @@ fun GrowerLunarCalendarPanel(viewModel: TarotViewModel) {
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    Divider(color = Color.White.copy(alpha = 0.1f))
+                    HorizontalDivider(color = Color.White.copy(alpha = 0.1f))
 
                     Spacer(modifier = Modifier.height(12.dp))
 
@@ -8011,9 +9078,9 @@ fun GrowerLunarCalendarPanel(viewModel: TarotViewModel) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = LocalizationHelper.getString(lang, "illumination_label"),
-                                fontSize = 10.sp,
-                                color = Color.Gray,
-                                fontFamily = FontFamily.Monospace
+                                fontSize = 15.sp,
+                                color = Color(0xFFB0B0C5),
+                                fontFamily = RajdhaniFontFamily
                             )
                             Text(
                                 text = "${todayInfo.illumination}%",
@@ -8026,9 +9093,9 @@ fun GrowerLunarCalendarPanel(viewModel: TarotViewModel) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = LocalizationHelper.getString(lang, "moon_zodiac"),
-                                fontSize = 10.sp,
-                                color = Color.Gray,
-                                fontFamily = FontFamily.Monospace
+                                fontSize = 15.sp,
+                                color = Color(0xFFB0B0C5),
+                                fontFamily = RajdhaniFontFamily
                             )
                             Text(
                                 text = todayInfo.astrologicalSign,
@@ -8041,13 +9108,13 @@ fun GrowerLunarCalendarPanel(viewModel: TarotViewModel) {
                         Column(modifier = Modifier.weight(1.3f)) {
                             Text(
                                 text = LocalizationHelper.getString(lang, "soil_fertility"),
-                                fontSize = 10.sp,
-                                color = Color.Gray,
-                                fontFamily = FontFamily.Monospace
+                                fontSize = 15.sp,
+                                color = Color(0xFFB0B0C5),
+                                fontFamily = RajdhaniFontFamily
                             )
                             Text(
                                 text = if (todayInfo.isFertile) LocalizationHelper.getString(lang, "high_fertile") else LocalizationHelper.getString(lang, "barren_dry"),
-                                fontSize = 13.sp,
+                                fontSize = 17.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = if (todayInfo.isFertile) Color(0xFF00FF66) else Color(0xFFFF5500)
                             )
@@ -8070,8 +9137,8 @@ fun GrowerLunarCalendarPanel(viewModel: TarotViewModel) {
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
                                     text = todayInfo.recommendedAction.uppercase(),
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 12.sp,
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Color(0xFF00FF66)
                                 )
@@ -8079,7 +9146,7 @@ fun GrowerLunarCalendarPanel(viewModel: TarotViewModel) {
                             Spacer(modifier = Modifier.height(6.dp))
                             Text(
                                 text = todayInfo.detailInstructions,
-                                fontSize = 11.sp,
+                                fontSize = 16.sp,
                                 color = Color.LightGray,
                                 lineHeight = 15.sp
                             )
@@ -8101,8 +9168,8 @@ fun GrowerLunarCalendarPanel(viewModel: TarotViewModel) {
                 Column(modifier = Modifier.padding(14.dp)) {
                     Text(
                         text = if (lang == "ru") "ПАРТНЕРСКИЕ РЕСУРСЫ" else "PARTNER RESOURCES",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 11.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF00FFCC)
                     )
@@ -8134,7 +9201,7 @@ fun GrowerLunarCalendarPanel(viewModel: TarotViewModel) {
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
                                     text = "SeedFinder.eu",
-                                    fontSize = 11.sp,
+                                    fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Color.White,
                                     textAlign = TextAlign.Center
@@ -8142,8 +9209,8 @@ fun GrowerLunarCalendarPanel(viewModel: TarotViewModel) {
                                 Spacer(modifier = Modifier.height(2.dp))
                                 Text(
                                     text = if (lang == "ru") "Генетика сортов" else "Strain Database",
-                                    fontSize = 9.sp,
-                                    color = Color.Gray,
+                                    fontSize = 14.sp,
+                                    color = Color(0xFFB0B0C5),
                                     textAlign = TextAlign.Center
                                 )
                             }
@@ -8171,7 +9238,7 @@ fun GrowerLunarCalendarPanel(viewModel: TarotViewModel) {
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
                                     text = "Rasta Prosto",
-                                    fontSize = 11.sp,
+                                    fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Color.White,
                                     textAlign = TextAlign.Center
@@ -8179,8 +9246,8 @@ fun GrowerLunarCalendarPanel(viewModel: TarotViewModel) {
                                 Spacer(modifier = Modifier.height(2.dp))
                                 Text(
                                     text = if (lang == "ru") "Магазин семян" else "Seed Shop",
-                                    fontSize = 9.sp,
-                                    color = Color.Gray,
+                                    fontSize = 14.sp,
+                                    color = Color(0xFFB0B0C5),
                                     textAlign = TextAlign.Center
                                 )
                             }
@@ -8194,9 +9261,9 @@ fun GrowerLunarCalendarPanel(viewModel: TarotViewModel) {
         item {
             Text(
                 text = LocalizationHelper.getString(lang, "monthly_grower_calendar"),
-                fontSize = 13.sp,
+                fontSize = 17.sp,
                 fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = RajdhaniFontFamily,
                 color = Color.White,
                 modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
             )
@@ -8235,15 +9302,15 @@ fun GrowerLunarCalendarPanel(viewModel: TarotViewModel) {
                         Column {
                             Text(
                                 text = day.dateString,
-                                fontSize = 12.sp,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = if (isToday) Color(0xFF00FF66) else Color.White
                             )
                             Text(
                                 text = "${day.illumination}% lit | ${day.astrologicalSign.substringBefore(" (")}",
-                                fontSize = 9.sp,
-                                color = Color.Gray,
-                                fontFamily = FontFamily.Monospace
+                                fontSize = 14.sp,
+                                color = Color(0xFFB0B0C5),
+                                fontFamily = RajdhaniFontFamily
                             )
                         }
                     }
@@ -8261,7 +9328,7 @@ fun GrowerLunarCalendarPanel(viewModel: TarotViewModel) {
                     ) {
                         Text(
                             text = day.recommendedAction,
-                            fontSize = 9.sp,
+                            fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
                             color = if (day.isFertile) Color(0xFF00FF66) else Color(0xFFFF9900),
                             textAlign = TextAlign.Center,
@@ -8271,6 +9338,7 @@ fun GrowerLunarCalendarPanel(viewModel: TarotViewModel) {
                     }
                 }
             }
+        }
         }
     }
 }
@@ -8309,8 +9377,8 @@ fun BridgeTunnelPanel(viewModel: TarotViewModel) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "TUNNEL CONFIGURATION",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 12.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = NeonCyan
                     )
@@ -8323,9 +9391,9 @@ fun BridgeTunnelPanel(viewModel: TarotViewModel) {
                             editingHost = it
                             viewModel.updateBridgeConfig(it, editingPort, editingType)
                         },
-                        label = { Text("Proxy Host IP", fontFamily = FontFamily.Monospace) },
+                        label = { Text("Proxy Host IP", fontFamily = RajdhaniFontFamily) },
                         singleLine = true,
-                        textStyle = TextStyle(fontFamily = FontFamily.Monospace, color = Color.White),
+                        textStyle = TextStyle(fontFamily = RajdhaniFontFamily, color = Color.White),
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -8341,9 +9409,9 @@ fun BridgeTunnelPanel(viewModel: TarotViewModel) {
                                 editingPort = it
                                 viewModel.updateBridgeConfig(editingHost, it, editingType)
                             },
-                            label = { Text("Port", fontFamily = FontFamily.Monospace) },
+                            label = { Text("Port", fontFamily = RajdhaniFontFamily) },
                             singleLine = true,
-                            textStyle = TextStyle(fontFamily = FontFamily.Monospace, color = Color.White),
+                            textStyle = TextStyle(fontFamily = RajdhaniFontFamily, color = Color.White),
                             modifier = Modifier.weight(1f)
                         )
 
@@ -8351,9 +9419,9 @@ fun BridgeTunnelPanel(viewModel: TarotViewModel) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = "PROXY TYPE",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 9.sp,
-                                color = Color.Gray,
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 14.sp,
+                                color = Color(0xFFB0B0C5),
                                 modifier = Modifier.padding(bottom = 4.dp)
                             )
                             Row(
@@ -8383,9 +9451,9 @@ fun BridgeTunnelPanel(viewModel: TarotViewModel) {
                                     ) {
                                         Text(
                                             text = pType,
-                                            fontFamily = FontFamily.Monospace,
-                                            fontSize = 11.sp,
-                                            color = if (isSel) NeonCyan else Color.Gray
+                                            fontFamily = RajdhaniFontFamily,
+                                            fontSize = 16.sp,
+                                            color = if (isSel) NeonCyan else Color(0xFFB0B0C5)
                                         )
                                     }
                                 }
@@ -8413,16 +9481,16 @@ fun BridgeTunnelPanel(viewModel: TarotViewModel) {
                         Column {
                             Text(
                                 text = "GATEWAY STATUS: $status",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 10.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = statusColor
                             )
                             Text(
                                 text = "OBFS4 Bridge connection & Tor circuitry active",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 8.sp,
-                                color = Color.Gray
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 17.sp,
+                                color = Color(0xFFB0B0C5)
                             )
                         }
                     }
@@ -8442,7 +9510,7 @@ fun BridgeTunnelPanel(viewModel: TarotViewModel) {
                             text = if (status == "TESTING") "CONNECTING CIRC... " else "ESTABLISH BRIDGE ROUTE",
                             targetTextSize = 13.sp,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -8460,8 +9528,8 @@ fun BridgeTunnelPanel(viewModel: TarotViewModel) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "TERMINAL NET-TUNNEL LOGS",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 11.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.LightGray
                     )
@@ -8479,8 +9547,8 @@ fun BridgeTunnelPanel(viewModel: TarotViewModel) {
                             items(logs) { log ->
                                 Text(
                                     text = log,
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 9.sp,
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 14.sp,
                                     color = if (log.contains("ERROR") || log.contains("failed") || log.contains("failed.")) Color.Red else if (log.contains("ONLINE") || log.contains("secured")) NeonGreen else Color.LightGray
                                 )
                             }
@@ -8524,26 +9592,26 @@ fun SecureCommsPanel(viewModel: TarotViewModel) {
                     ) {
                         Text(
                             text = selectedContact!!.name.take(1).uppercase(),
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             fontWeight = FontWeight.Bold,
                             color = NeonMagenta,
-                            fontSize = 12.sp
+                            fontSize = 16.sp
                         )
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Column {
                         Text(
                             text = selectedContact!!.name,
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             fontWeight = FontWeight.Bold,
                             color = Color.White,
-                            fontSize = 12.sp
+                            fontSize = 16.sp
                         )
                         Text(
                             text = selectedContact!!.onionAddress,
-                            fontFamily = FontFamily.Monospace,
-                            color = Color.Gray,
-                            fontSize = 8.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            color = Color(0xFFB0B0C5),
+                            fontSize = 17.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.width(180.dp)
@@ -8553,9 +9621,9 @@ fun SecureCommsPanel(viewModel: TarotViewModel) {
 
                 Text(
                     text = "CLOSE CHANNEL",
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 9.sp,
-                    color = Color.Gray,
+                    fontFamily = RajdhaniFontFamily,
+                    fontSize = 14.sp,
+                    color = Color(0xFFB0B0C5),
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.clickable { selectedContact = null }
                 )
@@ -8574,8 +9642,8 @@ fun SecureCommsPanel(viewModel: TarotViewModel) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(
                             text = "CHANNEL SECURED. AWAITING TELEMETRY HANDSHAKE...",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 9.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 14.sp,
                             color = Color.DarkGray
                         )
                     }
@@ -8609,34 +9677,34 @@ fun SecureCommsPanel(viewModel: TarotViewModel) {
                                     Column {
                                         Text(
                                             text = msg.senderName.uppercase(),
-                                            fontFamily = FontFamily.Monospace,
-                                            fontSize = 8.sp,
+                                            fontFamily = RajdhaniFontFamily,
+                                            fontSize = 17.sp,
                                             fontWeight = FontWeight.Bold,
                                             color = if (isMe) NeonCyan else NeonMagenta
                                         )
                                         Spacer(modifier = Modifier.height(2.dp))
                                         Text(
                                             text = msg.plaintext,
-                                            fontFamily = FontFamily.Monospace,
-                                            fontSize = 11.sp,
+                                            fontFamily = RajdhaniFontFamily,
+                                            fontSize = 16.sp,
                                             color = Color.White
                                         )
                                         Spacer(modifier = Modifier.height(4.dp))
-                                        Divider(color = Color.DarkGray.copy(alpha = 0.5f), thickness = 0.5.dp)
+                                        HorizontalDivider(color = Color.DarkGray.copy(alpha = 0.5f), thickness = 0.5.dp)
                                         Spacer(modifier = Modifier.height(2.dp))
                                         Text(
                                             text = "ENC_CIPHERTEXT: ${msg.ciphertext}",
-                                            fontFamily = FontFamily.Monospace,
-                                            fontSize = 7.sp,
-                                            color = Color.Gray,
+                                            fontFamily = RajdhaniFontFamily,
+                                            fontSize = 16.sp,
+                                            color = Color(0xFFB0B0C5),
                                             maxLines = 2,
                                             overflow = TextOverflow.Ellipsis
                                         )
                                         Text(
                                             text = "ALGORITHM: AES-256-ECB / PKCS5",
-                                            fontFamily = FontFamily.Monospace,
-                                            fontSize = 7.sp,
-                                            color = Color.Gray
+                                            fontFamily = RajdhaniFontFamily,
+                                            fontSize = 16.sp,
+                                            color = Color(0xFFB0B0C5)
                                         )
                                     }
                                 }
@@ -8658,9 +9726,9 @@ fun SecureCommsPanel(viewModel: TarotViewModel) {
                 OutlinedTextField(
                     value = textInput,
                     onValueChange = { textInput = it },
-                    placeholder = { Text("Send encrypted message...", fontFamily = FontFamily.Monospace, fontSize = 11.sp) },
+                    placeholder = { Text("Send encrypted message...", fontFamily = RajdhaniFontFamily, fontSize = 16.sp) },
                     singleLine = true,
-                    textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = Color.White),
+                    textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp, color = Color.White),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = NeonCyan,
                         unfocusedBorderColor = Color.DarkGray
@@ -8697,8 +9765,8 @@ fun SecureCommsPanel(viewModel: TarotViewModel) {
             ) {
                 Text(
                     text = "PEER CONTACTS",
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 12.sp,
+                    fontFamily = RajdhaniFontFamily,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
@@ -8727,16 +9795,16 @@ fun SecureCommsPanel(viewModel: TarotViewModel) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = "TERMINAL ADDRESS BOOK EMPTY",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 11.sp,
-                            color = Color.Gray,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFFB0B0C5),
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = "Add peer nodes to initiate handshakes.",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 9.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 14.sp,
                             color = Color.DarkGray
                         )
                     }
@@ -8774,7 +9842,7 @@ fun SecureCommsPanel(viewModel: TarotViewModel) {
                                     ) {
                                         Text(
                                             text = contact.name.take(1).uppercase(),
-                                            fontFamily = FontFamily.Monospace,
+                                            fontFamily = RajdhaniFontFamily,
                                             fontWeight = FontWeight.Bold,
                                             color = NeonCyan
                                         )
@@ -8783,16 +9851,16 @@ fun SecureCommsPanel(viewModel: TarotViewModel) {
                                     Column {
                                         Text(
                                             text = contact.name,
-                                            fontFamily = FontFamily.Monospace,
+                                            fontFamily = RajdhaniFontFamily,
                                             fontWeight = FontWeight.Bold,
                                             color = Color.White,
-                                            fontSize = 12.sp
+                                            fontSize = 16.sp
                                         )
                                         Text(
                                             text = "ADDR: ${contact.onionAddress}",
-                                            fontFamily = FontFamily.Monospace,
-                                            color = Color.Gray,
-                                            fontSize = 8.sp
+                                            fontFamily = RajdhaniFontFamily,
+                                            color = Color(0xFFB0B0C5),
+                                            fontSize = 17.sp
                                         )
                                     }
                                 }
@@ -8839,7 +9907,7 @@ fun SecureCommsPanel(viewModel: TarotViewModel) {
             title = {
                 Text(
                     text = "REGISTER NEW PEER NODE",
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = RajdhaniFontFamily,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = NeonCyan
@@ -8850,19 +9918,19 @@ fun SecureCommsPanel(viewModel: TarotViewModel) {
                     OutlinedTextField(
                         value = nameInput,
                         onValueChange = { nameInput = it },
-                        label = { Text("Code Name", fontFamily = FontFamily.Monospace) },
+                        label = { Text("Code Name", fontFamily = RajdhaniFontFamily) },
                         singleLine = true,
-                        textStyle = TextStyle(fontFamily = FontFamily.Monospace),
+                        textStyle = TextStyle(fontFamily = RajdhaniFontFamily),
                         modifier = Modifier.fillMaxWidth()
                     )
 
                     OutlinedTextField(
                         value = onionInput,
                         onValueChange = { onionInput = it },
-                        placeholder = { Text("e.g. jx7v9pxmno...onion", fontFamily = FontFamily.Monospace, fontSize = 11.sp) },
-                        label = { Text("Onion / Cyber Address", fontFamily = FontFamily.Monospace) },
+                        placeholder = { Text("e.g. jx7v9pxmno...onion", fontFamily = RajdhaniFontFamily, fontSize = 16.sp) },
+                        label = { Text("Onion / Cyber Address", fontFamily = RajdhaniFontFamily) },
                         singleLine = true,
-                        textStyle = TextStyle(fontFamily = FontFamily.Monospace),
+                        textStyle = TextStyle(fontFamily = RajdhaniFontFamily),
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -8876,12 +9944,12 @@ fun SecureCommsPanel(viewModel: TarotViewModel) {
                         }
                     }
                 ) {
-                    Text("REGISTER", fontFamily = FontFamily.Monospace, color = NeonCyan)
+                    Text("REGISTER", fontFamily = RajdhaniFontFamily, color = NeonCyan)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showAddContactDialog = false }) {
-                    Text("CANCEL", fontFamily = FontFamily.Monospace, color = Color.Gray)
+                    Text("CANCEL", fontFamily = RajdhaniFontFamily, color = Color(0xFFB0B0C5))
                 }
             },
             containerColor = CyberCharcoal,
@@ -8940,14 +10008,14 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                         Column {
                             Text(
                                 text = "P2P HARDWARE WALLET",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 10.sp,
-                                color = Color.Gray
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 15.sp,
+                                color = Color(0xFFB0B0C5)
                             )
                             Text(
                                 text = "${profile?.username ?: "Netrunner"}_SECURE_CHIP",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 13.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 17.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
                             )
@@ -8964,7 +10032,7 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                     }
 
                     Spacer(modifier = Modifier.height(14.dp))
-                    Divider(color = Color.DarkGray, thickness = 1.dp)
+                    HorizontalDivider(color = Color.DarkGray, thickness = 1.dp)
                     Spacer(modifier = Modifier.height(14.dp))
 
                     Row(
@@ -8974,13 +10042,13 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = "WEED BALANCE",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 9.sp,
-                                color = Color.Gray
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 14.sp,
+                                color = Color(0xFFB0B0C5)
                             )
                             Text(
                                 text = "${profile?.weed ?: 0} WEED",
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = NeonCyan
@@ -8990,13 +10058,13 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = "TAROT MODULES OWNED",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 9.sp,
-                                color = Color.Gray
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 14.sp,
+                                color = Color(0xFFB0B0C5)
                             )
                             Text(
                                 text = "${mintedCards.size} NODES",
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = NeonMagenta
@@ -9018,16 +10086,16 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "DECENTRALIZED TOKENIZED ACTIVES",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 11.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = NeonMagenta
                     )
                     Text(
                         text = "Multi-chain asset balances integrated via secure bridge protocol",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 9.sp,
-                        color = Color.Gray,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 14.sp,
+                        color = Color(0xFFB0B0C5),
                         modifier = Modifier.padding(top = 2.dp, bottom = 12.dp)
                     )
 
@@ -9071,8 +10139,8 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Text(
                                             text = token.symbol,
-                                            fontFamily = FontFamily.Monospace,
-                                            fontSize = 12.sp,
+                                            fontFamily = RajdhaniFontFamily,
+                                            fontSize = 16.sp,
                                             fontWeight = FontWeight.Bold,
                                             color = Color.White
                                         )
@@ -9080,8 +10148,8 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                                             Spacer(modifier = Modifier.width(4.dp))
                                             Text(
                                                 text = "GRAM",
-                                                fontFamily = FontFamily.Monospace,
-                                                fontSize = 7.sp,
+                                                fontFamily = RajdhaniFontFamily,
+                                                fontSize = 16.sp,
                                                 color = Color.Yellow,
                                                 modifier = Modifier
                                                     .background(Color.Yellow.copy(alpha = 0.15f), RoundedCornerShape(2.dp))
@@ -9091,9 +10159,9 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                                     }
                                     Text(
                                         text = token.name,
-                                        fontFamily = FontFamily.Monospace,
-                                        fontSize = 9.sp,
-                                        color = Color.Gray
+                                        fontFamily = RajdhaniFontFamily,
+                                        fontSize = 14.sp,
+                                        color = Color(0xFFB0B0C5)
                                     )
                                 }
                             }
@@ -9101,16 +10169,16 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                             Column(horizontalAlignment = Alignment.End) {
                                 Text(
                                     text = "${String.format("%.4f", token.balance)} ${token.symbol}",
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 12.sp,
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = token.color
                                 )
                                 Text(
                                     text = "$${String.format("%.2f", token.balance * token.priceUsd)} USD",
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 9.sp,
-                                    color = Color.Gray
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 14.sp,
+                                    color = Color(0xFFB0B0C5)
                                 )
                             }
                         }
@@ -9161,8 +10229,8 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
         item {
             Text(
                 text = "BLOCKCHAIN LEDGER EXPLORER",
-                fontFamily = FontFamily.Monospace,
-                fontSize = 11.sp,
+                fontFamily = RajdhaniFontFamily,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
                 letterSpacing = 1.sp
@@ -9181,9 +10249,9 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                 ) {
                     Text(
                         text = "AWAITING GENESIS BLOCK PROTOCOLS...",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 10.sp,
-                        color = Color.Gray
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 15.sp,
+                        color = Color(0xFFB0B0C5)
                     )
                 }
             }
@@ -9210,60 +10278,60 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                         ) {
                             Text(
                                 text = "BLOCK #${String.format("%04d", tx.blockNumber)}",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 11.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = NeonCyan
                             )
                             Text(
                                 text = "NONCE: ${tx.nonce}",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 8.sp,
-                                color = Color.Gray
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 17.sp,
+                                color = Color(0xFFB0B0C5)
                             )
                         }
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = "HASH: ${tx.blockHash}",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 8.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 17.sp,
                             color = NeonMagenta
                         )
                         Text(
                             text = "PREV: ${tx.previousHash}",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 8.sp,
-                            color = Color.Gray
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 17.sp,
+                            color = Color(0xFFB0B0C5)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Divider(color = Color.DarkGray.copy(alpha = 0.3f), thickness = 0.5.dp)
+                        HorizontalDivider(color = Color.DarkGray.copy(alpha = 0.3f), thickness = 0.5.dp)
                         Spacer(modifier = Modifier.height(8.dp))
 
                         Text(
                             text = "FROM: ${tx.senderAddress}",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 10.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 15.sp,
                             color = Color.White
                         )
                         Text(
                             text = "TO: ${tx.recipientAddress}",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 10.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 15.sp,
                             color = Color.White
                         )
                         Text(
                             text = "DATA: $payloadText",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 10.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 15.sp,
                             color = NeonGold,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(
                             text = "SIGNATURE: ${tx.signature}",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 8.sp,
-                            color = Color.Gray
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 17.sp,
+                            color = Color(0xFFB0B0C5)
                         )
                     }
                 }
@@ -9278,8 +10346,8 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
             title = {
                 Text(
                     text = "MINING TRANSACTIONS BLOCK...",
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 13.sp,
+                    fontFamily = RajdhaniFontFamily,
+                    fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
                     color = NeonCyan
                 )
@@ -9291,13 +10359,13 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                 ) {
                     Text(
                         text = "Executing cryptographical Proof-of-Work hashes sequentially. Finding SHA-256 block hash prefix matching difficulty targets...",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 9.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 14.sp,
                         color = Color.LightGray
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     LinearProgressIndicator(
-                        progress = miningProgress!!,
+                        progress = { miningProgress!! },
                         color = NeonCyan,
                         trackColor = Color.DarkGray,
                         modifier = Modifier.fillMaxWidth()
@@ -9305,9 +10373,9 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = "NONCE SCANS: ${(miningProgress!! * 100000).toInt()}/100000",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 8.sp,
-                        color = Color.Gray
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 17.sp,
+                        color = Color(0xFFB0B0C5)
                     )
                 }
             },
@@ -9326,7 +10394,7 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
             title = {
                 Text(
                     text = "BLOCK MINED & LINKED",
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = RajdhaniFontFamily,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = NeonGreen
@@ -9335,14 +10403,14 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
             text = {
                 Text(
                      text = "Proof of Work verification succeeded! The P2P ledger was successfully updated, signatures matched, and the card/Weed have been transferred on-chain.",
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 10.sp,
+                    fontFamily = RajdhaniFontFamily,
+                    fontSize = 15.sp,
                     color = Color.LightGray
                 )
             },
             confirmButton = {
                 TextButton(onClick = { viewModel.resetP2pStatus() }) {
-                    Text("OK", fontFamily = FontFamily.Monospace, color = NeonGreen)
+                    Text("OK", fontFamily = RajdhaniFontFamily, color = NeonGreen)
                 }
             },
             containerColor = CyberCharcoal
@@ -9364,7 +10432,7 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
             title = {
                 Text(
                     text = "CREATE P2P TRANSFER BLOCK",
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = RajdhaniFontFamily,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = NeonCyan
@@ -9376,9 +10444,9 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                     Column {
                         Text(
                             text = "RECIPIENT PEER NODE",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 8.sp,
-                            color = Color.Gray
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 17.sp,
+                            color = Color(0xFFB0B0C5)
                         )
                         Box(
                             modifier = Modifier
@@ -9390,9 +10458,9 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                         ) {
                             Text(
                                 text = selectedRecipient?.name ?: "SELECT PEER NODE...",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 11.sp,
-                                color = if (selectedRecipient != null) Color.White else Color.Gray
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 16.sp,
+                                color = if (selectedRecipient != null) Color.White else Color(0xFFB0B0C5)
                             )
                         }
 
@@ -9403,7 +10471,7 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                         ) {
                             contacts.forEach { contact ->
                                 DropdownMenuItem(
-                                    text = { Text(contact.name, fontFamily = FontFamily.Monospace, color = Color.White) },
+                                    text = { Text(contact.name, fontFamily = RajdhaniFontFamily, color = Color.White) },
                                     onClick = {
                                         selectedRecipient = contact
                                         dropdownExpanded = false
@@ -9417,9 +10485,9 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                     Column {
                         Text(
                             text = "ASSET CLASS TO BROADCAST",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 8.sp,
-                            color = Color.Gray
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 17.sp,
+                            color = Color(0xFFB0B0C5)
                         )
                         Row(
                             modifier = Modifier
@@ -9443,9 +10511,9 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                                 ) {
                                     Text(
                                         text = label,
-                                        fontFamily = FontFamily.Monospace,
-                                        fontSize = 10.sp,
-                                        color = if (isSel) NeonCyan else Color.Gray
+                                        fontFamily = RajdhaniFontFamily,
+                                        fontSize = 15.sp,
+                                        color = if (isSel) NeonCyan else Color(0xFFB0B0C5)
                                     )
                                 }
                             }
@@ -9457,9 +10525,9 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                         Column {
                             Text(
                                 text = "SELECT TAROT MODULE",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 8.sp,
-                                color = Color.Gray
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 17.sp,
+                                color = Color(0xFFB0B0C5)
                             )
                             Box(
                                 modifier = Modifier
@@ -9475,9 +10543,9 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                                 } ?: "SELECT OWNED NFT..."
                                 Text(
                                     text = cardName,
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 11.sp,
-                                    color = if (selectedCardToTransfer != null) Color.White else Color.Gray
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 16.sp,
+                                    color = if (selectedCardToTransfer != null) Color.White else Color(0xFFB0B0C5)
                                 )
                             }
 
@@ -9492,7 +10560,7 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                                         text = {
                                             Text(
                                                 text = "NODE #${String.format("%02d", card.cardIndex)}: ${info.name} (#${String.format("%04d", card.mintNumber)})",
-                                                fontFamily = FontFamily.Monospace,
+                                                fontFamily = RajdhaniFontFamily,
                                                 color = Color.White
                                             )
                                         },
@@ -9509,9 +10577,9 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                         OutlinedTextField(
                             value = creditsAmount,
                             onValueChange = { creditsAmount = it },
-                            label = { Text("Amount Weed", fontFamily = FontFamily.Monospace) },
+                            label = { Text("Amount Weed", fontFamily = RajdhaniFontFamily) },
                             singleLine = true,
-                            textStyle = TextStyle(fontFamily = FontFamily.Monospace),
+                            textStyle = TextStyle(fontFamily = RajdhaniFontFamily),
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
@@ -9520,11 +10588,11 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                     OutlinedTextField(
                         value = passwordInput,
                         onValueChange = { passwordInput = it },
-                        label = { Text("BIP39 Seed Phrase (Signature)", fontFamily = FontFamily.Monospace) },
-                        placeholder = { Text("Enter private keys/seed to authorize", fontFamily = FontFamily.Monospace, fontSize = 9.sp) },
+                        label = { Text("BIP39 Seed Phrase (Signature)", fontFamily = RajdhaniFontFamily) },
+                        placeholder = { Text("Enter private keys/seed to authorize", fontFamily = RajdhaniFontFamily, fontSize = 14.sp) },
                         singleLine = true,
                         visualTransformation = PasswordVisualTransformation(),
-                        textStyle = TextStyle(fontFamily = FontFamily.Monospace),
+                        textStyle = TextStyle(fontFamily = RajdhaniFontFamily),
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -9548,12 +10616,12 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                         }
                     }
                 ) {
-                    Text("SIGN & BROADCAST", fontFamily = FontFamily.Monospace, color = NeonCyan)
+                    Text("SIGN & BROADCAST", fontFamily = RajdhaniFontFamily, color = NeonCyan)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showTransferDialog = false }) {
-                    Text("CANCEL", fontFamily = FontFamily.Monospace, color = Color.Gray)
+                    Text("CANCEL", fontFamily = RajdhaniFontFamily, color = Color(0xFFB0B0C5))
                 }
             },
             containerColor = CyberCharcoal,
@@ -9579,7 +10647,7 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
         AlertDialog(
             onDismissRequest = { showDepositDialog = false },
             title = {
-                Text("BRIDGE DEPOSIT PROTOCOL", fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold, color = NeonCyan, fontSize = 16.sp)
+                Text("BRIDGE DEPOSIT PROTOCOL", fontFamily = RajdhaniFontFamily, fontWeight = FontWeight.Bold, color = NeonCyan, fontSize = 16.sp)
             },
             text = {
                 Column(
@@ -9588,13 +10656,13 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                 ) {
                     Text(
                         "Deposit external tokenized assets via decentralized smart-contract gateways.",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 10.sp,
-                        color = Color.Gray
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 15.sp,
+                        color = Color(0xFFB0B0C5)
                     )
 
                     // Asset Selector
-                    Text("SELECT TARGET ASSET:", fontFamily = FontFamily.Monospace, fontSize = 10.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                    Text("SELECT TARGET ASSET:", fontFamily = RajdhaniFontFamily, fontSize = 15.sp, color = Color.White, fontWeight = FontWeight.Bold)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -9610,7 +10678,7 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                                     .padding(vertical = 8.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(symbol, fontFamily = FontFamily.Monospace, fontSize = 9.sp, fontWeight = FontWeight.Bold, color = if (isSel) NeonCyan else Color.Gray)
+                                Text(symbol, fontFamily = RajdhaniFontFamily, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = if (isSel) NeonCyan else Color(0xFFB0B0C5))
                             }
                         }
                     }
@@ -9623,12 +10691,12 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                             .border(1.dp, Color.DarkGray, RoundedCornerShape(6.dp))
                             .padding(10.dp)
                     ) {
-                        Text("DEPOSIT ADDRESS:", fontFamily = FontFamily.Monospace, fontSize = 8.sp, color = Color.Gray)
+                        Text("DEPOSIT ADDRESS:", fontFamily = RajdhaniFontFamily, fontSize = 17.sp, color = Color(0xFFB0B0C5))
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = currentAddress,
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 9.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 14.sp,
                             color = Color.LightGray,
                             modifier = Modifier.clickable {
                                 clipboardManager.setText(androidx.compose.ui.text.AnnotatedString(currentAddress))
@@ -9673,7 +10741,7 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                     OutlinedTextField(
                         value = depositAmount,
                         onValueChange = { depositAmount = it },
-                        label = { Text("Simulate Faucet Amount", fontFamily = FontFamily.Monospace, fontSize = 10.sp) },
+                        label = { Text("Simulate Faucet Amount", fontFamily = RajdhaniFontFamily, fontSize = 15.sp) },
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.White,
@@ -9681,7 +10749,7 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                             focusedBorderColor = NeonCyan,
                             unfocusedBorderColor = Color.DarkGray
                         ),
-                        textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 11.sp),
+                        textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp),
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -9706,7 +10774,7 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
             },
             dismissButton = {
                 TextButton(onClick = { showDepositDialog = false }) {
-                    Text("CLOSE", fontFamily = FontFamily.Monospace, color = Color.Gray, fontSize = 10.sp)
+                    Text("CLOSE", fontFamily = RajdhaniFontFamily, color = Color(0xFFB0B0C5), fontSize = 15.sp)
                 }
             },
             containerColor = CyberCharcoal,
@@ -9733,7 +10801,7 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
         AlertDialog(
             onDismissRequest = { showSendDialog = false },
             title = {
-                Text("SEND TOKENIZED ASSETS", fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold, color = NeonRed, fontSize = 16.sp)
+                Text("SEND TOKENIZED ASSETS", fontFamily = RajdhaniFontFamily, fontWeight = FontWeight.Bold, color = NeonRed, fontSize = 16.sp)
             },
             text = {
                 Column(
@@ -9742,13 +10810,13 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                 ) {
                     Text(
                         "Broadcast withdrawal/transfer requests to decentralized mainnets.",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 10.sp,
-                        color = Color.Gray
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 15.sp,
+                        color = Color(0xFFB0B0C5)
                     )
 
                     // Asset Selector
-                    Text("SELECT ASSET TO SEND:", fontFamily = FontFamily.Monospace, fontSize = 10.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                    Text("SELECT ASSET TO SEND:", fontFamily = RajdhaniFontFamily, fontSize = 15.sp, color = Color.White, fontWeight = FontWeight.Bold)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -9764,19 +10832,19 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                                     .padding(vertical = 8.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(symbol, fontFamily = FontFamily.Monospace, fontSize = 9.sp, fontWeight = FontWeight.Bold, color = if (isSel) NeonRed else Color.Gray)
+                                Text(symbol, fontFamily = RajdhaniFontFamily, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = if (isSel) NeonRed else Color(0xFFB0B0C5))
                             }
                         }
                     }
 
-                    Text("AVAILABLE BALANCE: $maxBalance $selectedAsset", fontFamily = FontFamily.Monospace, fontSize = 9.sp, color = Color.Gray)
+                    Text("AVAILABLE BALANCE: $maxBalance $selectedAsset", fontFamily = RajdhaniFontFamily, fontSize = 14.sp, color = Color(0xFFB0B0C5))
 
                     // Recipient Address
                     OutlinedTextField(
                         value = recipientAddr,
                         onValueChange = { recipientAddr = it },
-                        label = { Text("Recipient Address", fontFamily = FontFamily.Monospace, fontSize = 10.sp) },
-                        placeholder = { Text("e.g. 0x... or UQ...", fontSize = 9.sp, color = Color.DarkGray) },
+                        label = { Text("Recipient Address", fontFamily = RajdhaniFontFamily, fontSize = 15.sp) },
+                        placeholder = { Text("e.g. 0x... or UQ...", fontSize = 14.sp, color = Color.DarkGray) },
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.White,
@@ -9784,7 +10852,7 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                             focusedBorderColor = NeonRed,
                             unfocusedBorderColor = Color.DarkGray
                         ),
-                        textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 11.sp),
+                        textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp),
                         modifier = Modifier.fillMaxWidth()
                     )
 
@@ -9792,7 +10860,7 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                     OutlinedTextField(
                         value = sendAmount,
                         onValueChange = { sendAmount = it },
-                        label = { Text("Amount to Transfer", fontFamily = FontFamily.Monospace, fontSize = 10.sp) },
+                        label = { Text("Amount to Transfer", fontFamily = RajdhaniFontFamily, fontSize = 15.sp) },
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.White,
@@ -9800,7 +10868,7 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                             focusedBorderColor = NeonRed,
                             unfocusedBorderColor = Color.DarkGray
                         ),
-                        textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 11.sp),
+                        textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp),
                         modifier = Modifier.fillMaxWidth()
                     )
 
@@ -9809,9 +10877,9 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                     OutlinedTextField(
                         value = pinVal,
                         onValueChange = { pinVal = it },
-                        label = { Text(if (hasPin) "Verify 8-Digit Security PIN" else "PIN Verification (Bypassable - PIN not set)", fontFamily = FontFamily.Monospace, fontSize = 10.sp) },
+                        label = { Text(if (hasPin) "Verify 8-Digit Security PIN" else "PIN Verification (Bypassable - PIN not set)", fontFamily = RajdhaniFontFamily, fontSize = 15.sp) },
                         singleLine = true,
-                        placeholder = { Text("Enter security PIN to sign tx", fontSize = 9.sp, color = Color.DarkGray) },
+                        placeholder = { Text("Enter security PIN to sign tx", fontSize = 14.sp, color = Color.DarkGray) },
                         visualTransformation = PasswordVisualTransformation(),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.White,
@@ -9819,7 +10887,7 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                             focusedBorderColor = NeonRed,
                             unfocusedBorderColor = Color.DarkGray
                         ),
-                        textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 11.sp),
+                        textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp),
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -9853,7 +10921,7 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
             },
             dismissButton = {
                 TextButton(onClick = { showSendDialog = false }) {
-                    Text("CANCEL", fontFamily = FontFamily.Monospace, color = Color.Gray, fontSize = 10.sp)
+                    Text("CANCEL", fontFamily = RajdhaniFontFamily, color = Color(0xFFB0B0C5), fontSize = 15.sp)
                 }
             },
             containerColor = CyberCharcoal,
@@ -9899,7 +10967,7 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
         AlertDialog(
             onDismissRequest = { showSwapDialog = false },
             title = {
-                Text("DEX BRIDGE SWAP PROTOCOL", fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold, color = NeonCyan, fontSize = 16.sp)
+                Text("DEX BRIDGE SWAP PROTOCOL", fontFamily = RajdhaniFontFamily, fontWeight = FontWeight.Bold, color = NeonCyan, fontSize = 16.sp)
             },
             text = {
                 Column(
@@ -9908,13 +10976,13 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                 ) {
                     Text(
                         "Swap assets in peer-to-peer liquidity pools instantly. Automated market maker quotes apply.",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 10.sp,
-                        color = Color.Gray
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 15.sp,
+                        color = Color(0xFFB0B0C5)
                     )
 
                     // FROM ASSET SELECTION
-                    Text("FROM ASSET:", fontFamily = FontFamily.Monospace, fontSize = 10.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                    Text("FROM ASSET:", fontFamily = RajdhaniFontFamily, fontSize = 15.sp, color = Color.White, fontWeight = FontWeight.Bold)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -9939,22 +11007,22 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                             ) {
                                 Text(
                                     text = if (symbol == "WEED") "WED" else symbol,
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 8.sp,
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 17.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = if (isSel) NeonCyan else Color.Gray
+                                    color = if (isSel) NeonCyan else Color(0xFFB0B0C5)
                                 )
                             }
                         }
                     }
 
-                    Text("AVAILABLE BALANCE: ${String.format("%.4f", fromBalance)} ${if (fromAsset == "WEED") "WED" else fromAsset}", fontFamily = FontFamily.Monospace, fontSize = 9.sp, color = Color.Gray)
+                    Text("AVAILABLE BALANCE: ${String.format("%.4f", fromBalance)} ${if (fromAsset == "WEED") "WED" else fromAsset}", fontFamily = RajdhaniFontFamily, fontSize = 14.sp, color = Color(0xFFB0B0C5))
 
                     // FROM AMOUNT INPUT
                     OutlinedTextField(
                         value = fromAmountInput,
                         onValueChange = { fromAmountInput = it },
-                        label = { Text("Amount to Swap", fontFamily = FontFamily.Monospace, fontSize = 10.sp) },
+                        label = { Text("Amount to Swap", fontFamily = RajdhaniFontFamily, fontSize = 15.sp) },
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.White,
@@ -9962,14 +11030,14 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                             focusedBorderColor = NeonCyan,
                             unfocusedBorderColor = Color.DarkGray
                         ),
-                        textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 11.sp),
+                        textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp),
                         modifier = Modifier.fillMaxWidth()
                     )
 
                     Spacer(modifier = Modifier.height(2.dp))
 
                     // TO ASSET SELECTION
-                    Text("TO ASSET:", fontFamily = FontFamily.Monospace, fontSize = 10.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                    Text("TO ASSET:", fontFamily = RajdhaniFontFamily, fontSize = 15.sp, color = Color.White, fontWeight = FontWeight.Bold)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -9994,10 +11062,10 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                             ) {
                                 Text(
                                     text = if (symbol == "WEED") "WED" else symbol,
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 8.sp,
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 17.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = if (isSel) NeonMagenta else Color.Gray
+                                    color = if (isSel) NeonMagenta else Color(0xFFB0B0C5)
                                 )
                             }
                         }
@@ -10011,11 +11079,11 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                             .border(1.dp, NeonMagenta.copy(alpha = 0.3f), RoundedCornerShape(6.dp))
                             .padding(10.dp)
                     ) {
-                        Text("ESTIMATED CONVERSION:", fontFamily = FontFamily.Monospace, fontSize = 8.sp, color = Color.Gray)
+                        Text("ESTIMATED CONVERSION:", fontFamily = RajdhaniFontFamily, fontSize = 17.sp, color = Color(0xFFB0B0C5))
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = "${String.format("%.6f", toAmountCalculated)} ${if (toAsset == "WEED") "WED" else toAsset}",
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
                             color = NeonMagenta
@@ -10024,8 +11092,8 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
                         val directRate = fromRate / toRate
                         Text(
                             text = "Rate: 1 ${if (fromAsset == "WEED") "WED" else fromAsset} = ${String.format("%.6f", directRate)} ${if (toAsset == "WEED") "WED" else toAsset}",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 8.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 17.sp,
                             color = Color.LightGray
                         )
                     }
@@ -10053,7 +11121,7 @@ fun P2pLedgerPanel(viewModel: TarotViewModel) {
             },
             dismissButton = {
                 TextButton(onClick = { showSwapDialog = false }) {
-                    Text("CANCEL", fontFamily = FontFamily.Monospace, color = Color.Gray, fontSize = 10.sp)
+                    Text("CANCEL", fontFamily = RajdhaniFontFamily, color = Color(0xFFB0B0C5), fontSize = 15.sp)
                 }
             },
             containerColor = CyberCharcoal,
@@ -10099,8 +11167,8 @@ fun OnChainNftPanel(viewModel: TarotViewModel) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "TESTNET SMART CONTRACT INTERFACE",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 11.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = NeonMagenta
                     )
@@ -10109,14 +11177,14 @@ fun OnChainNftPanel(viewModel: TarotViewModel) {
                     OutlinedTextField(
                         value = editingRpc,
                         onValueChange = { editingRpc = it },
-                        label = { Text("RPC Endpoint URL", fontSize = 10.sp, fontFamily = FontFamily.Monospace) },
+                        label = { Text("RPC Endpoint URL", fontSize = 15.sp, fontFamily = RajdhaniFontFamily) },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.White,
                             unfocusedTextColor = Color.White,
                             focusedBorderColor = NeonMagenta,
                             unfocusedBorderColor = Color.DarkGray
                         ),
-                        textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 11.sp),
+                        textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp),
                         modifier = Modifier.fillMaxWidth().testTag("contract_rpc_input")
                     )
 
@@ -10125,14 +11193,14 @@ fun OnChainNftPanel(viewModel: TarotViewModel) {
                     OutlinedTextField(
                         value = editingAddress,
                         onValueChange = { editingAddress = it },
-                        label = { Text("Smart Contract Address", fontSize = 10.sp, fontFamily = FontFamily.Monospace) },
+                        label = { Text("Smart Contract Address", fontSize = 15.sp, fontFamily = RajdhaniFontFamily) },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.White,
                             unfocusedTextColor = Color.White,
                             focusedBorderColor = NeonMagenta,
                             unfocusedBorderColor = Color.DarkGray
                         ),
-                        textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 11.sp),
+                        textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp),
                         modifier = Modifier.fillMaxWidth().testTag("contract_address_input")
                     )
 
@@ -10146,16 +11214,16 @@ fun OnChainNftPanel(viewModel: TarotViewModel) {
                         Column {
                             Text(
                                 text = "GAS: ${String.format("%.2f", gasPrice)} Gwei",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 10.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 15.sp,
                                 color = NeonCyan
                             )
                             contractDetails?.let {
                                 Text(
                                     text = "NET: ${it.networkName}",
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 10.sp,
-                                    color = Color.Gray
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 15.sp,
+                                    color = Color(0xFFB0B0C5)
                                 )
                             }
                         }
@@ -10190,8 +11258,8 @@ fun OnChainNftPanel(viewModel: TarotViewModel) {
                     ) {
                         Text(
                             text = "ON-CHAIN KERNEL LOGS",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 11.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
                             color = Color.LightGray
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -10204,8 +11272,8 @@ fun OnChainNftPanel(viewModel: TarotViewModel) {
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
                                 text = status,
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 10.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 15.sp,
                                 color = statusColor,
                                 fontWeight = FontWeight.Bold
                             )
@@ -10230,8 +11298,8 @@ fun OnChainNftPanel(viewModel: TarotViewModel) {
                             items(logs.reversed()) { log ->
                                 Text(
                                     text = "> $log",
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 9.sp,
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 14.sp,
                                     color = if (log.contains("ERROR")) Color.Red else if (log.contains("CONFIRMED")) NeonGreen else Color.LightGray,
                                     modifier = Modifier.padding(vertical = 1.dp)
                                 )
@@ -10246,8 +11314,8 @@ fun OnChainNftPanel(viewModel: TarotViewModel) {
         item {
             Text(
                 text = "MINTER DEPLOYMENTS (${onChainMints.size} CONTRACT TOKENS)",
-                fontFamily = FontFamily.Monospace,
-                fontSize = 12.sp,
+                fontFamily = RajdhaniFontFamily,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
                 modifier = Modifier.padding(vertical = 4.dp)
@@ -10264,8 +11332,8 @@ fun OnChainNftPanel(viewModel: TarotViewModel) {
                 ) {
                     Text(
                         text = "NO DEPLOYED NFTs YET.\nGo to SECURE DECK VAULT, select a card, and mint to chain.",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 10.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 15.sp,
                         color = Color.LightGray,
                         textAlign = TextAlign.Center
                     )
@@ -10287,16 +11355,16 @@ fun OnChainNftPanel(viewModel: TarotViewModel) {
                             Column {
                                 Text(
                                     text = "TOKEN ID: #${nft.tokenId}",
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 12.sp,
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = NeonMagenta
                                 )
                                 Text(
                                     text = "TX HASH: ${nft.txHash.take(16)}...",
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 9.sp,
-                                    color = Color.Gray
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 14.sp,
+                                    color = Color(0xFFB0B0C5)
                                 )
                             }
                             
@@ -10382,8 +11450,8 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "WEED HARVEST CORE",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 12.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = currentSkin.primaryColor
                     )
@@ -10397,15 +11465,15 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                         Column {
                             Text(
                                 text = "Current Streak Balance",
-                                fontSize = 10.sp,
-                                fontFamily = FontFamily.Monospace,
-                                color = Color.Gray
+                                fontSize = 15.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                color = Color(0xFFB0B0C5)
                             )
                             Text(
                                 text = "${profile?.weedStreak ?: 0} Consecutive Claims",
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 color = Color.White
                             )
                         }
@@ -10416,9 +11484,9 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                         ) {
                             Text(
                                 text = "Multiplier: +${profile?.weedStreak?.plus(1) ?: 1}x WEED",
-                                fontSize = 10.sp,
+                                fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 color = NeonGreen,
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                             )
@@ -10446,8 +11514,8 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = if (isClaimReady) "CORE HARVESTER ARMED" else "COOLANT FLUSH IN PROGRESS",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 10.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = if (isClaimReady) NeonGreen else NeonGold
                             )
@@ -10463,8 +11531,8 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                                 val seconds = remainingSec % 60
                                 "%02d:%02d:%02d".format(hours, minutes, seconds)
                             },
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 11.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = if (isClaimReady) NeonGreen else Color.White
                         )
@@ -10487,7 +11555,7 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                             text = "EXTRACT ACTIVITY WEED",
                             targetTextSize = 12.sp,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -10495,9 +11563,9 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = "Claim once every 6 hours. Starts at 1 WEED, increments by +1 each claim. Miss the 6h window after readiness and streak resets to 1!",
-                        fontSize = 8.sp,
-                        fontFamily = FontFamily.Monospace,
-                        color = Color.Gray,
+                        fontSize = 17.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        color = Color(0xFFB0B0C5),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -10516,8 +11584,8 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "AI TREASURER AMM SWAP & TICKERS",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 12.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = currentSkin.primaryColor
                     )
@@ -10526,9 +11594,9 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                     // Live Tickers Row
                     Text(
                         text = "AGGREGATED AVERAGES (TOP 10 EXCHANGES)",
-                        fontSize = 9.sp,
-                        fontFamily = FontFamily.Monospace,
-                        color = Color.Gray
+                        fontSize = 14.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        color = Color(0xFFB0B0C5)
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(
@@ -10561,15 +11629,15 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                                 ) {
                                     Text(
                                         text = coin,
-                                        fontSize = 8.sp,
-                                        fontFamily = FontFamily.Monospace,
+                                        fontSize = 17.sp,
+                                        fontFamily = RajdhaniFontFamily,
                                         fontWeight = FontWeight.Bold,
                                         color = if (isSelectedCoin) currentSkin.primaryColor else Color.White
                                     )
                                     Text(
                                         text = displayPrice,
-                                        fontSize = 8.sp,
-                                        fontFamily = FontFamily.Monospace,
+                                        fontSize = 17.sp,
+                                        fontFamily = RajdhaniFontFamily,
                                         color = Color.LightGray
                                     )
                                 }
@@ -10591,15 +11659,15 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                                 ) {
                                     Text(
                                         text = "$selectedTickerCoin LIVE ARBITRAGE ARRAYS",
-                                        fontSize = 9.sp,
+                                        fontSize = 14.sp,
                                         fontWeight = FontWeight.Bold,
-                                        fontFamily = FontFamily.Monospace,
+                                        fontFamily = RajdhaniFontFamily,
                                         color = currentSkin.primaryColor
                                     )
                                     Text(
                                         text = "[X] CLOSE",
-                                        fontSize = 8.sp,
-                                        fontFamily = FontFamily.Monospace,
+                                        fontSize = 17.sp,
+                                        fontFamily = RajdhaniFontFamily,
                                         color = Color.Red,
                                         modifier = Modifier.clickable { showTickersDetail = false }
                                     )
@@ -10620,14 +11688,14 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                                         ) {
                                             Text(
                                                 text = "• $ex",
-                                                fontSize = 8.sp,
-                                                fontFamily = FontFamily.Monospace,
-                                                color = Color.Gray
+                                                fontSize = 17.sp,
+                                                fontFamily = RajdhaniFontFamily,
+                                                color = Color(0xFFB0B0C5)
                                             )
                                             Text(
                                                 text = displayPrice,
-                                                fontSize = 8.sp,
-                                                fontFamily = FontFamily.Monospace,
+                                                fontSize = 17.sp,
+                                                fontFamily = RajdhaniFontFamily,
                                                 color = Color.White
                                             )
                                         }
@@ -10642,9 +11710,9 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                     // Swap Box
                     Text(
                         text = "ROUTER SWAP UTILITY (100% UNISWAP ROUTER SIM)",
-                        fontSize = 9.sp,
-                        fontFamily = FontFamily.Monospace,
-                        color = Color.Gray,
+                        fontSize = 14.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        color = Color(0xFFB0B0C5),
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
 
@@ -10657,9 +11725,9 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = "SELL ASSET",
-                                fontSize = 8.sp,
-                                fontFamily = FontFamily.Monospace,
-                                color = Color.Gray
+                                fontSize = 17.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                color = Color(0xFFB0B0C5)
                             )
                             Row(
                                 modifier = Modifier
@@ -10685,19 +11753,19 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                             ) {
                                 Text(
                                     text = swapFromAsset,
-                                    fontSize = 11.sp,
+                                    fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     color = Color.White
                                 )
-                                Text(text = "▼", fontSize = 8.sp, color = Color.Gray)
+                                Text(text = "▼", fontSize = 17.sp, color = Color(0xFFB0B0C5))
                             }
                             Spacer(modifier = Modifier.height(4.dp))
                             OutlinedTextField(
                                 value = swapAmountInput,
                                 onValueChange = { swapAmountInput = it },
                                 singleLine = true,
-                                textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = Color.White),
+                                textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp, color = Color.White),
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
@@ -10706,16 +11774,16 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                             text = "➔",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Gray
+                            color = Color(0xFFB0B0C5)
                         )
 
                         // To Asset Field
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = "RECEIVE ASSET",
-                                fontSize = 8.sp,
-                                fontFamily = FontFamily.Monospace,
-                                color = Color.Gray
+                                fontSize = 17.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                color = Color(0xFFB0B0C5)
                             )
                             Row(
                                 modifier = Modifier
@@ -10741,12 +11809,12 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                             ) {
                                 Text(
                                     text = swapToAsset,
-                                    fontSize = 11.sp,
+                                    fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     color = Color.White
                                 )
-                                Text(text = "▼", fontSize = 8.sp, color = Color.Gray)
+                                Text(text = "▼", fontSize = 17.sp, color = Color(0xFFB0B0C5))
                             }
                             Spacer(modifier = Modifier.height(4.dp))
                             Box(
@@ -10761,9 +11829,9 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                                 val outPrice = if (calculatedReceive >= 1.0) String.format("%.2f", calculatedReceive) else String.format("%.4f", calculatedReceive)
                                 Text(
                                     text = outPrice,
-                                    fontSize = 11.sp,
+                                    fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     color = NeonGreen
                                 )
                             }
@@ -10789,7 +11857,7 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                             text = "EXECUTE AUTOMATED AMM ROUTER",
                             targetTextSize = 12.sp,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -10808,8 +11876,8 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "AI TREASURER INTERNALS LEDGER",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 11.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.LightGray
                     )
@@ -10836,8 +11904,8 @@ fun WeedProtocolPanel(viewModel: TarotViewModel) {
                                 }
                                 Text(
                                     text = log,
-                                    fontSize = 8.sp,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 17.sp,
+                                    fontFamily = RajdhaniFontFamily,
                                     color = color,
                                     lineHeight = 11.sp
                                 )
@@ -10881,8 +11949,8 @@ fun NeuralAdsPanel(viewModel: TarotViewModel) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "AD-SHIELD DEFLATIONARY PROTOCOL",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 12.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = if (isAdFreeSubscribed) NeonGreen else Color.White
                     )
@@ -10896,15 +11964,15 @@ fun NeuralAdsPanel(viewModel: TarotViewModel) {
                         Column {
                             Text(
                                 text = "Status Indicator",
-                                fontSize = 9.sp,
-                                fontFamily = FontFamily.Monospace,
-                                color = Color.Gray
+                                fontSize = 14.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                color = Color(0xFFB0B0C5)
                             )
                             Text(
                                 text = if (isAdFreeSubscribed) "🛡️ ACTIVE PROTECTION LAYER" else "⚠️ UNPROTECTED TUNNELS",
-                                fontSize = 12.sp,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 color = if (isAdFreeSubscribed) NeonGreen else NeonGold
                             )
                         }
@@ -10914,9 +11982,9 @@ fun NeuralAdsPanel(viewModel: TarotViewModel) {
                             val expDate = sdf.format(Date(profile?.adFreeExpiryTime ?: 0L))
                             Text(
                                 text = "Expires: $expDate",
-                                fontSize = 8.sp,
-                                fontFamily = FontFamily.Monospace,
-                                color = Color.Gray
+                                fontSize = 17.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                color = Color(0xFFB0B0C5)
                             )
                         }
                     }
@@ -10937,16 +12005,16 @@ fun NeuralAdsPanel(viewModel: TarotViewModel) {
                             text = "BUY 30-DAY AD-SHIELD (500 WEED)",
                             targetTextSize = 11.sp,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             textAlign = TextAlign.Center
                         )
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "Ad-Shield filters all incoming sponsored broadcast cards instantly. 100% of WEED spent is BURNED by the AI Treasurer.",
-                        fontSize = 8.sp,
-                        fontFamily = FontFamily.Monospace,
-                        color = Color.Gray,
+                        fontSize = 17.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        color = Color(0xFFB0B0C5),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -10965,8 +12033,8 @@ fun NeuralAdsPanel(viewModel: TarotViewModel) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "REGISTER BROADCAST INTERNALS SLOT",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 12.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = currentSkin.primaryColor
                     )
@@ -10974,16 +12042,16 @@ fun NeuralAdsPanel(viewModel: TarotViewModel) {
 
                     Text(
                         text = "AD PROMPT (What are you advertising? AI writes it!)",
-                        fontSize = 9.sp,
-                        fontFamily = FontFamily.Monospace,
-                        color = Color.Gray
+                        fontSize = 14.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        color = Color(0xFFB0B0C5)
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     OutlinedTextField(
                         value = adPromptInput,
                         onValueChange = { adPromptInput = it },
-                        placeholder = { Text("e.g., Sell custom cyberdecks with preloaded software tunnels.", fontSize = 11.sp, color = Color.DarkGray) },
-                        textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = Color.White),
+                        placeholder = { Text("e.g., Sell custom cyberdecks with preloaded software tunnels.", fontSize = 16.sp, color = Color.DarkGray) },
+                        textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp, color = Color.White),
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(72.dp)
@@ -10994,9 +12062,9 @@ fun NeuralAdsPanel(viewModel: TarotViewModel) {
                     // Ad Theme Row Selector
                     Text(
                         text = "BROADCAST TOPIC/THEME",
-                        fontSize = 9.sp,
-                        fontFamily = FontFamily.Monospace,
-                        color = Color.Gray
+                        fontSize = 14.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        color = Color(0xFFB0B0C5)
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     
@@ -11019,9 +12087,9 @@ fun NeuralAdsPanel(viewModel: TarotViewModel) {
                             ) {
                                 Text(
                                     text = th.uppercase(),
-                                    fontSize = 8.sp,
-                                    fontFamily = FontFamily.Monospace,
-                                    color = if (isSel) currentSkin.primaryColor else Color.Gray
+                                    fontSize = 17.sp,
+                                    fontFamily = RajdhaniFontFamily,
+                                    color = if (isSel) currentSkin.primaryColor else Color(0xFFB0B0C5)
                                 )
                             }
                         }
@@ -11032,9 +12100,9 @@ fun NeuralAdsPanel(viewModel: TarotViewModel) {
                     // Color Preset Selector
                     Text(
                         text = "GLOW ACCENT COLOR PRESET",
-                        fontSize = 9.sp,
-                        fontFamily = FontFamily.Monospace,
-                        color = Color.Gray
+                        fontSize = 14.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        color = Color(0xFFB0B0C5)
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     
@@ -11085,7 +12153,7 @@ fun NeuralAdsPanel(viewModel: TarotViewModel) {
                             text = "COMPILE & BROADCAST SLOT (100 WEED)",
                             targetTextSize = 11.sp,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -11104,17 +12172,17 @@ fun NeuralAdsPanel(viewModel: TarotViewModel) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "QUEUE SEGMENT FILTERS (MINIMUM 3 ACTIVE)",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 11.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.LightGray
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "To balance decentralized broad-cast channels, you must keep at least 3 active sectors enabled at all times.",
-                        fontSize = 8.sp,
-                        fontFamily = FontFamily.Monospace,
-                        color = Color.Gray
+                        fontSize = 17.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        color = Color(0xFFB0B0C5)
                     )
                     Spacer(modifier = Modifier.height(12.dp))
 
@@ -11134,14 +12202,14 @@ fun NeuralAdsPanel(viewModel: TarotViewModel) {
                             ) {
                                 Text(
                                     text = th.uppercase(),
-                                    fontSize = 9.sp,
-                                    fontFamily = FontFamily.Monospace,
-                                    color = if (isEnabled) Color.White else Color.Gray
+                                    fontSize = 14.sp,
+                                    fontFamily = RajdhaniFontFamily,
+                                    color = if (isEnabled) Color.White else Color(0xFFB0B0C5)
                                 )
                                 Text(
                                     text = if (isEnabled) "ACTIVE (TUNNEL ON)" else "SHUTDOWN",
-                                    fontSize = 8.sp,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 17.sp,
+                                    fontFamily = RajdhaniFontFamily,
                                     color = if (isEnabled) NeonGreen else Color.Red,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -11226,8 +12294,8 @@ fun FullScreenCardReview(
                             Text(
                                 "NEURAL ANALOG REVIEW",
                                 color = NeonCyan,
-                                fontSize = 10.sp,
-                                fontFamily = FontFamily.Monospace,
+                                fontSize = 15.sp,
+                                fontFamily = RajdhaniFontFamily,
                                 fontWeight = FontWeight.Bold,
                                 letterSpacing = 1.5.sp
                             )
@@ -11235,7 +12303,7 @@ fun FullScreenCardReview(
                                 localizedName.uppercase(),
                                 color = Color.White,
                                 fontSize = 24.sp,
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -11293,36 +12361,34 @@ fun FullScreenCardReview(
                         // Card Content based on rotation
                         if (rotationState <= 90f) {
                             // FRONT SIDE
-                            Column(
-                                modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(14.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                // Top status indicators
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
+                            Box(modifier = Modifier.fillMaxSize()) {
+                                CyberRarityShaderOverlay(
+                                    rarity = mintedCard?.rarity ?: card.defaultRarity,
+                                    modifier = Modifier
+                                        .matchParentSize()
+                                        .clip(RoundedCornerShape(16.dp))
+                                )
+                                Column(
+                                    modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(14.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Text(
-                                        text = mintedCard?.rarity?.uppercase() ?: card.defaultRarity.uppercase(),
-                                        fontSize = 9.sp,
-                                        fontFamily = FontFamily.Monospace,
-                                        color = when (mintedCard?.rarity ?: card.defaultRarity) {
-                                            "Legend" -> NeonGold
-                                            "Epic" -> NeonMagenta
-                                            "Rare" -> NeonCyan
-                                            else -> NeonGreen
-                                        },
-                                        fontWeight = FontWeight.Bold
-                                    )
+                                    // Top status indicators
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        CyberRarityGlowBadge(
+                                            rarity = mintedCard?.rarity ?: card.defaultRarity
+                                        )
                                     Text(
                                         text = mintedCard?.let { "#${String.format("%04d", it.mintNumber)}" } ?: "SYS_REF",
-                                        fontSize = 9.sp,
-                                        fontFamily = FontFamily.Monospace,
-                                        color = Color.Gray
+                                        fontSize = 14.sp,
+                                        fontFamily = RajdhaniFontFamily,
+                                        color = Color(0xFFB0B0C5)
                                     )
                                 }
 
@@ -11375,14 +12441,14 @@ fun FullScreenCardReview(
                                     Text(
                                         text = localizedName.uppercase(),
                                         fontSize = 15.sp,
-                                        fontFamily = FontFamily.Monospace,
+                                        fontFamily = RajdhaniFontFamily,
                                         fontWeight = FontWeight.Bold,
                                         color = Color.White
                                     )
                                     Text(
                                         text = localizedCircuitry.uppercase(),
-                                        fontSize = 9.sp,
-                                        fontFamily = FontFamily.Monospace,
+                                        fontSize = 14.sp,
+                                        fontFamily = RajdhaniFontFamily,
                                         color = NeonCyan,
                                         modifier = Modifier.padding(top = 2.dp)
                                     )
@@ -11396,13 +12462,14 @@ fun FullScreenCardReview(
                                         Text(
                                             text = if (systemLanguage == "ru") "ТАП: ПЕРЕВЕРНУТЬ (РУБАШКА) ↻" else "TAP: FLIP TO SHIRT ↻",
                                             color = NeonCyan,
-                                            fontSize = 9.sp,
-                                            fontFamily = FontFamily.Monospace,
+                                            fontSize = 14.sp,
+                                            fontFamily = RajdhaniFontFamily,
                                             fontWeight = FontWeight.Bold
                                         )
                                     }
                                 }
                             }
+                        }
                         } else {
                             // BACK SIDE: Ornate Series-specific card back artwork
                             Box(
@@ -11441,16 +12508,16 @@ fun FullScreenCardReview(
                                                 "Seas & Oceans" -> NeonCyan
                                                 else -> NeonGreen
                                             },
-                                            fontSize = 11.sp,
-                                            fontFamily = FontFamily.Monospace,
+                                            fontSize = 16.sp,
+                                            fontFamily = RajdhaniFontFamily,
                                             fontWeight = FontWeight.Bold
                                         )
                                         Spacer(modifier = Modifier.height(2.dp))
                                         Text(
                                             text = if (systemLanguage == "ru") "3-Й ТАП: ВЕРНУТЬСЯ В ИСХОДНЫЙ ВИД ✕" else "3RD TAP: RETURN TO VIEW ✕",
                                             color = NeonGold,
-                                            fontSize = 9.sp,
-                                            fontFamily = FontFamily.Monospace,
+                                            fontSize = 14.sp,
+                                            fontFamily = RajdhaniFontFamily,
                                             fontWeight = FontWeight.Bold
                                         )
                                     }
@@ -11472,48 +12539,48 @@ fun FullScreenCardReview(
                         Column(modifier = Modifier.padding(14.dp)) {
                             Text(
                                 text = "CORE SPECIFICATION MATRIX",
-                                fontSize = 11.sp,
+                                fontSize = 16.sp,
                                 color = NeonCyan,
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.height(6.dp))
                             Text(
                                 text = localizedDesc,
-                                fontSize = 11.sp,
+                                fontSize = 16.sp,
                                 color = Color.White,
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 lineHeight = 15.sp
                             )
                             Spacer(modifier = Modifier.height(10.dp))
                             Row(modifier = Modifier.fillMaxWidth()) {
                                 Text(
                                     text = "Traditional Equiv: ",
-                                    fontSize = 10.sp,
-                                    color = Color.Gray,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 15.sp,
+                                    color = Color(0xFFB0B0C5),
+                                    fontFamily = RajdhaniFontFamily,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
                                     text = localizedTraditional,
-                                    fontSize = 10.sp,
+                                    fontSize = 15.sp,
                                     color = NeonMagenta,
-                                    fontFamily = FontFamily.Monospace
+                                    fontFamily = RajdhaniFontFamily
                                 )
                             }
                             Row(modifier = Modifier.fillMaxWidth().padding(top = 4.dp)) {
                                 Text(
                                     text = "Circuitry Bus: ",
-                                    fontSize = 10.sp,
-                                    color = Color.Gray,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 15.sp,
+                                    color = Color(0xFFB0B0C5),
+                                    fontFamily = RajdhaniFontFamily,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
                                     text = localizedCircuitry,
-                                    fontSize = 10.sp,
+                                    fontSize = 15.sp,
                                     color = NeonGreen,
-                                    fontFamily = FontFamily.Monospace
+                                    fontFamily = RajdhaniFontFamily
                                 )
                             }
                         }
@@ -11535,7 +12602,7 @@ fun FullScreenCardReview(
                                 text = "ACQUIRE NODE SYSTEM",
                                 targetTextSize = 13.sp,
                                 fontWeight = FontWeight.Bold,
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 textAlign = TextAlign.Center
                             )
                         }
@@ -11552,7 +12619,7 @@ fun FullScreenCardReview(
                                 text = "NODE SYSTEM UTILITIES",
                                 targetTextSize = 13.sp,
                                 fontWeight = FontWeight.Bold,
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 textAlign = TextAlign.Center
                             )
                         }
@@ -11608,9 +12675,9 @@ fun InteractiveCircuitRadialChart(
     ) {
         Text(
             text = title.uppercase(),
-            fontSize = 12.sp,
-            fontFamily = FontFamily.Monospace,
-            color = Color.Gray,
+            fontSize = 16.sp,
+            fontFamily = RajdhaniFontFamily,
+            color = Color(0xFFB0B0C5),
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 12.dp)
         )
@@ -11628,9 +12695,9 @@ fun InteractiveCircuitRadialChart(
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "NO TELEMETRY",
-                        fontSize = 10.sp,
-                        fontFamily = FontFamily.Monospace,
-                        color = Color.Gray,
+                        fontSize = 15.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        color = Color(0xFFB0B0C5),
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -11775,29 +12842,29 @@ fun InteractiveCircuitRadialChart(
                             text = "${((activeSlice.value / total) * 100).toInt()}%",
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             color = activeSlice.color
                         )
                         Text(
                             text = "${activeSlice.value.toInt()} UNIT" + (if (activeSlice.value == 1f) "" else "S"),
-                            fontSize = 9.sp,
-                            fontFamily = FontFamily.Monospace,
-                            color = Color.Gray,
+                            fontSize = 14.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            color = Color(0xFFB0B0C5),
                             fontWeight = FontWeight.Bold
                         )
                     } else {
                         Text(
                             text = "TOTAL",
-                            fontSize = 11.sp,
-                            fontFamily = FontFamily.Monospace,
-                            color = Color.Gray,
+                            fontSize = 16.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            color = Color(0xFFB0B0C5),
                             fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = "${total.toInt()}",
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             color = Color.White
                         )
                     }
@@ -11837,16 +12904,16 @@ fun InteractiveCircuitRadialChart(
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = slice.label.uppercase(),
-                            fontSize = 8.sp,
-                            fontFamily = FontFamily.Monospace,
-                            color = if (isSelected) Color.White else Color.Gray,
+                            fontSize = 17.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            color = if (isSelected) Color.White else Color(0xFFB0B0C5),
                             fontWeight = FontWeight.Bold,
                             maxLines = 1
                         )
                         Text(
                             text = "${slice.value.toInt()}",
-                            fontSize = 10.sp,
-                            fontFamily = FontFamily.Monospace,
+                            fontSize = 15.sp,
+                            fontFamily = RajdhaniFontFamily,
                             color = slice.color,
                             fontWeight = FontWeight.Bold
                         )
@@ -11962,8 +13029,8 @@ fun NeuralAnalyticsView(
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = "ACTIVE NET-DECK SCANNER: STATUS STABLE | METRICS SYNC ONLINE",
-                        fontSize = 9.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontSize = 14.sp,
+                        fontFamily = RajdhaniFontFamily,
                         color = Color.LightGray,
                         fontWeight = FontWeight.Bold
                     )
@@ -11994,8 +13061,8 @@ fun NeuralAnalyticsView(
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = "${slice.label} TELEMETRY",
-                                fontSize = 11.sp,
-                                fontFamily = FontFamily.Monospace,
+                                fontSize = 16.sp,
+                                fontFamily = RajdhaniFontFamily,
                                 color = slice.color,
                                 fontWeight = FontWeight.Bold
                             )
@@ -12003,17 +13070,17 @@ fun NeuralAnalyticsView(
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(
                             text = slice.description,
-                            fontSize = 11.sp,
-                            fontFamily = FontFamily.Monospace,
+                            fontSize = 16.sp,
+                            fontFamily = RajdhaniFontFamily,
                             color = Color.White,
                             lineHeight = 15.sp
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = "STATUS: Compiled | Allocated density: ${slice.value.toInt()} nodes.",
-                            fontSize = 10.sp,
-                            fontFamily = FontFamily.Monospace,
-                            color = Color.Gray
+                            fontSize = 15.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            color = Color(0xFFB0B0C5)
                         )
                     }
                 }
@@ -12043,8 +13110,8 @@ fun NeuralAnalyticsView(
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = "${slice.label} DEPLOYMENT STATS",
-                                fontSize = 11.sp,
-                                fontFamily = FontFamily.Monospace,
+                                fontSize = 16.sp,
+                                fontFamily = RajdhaniFontFamily,
                                 color = slice.color,
                                 fontWeight = FontWeight.Bold
                             )
@@ -12052,17 +13119,17 @@ fun NeuralAnalyticsView(
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(
                             text = slice.description,
-                            fontSize = 11.sp,
-                            fontFamily = FontFamily.Monospace,
+                            fontSize = 16.sp,
+                            fontFamily = RajdhaniFontFamily,
                             color = Color.White,
                             lineHeight = 15.sp
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = "COMPLIANCE LEVEL: SECURE | Listed active node exchange instances: ${slice.value.toInt()} systems.",
-                            fontSize = 10.sp,
-                            fontFamily = FontFamily.Monospace,
-                            color = Color.Gray
+                            fontSize = 15.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            color = Color(0xFFB0B0C5)
                         )
                     }
                 }
@@ -12139,31 +13206,31 @@ fun CyberAdBanner(viewModel: TarotViewModel) {
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = banner.theme.uppercase(),
-                        fontSize = 8.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontSize = 17.sp,
+                        fontFamily = RajdhaniFontFamily,
                         fontWeight = FontWeight.Bold,
                         color = try { Color(android.graphics.Color.parseColor(banner.colorHex)) } catch (e: Exception) { currentSkin.primaryColor }
                     )
                 }
                 Text(
                     text = "SPONSORED (BY ${banner.authorName.uppercase()})",
-                    fontSize = 7.sp,
-                    fontFamily = FontFamily.Monospace,
-                    color = Color.Gray
+                    fontSize = 16.sp,
+                    fontFamily = RajdhaniFontFamily,
+                    color = Color(0xFFB0B0C5)
                 )
             }
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = banner.title,
-                fontSize = 12.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = RajdhaniFontFamily,
                 color = Color.White
             )
             Text(
                 text = banner.content,
-                fontSize = 10.sp,
-                fontFamily = FontFamily.Monospace,
+                fontSize = 15.sp,
+                fontFamily = RajdhaniFontFamily,
                 color = Color.LightGray,
                 modifier = Modifier.padding(top = 2.dp)
             )
@@ -12175,15 +13242,15 @@ fun CyberAdBanner(viewModel: TarotViewModel) {
             ) {
                 Text(
                     text = "🔗 CLICK TO NEGOTIATE TERM DEALS",
-                    fontSize = 8.sp,
+                    fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = RajdhaniFontFamily,
                     color = try { Color(android.graphics.Color.parseColor(banner.colorHex)) } catch (e: Exception) { currentSkin.primaryColor }
                 )
                 Text(
                     text = "Clicks: ${banner.clicks}",
-                    fontSize = 8.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontSize = 17.sp,
+                    fontFamily = RajdhaniFontFamily,
                     color = Color.LightGray
                 )
             }
@@ -12231,16 +13298,16 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "SECURE SPACE PROVISIONING & PHYSICAL ALLOCATION",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 12.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = currentSkin.primaryColor
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = "This allocates a physical encrypted storage volume (container file) using instant space reservation. The file resides on your local device storage, operating on a torrent-like scheme for maximum autonomy and peer resilience.",
-                        fontSize = 11.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontSize = 16.sp,
+                        fontFamily = RajdhaniFontFamily,
                         color = Color.LightGray,
                         lineHeight = 15.sp
                     )
@@ -12257,9 +13324,9 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                     ) {
                         Text(
                             text = "STATUS:",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 11.sp,
-                            color = Color.Gray
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFFB0B0C5)
                         )
                         Text(
                             text = if (allocatedSize > 0) {
@@ -12267,8 +13334,8 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                             } else {
                                 "NO ACTIVE ALLOCATION"
                             },
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 12.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = if (allocatedSize > 0) NeonGreen else Color.Red
                         )
@@ -12280,18 +13347,18 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                         // Passphrase Input
                         Text(
                             text = "CONTAINER MASTER PASSPHRASE (derived via PBKDF2/SHA-256)",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 10.sp,
-                            color = Color.Gray
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 15.sp,
+                            color = Color(0xFFB0B0C5)
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         OutlinedTextField(
                             value = passphraseInput,
                             onValueChange = { passphraseInput = it },
-                            placeholder = { Text("Enter strong node security key", fontSize = 12.sp, color = Color.DarkGray) },
+                            placeholder = { Text("Enter strong node security key", fontSize = 16.sp, color = Color.DarkGray) },
                             singleLine = true,
                             visualTransformation = PasswordVisualTransformation(),
-                            textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = Color.White),
+                            textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp, color = Color.White),
                             modifier = Modifier.fillMaxWidth()
                         )
 
@@ -12304,14 +13371,14 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                         ) {
                             Text(
                                 text = "PROVISIONED CAPACITY:",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 10.sp,
-                                color = Color.Gray
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 15.sp,
+                                color = Color(0xFFB0B0C5)
                             )
                             Text(
                                 text = "${sizeSelectionGb.toInt()} GB",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 12.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = currentSkin.primaryColor
                             )
@@ -12342,8 +13409,8 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                                 Spacer(modifier = Modifier.height(6.dp))
                                 Text(
                                     text = "Reserving Disk Blocks... ${String.format("%.0f", allocationProgress * 100)}%",
-                                    fontSize = 11.sp,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 16.sp,
+                                    fontFamily = RajdhaniFontFamily,
                                     color = Color.LightGray,
                                     textAlign = TextAlign.Center,
                                     modifier = Modifier.fillMaxWidth()
@@ -12366,7 +13433,7 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                                 AutoResizingText(
                                     text = "PRE-ALLOCATE & ENCRYPT CRYPTO-VOLUME",
                                     targetTextSize = 11.sp,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     fontWeight = FontWeight.Bold,
                                     textAlign = TextAlign.Center
                                 )
@@ -12386,7 +13453,7 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                             AutoResizingText(
                                 text = "PURGE & SECURE-ERASE CONTAINER FROM DISK",
                                 targetTextSize = 11.sp,
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Center
                             )
@@ -12408,8 +13475,8 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             text = "SECURE VOLUME DECRYPTION & MOUNT ENGINE",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 12.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = if (isMounted) NeonGreen else Color.White
                         )
@@ -12433,15 +13500,15 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
                                     text = "MOUNT STATUS:",
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 11.sp,
-                                    color = Color.Gray
+                                    fontFamily = RajdhaniFontFamily,
+                                    fontSize = 16.sp,
+                                    color = Color(0xFFB0B0C5)
                                 )
                             }
                             Text(
                                 text = if (isMounted) "RAM MOUNTED (UNLOCKED)" else "LOCKED (ENCRYPTED)",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 11.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = if (isMounted) NeonGreen else Color.Red
                             )
@@ -12452,18 +13519,18 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                         if (!isMounted) {
                             Text(
                                 text = "ENTER MASTER PASSPHRASE TO MOUNT VOLUME:",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 10.sp,
-                                color = Color.Gray
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 15.sp,
+                                color = Color(0xFFB0B0C5)
                             )
                             Spacer(modifier = Modifier.height(6.dp))
                             OutlinedTextField(
                                 value = passphraseInput,
                                 onValueChange = { passphraseInput = it },
-                                placeholder = { Text("Verify passphrase", fontSize = 12.sp, color = Color.DarkGray) },
+                                placeholder = { Text("Verify passphrase", fontSize = 16.sp, color = Color.DarkGray) },
                                 singleLine = true,
                                 visualTransformation = PasswordVisualTransformation(),
-                                textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = Color.White),
+                                textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp, color = Color.White),
                                 modifier = Modifier.fillMaxWidth()
                             )
                             Spacer(modifier = Modifier.height(12.dp))
@@ -12485,7 +13552,7 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                                 AutoResizingText(
                                     text = "UNLOCK & MOUNT PARTITION",
                                     targetTextSize = 11.sp,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     fontWeight = FontWeight.Bold,
                                     textAlign = TextAlign.Center
                                 )
@@ -12502,7 +13569,7 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                                 AutoResizingText(
                                     text = "UNMOUNT & PURGE VOLATILE KEYS FROM RAM",
                                     targetTextSize = 11.sp,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     fontWeight = FontWeight.Bold,
                                     textAlign = TextAlign.Center
                                 )
@@ -12525,8 +13592,8 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             text = "SECURE BLOCK SHARD TESTING MATRIX",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 12.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = currentSkin.primaryColor
                         )
@@ -12540,9 +13607,9 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                         ) {
                             Text(
                                 text = "SELECT VIRTUAL SHARD INDEX:",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 10.sp,
-                                color = Color.Gray
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 15.sp,
+                                color = Color(0xFFB0B0C5)
                             )
                             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                 (0..4).forEach { idx ->
@@ -12559,9 +13626,9 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                                     ) {
                                         Text(
                                             text = "#$idx",
-                                            fontSize = 11.sp,
-                                            fontFamily = FontFamily.Monospace,
-                                            color = if (isSel) currentSkin.primaryColor else Color.Gray
+                                            fontSize = 16.sp,
+                                            fontFamily = RajdhaniFontFamily,
+                                            color = if (isSel) currentSkin.primaryColor else Color(0xFFB0B0C5)
                                         )
                                     }
                                 }
@@ -12572,15 +13639,15 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
 
                         Text(
                             text = "SHARD DATA CARGO:",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 10.sp,
-                            color = Color.Gray
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 15.sp,
+                            color = Color(0xFFB0B0C5)
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         OutlinedTextField(
                             value = shardPayloadInput,
                             onValueChange = { shardPayloadInput = it },
-                            textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = Color.White),
+                            textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp, color = Color.White),
                             modifier = Modifier.fillMaxWidth()
                         )
 
@@ -12601,7 +13668,7 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                                 AutoResizingText(
                                     text = "WRITE SHARD",
                                     targetTextSize = 11.sp,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     fontWeight = FontWeight.Bold,
                                     textAlign = TextAlign.Center
                                 )
@@ -12621,7 +13688,7 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                                 AutoResizingText(
                                     text = "READ SHARD",
                                     targetTextSize = 11.sp,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = RajdhaniFontFamily,
                                     fontWeight = FontWeight.Bold,
                                     textAlign = TextAlign.Center
                                 )
@@ -12640,15 +13707,15 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                                 Column {
                                     Text(
                                         text = "DECRYPTED SHARD #$selectedShardIndex:",
-                                        fontSize = 10.sp,
-                                        fontFamily = FontFamily.Monospace,
-                                        color = Color.Gray
+                                        fontSize = 15.sp,
+                                        fontFamily = RajdhaniFontFamily,
+                                        color = Color(0xFFB0B0C5)
                                     )
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Text(
                                         text = output,
-                                        fontSize = 12.sp,
-                                        fontFamily = FontFamily.Monospace,
+                                        fontSize = 16.sp,
+                                        fontFamily = RajdhaniFontFamily,
                                         color = NeonGreen
                                     )
                                 }
@@ -12671,16 +13738,16 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "SUB-ZERO NODE STAKING & UPTIME INSURANCE",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 12.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = currentSkin.primaryColor
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = "Operating a node is a critical network privilege. It requires locking (freezing) WEED tokens in a dedicated node escrow. Higher stake levels unlock advanced server roles and boost your global network priority ranking.",
-                        fontSize = 11.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontSize = 16.sp,
+                        fontFamily = RajdhaniFontFamily,
                         color = Color.LightGray,
                         lineHeight = 15.sp
                     )
@@ -12696,9 +13763,9 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                             modifier = Modifier.weight(1f)
                         ) {
                             Column(modifier = Modifier.padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("WALLET BALANCE", fontSize = 10.sp, fontFamily = FontFamily.Monospace, color = Color.Gray)
+                                Text("WALLET BALANCE", fontSize = 15.sp, fontFamily = RajdhaniFontFamily, color = Color(0xFFB0B0C5))
                                 Spacer(modifier = Modifier.height(4.dp))
-                                Text("${userP.weed} WEED", fontSize = 14.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace, color = Color.White)
+                                Text("${userP.weed} WEED", fontSize = 14.sp, fontWeight = FontWeight.Bold, fontFamily = RajdhaniFontFamily, color = Color.White)
                             }
                         }
                         Card(
@@ -12707,9 +13774,9 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                             modifier = Modifier.weight(1f)
                         ) {
                             Column(modifier = Modifier.padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("STAKED NODE ESCROW", fontSize = 10.sp, fontFamily = FontFamily.Monospace, color = currentSkin.primaryColor)
+                                Text("STAKED NODE ESCROW", fontSize = 15.sp, fontFamily = RajdhaniFontFamily, color = currentSkin.primaryColor)
                                 Spacer(modifier = Modifier.height(4.dp))
-                                Text("${userP.nodeStake} WEED", fontSize = 14.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace, color = NeonGreen)
+                                Text("${userP.nodeStake} WEED", fontSize = 14.sp, fontWeight = FontWeight.Bold, fontFamily = RajdhaniFontFamily, color = NeonGreen)
                             }
                         }
                     }
@@ -12725,20 +13792,20 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                     ) {
                         Text(
                             text = "PRIVILEGE ESCROW LEVELS:",
-                            fontSize = 10.sp,
+                            fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace,
-                            color = Color.Gray
+                            fontFamily = RajdhaniFontFamily,
+                            color = Color(0xFFB0B0C5)
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                            Text("STORAGE: 100 WEED", fontSize = 11.sp, fontFamily = FontFamily.Monospace, color = if (userP.nodeStake >= 100) NeonGreen else Color.LightGray)
-                            Text("RELAY: 250 WEED", fontSize = 11.sp, fontFamily = FontFamily.Monospace, color = if (userP.nodeStake >= 250) NeonGreen else Color.LightGray)
+                            Text("STORAGE: 100 WEED", fontSize = 16.sp, fontFamily = RajdhaniFontFamily, color = if (userP.nodeStake >= 100) NeonGreen else Color.LightGray)
+                            Text("RELAY: 250 WEED", fontSize = 16.sp, fontFamily = RajdhaniFontFamily, color = if (userP.nodeStake >= 250) NeonGreen else Color.LightGray)
                         }
                         Spacer(modifier = Modifier.height(4.dp))
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                            Text("VALIDATOR: 500 WEED", fontSize = 11.sp, fontFamily = FontFamily.Monospace, color = if (userP.nodeStake >= 500) NeonGreen else Color.LightGray)
-                            Text("ORACLE: 1000 WEED", fontSize = 11.sp, fontFamily = FontFamily.Monospace, color = if (userP.nodeStake >= 1000) NeonGreen else Color.LightGray)
+                            Text("VALIDATOR: 500 WEED", fontSize = 16.sp, fontFamily = RajdhaniFontFamily, color = if (userP.nodeStake >= 500) NeonGreen else Color.LightGray)
+                            Text("ORACLE: 1000 WEED", fontSize = 16.sp, fontFamily = RajdhaniFontFamily, color = if (userP.nodeStake >= 1000) NeonGreen else Color.LightGray)
                         }
                     }
 
@@ -12753,9 +13820,9 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                         OutlinedTextField(
                             value = stakeInputText,
                             onValueChange = { stakeInputText = it },
-                            label = { Text("Weed Amount", fontSize = 11.sp, color = Color.Gray) },
+                            label = { Text("Weed Amount", fontSize = 16.sp, color = Color(0xFFB0B0C5)) },
                             singleLine = true,
-                            textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = Color.White),
+                            textStyle = TextStyle(fontFamily = RajdhaniFontFamily, fontSize = 16.sp, color = Color.White),
                             modifier = Modifier.weight(1f)
                         )
                         CyberButton(
@@ -12767,7 +13834,7 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier.height(48.dp)
                         ) {
-                            AutoResizingText("STAKE", targetTextSize = 11.sp, fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                            AutoResizingText("STAKE", targetTextSize = 11.sp, fontFamily = RajdhaniFontFamily, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
                         }
                         CyberButton(
                             onClick = {
@@ -12780,7 +13847,7 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier.height(48.dp)
                         ) {
-                            AutoResizingText("UNSTAKE", targetTextSize = 11.sp, fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                            AutoResizingText("UNSTAKE", targetTextSize = 11.sp, fontFamily = RajdhaniFontFamily, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
                         }
                     }
 
@@ -12796,14 +13863,14 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            Text("NODE LIVE UPTIME", fontSize = 10.sp, fontFamily = FontFamily.Monospace, color = Color.Gray)
+                            Text("NODE LIVE UPTIME", fontSize = 15.sp, fontFamily = RajdhaniFontFamily, color = Color(0xFFB0B0C5))
                             Spacer(modifier = Modifier.height(2.dp))
-                            Text("${userP.nodeUptimeMinutes} mins", fontSize = 13.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace, color = NeonGreen)
+                            Text("${userP.nodeUptimeMinutes} mins", fontSize = 17.sp, fontWeight = FontWeight.Bold, fontFamily = RajdhaniFontFamily, color = NeonGreen)
                         }
                         Column(horizontalAlignment = Alignment.End) {
-                            Text("OFFLINE PENALTY ENGINE", fontSize = 10.sp, fontFamily = FontFamily.Monospace, color = Color.Red)
+                            Text("OFFLINE PENALTY ENGINE", fontSize = 15.sp, fontFamily = RajdhaniFontFamily, color = Color.Red)
                             Spacer(modifier = Modifier.height(2.dp))
-                            Text("50% Slashed if Offline >15m", fontSize = 11.sp, fontFamily = FontFamily.Monospace, color = Color.LightGray)
+                            Text("50% Slashed if Offline >15m", fontSize = 16.sp, fontFamily = RajdhaniFontFamily, color = Color.LightGray)
                         }
                     }
 
@@ -12817,7 +13884,7 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier.fillMaxWidth().height(44.dp)
                     ) {
-                        AutoResizingText("SIMULATE 15-MINUTE OUTAGE (PENALTY SLASH TEST)", targetTextSize = 10.sp, fontFamily = FontFamily.Monospace, color = Color.Red, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                        AutoResizingText("SIMULATE 15-MINUTE OUTAGE (PENALTY SLASH TEST)", targetTextSize = 10.sp, fontFamily = RajdhaniFontFamily, color = Color.Red, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
                     }
                 }
             }
@@ -12835,16 +13902,16 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "DECENTRALIZED TRANSIT CHANNEL BANDWIDTH",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 12.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = if (userP.nodeBandwidthMbps >= 3.0) NeonCyan else Color.Red
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = "Nodes must maintain a minimum transit channel speed of 3.0 Mbps to assist global routing maps. Nodes falling below this threshold are temporarily isolated from public rating leaderboards, remaining reserved exclusively for private personal projects.",
-                        fontSize = 11.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontSize = 16.sp,
+                        fontFamily = RajdhaniFontFamily,
                         color = Color.LightGray,
                         lineHeight = 15.sp
                     )
@@ -12860,18 +13927,18 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            Text("MEASURED TRANSIT SPEED", fontSize = 10.sp, fontFamily = FontFamily.Monospace, color = Color.Gray)
+                            Text("MEASURED TRANSIT SPEED", fontSize = 15.sp, fontFamily = RajdhaniFontFamily, color = Color(0xFFB0B0C5))
                             Spacer(modifier = Modifier.height(2.dp))
-                            Text("${String.format("%.2f", userP.nodeBandwidthMbps)} Mbps", fontSize = 14.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace, color = if (userP.nodeBandwidthMbps >= 3.0) NeonGreen else Color.Red)
+                            Text("${String.format("%.2f", userP.nodeBandwidthMbps)} Mbps", fontSize = 14.sp, fontWeight = FontWeight.Bold, fontFamily = RajdhaniFontFamily, color = if (userP.nodeBandwidthMbps >= 3.0) NeonGreen else Color.Red)
                         }
                         Column(horizontalAlignment = Alignment.End) {
-                            Text("ROUTING PROTOCOL STATE", fontSize = 10.sp, fontFamily = FontFamily.Monospace, color = Color.Gray)
+                            Text("ROUTING PROTOCOL STATE", fontSize = 15.sp, fontFamily = RajdhaniFontFamily, color = Color(0xFFB0B0C5))
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
                                 text = if (userP.nodeBandwidthMbps >= 3.0) "🟢 ELIGIBLE" else "⚠️ LOCAL ONLY",
-                                fontSize = 11.sp,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = RajdhaniFontFamily,
                                 color = if (userP.nodeBandwidthMbps >= 3.0) NeonGreen else Color.Yellow
                             )
                         }
@@ -12883,7 +13950,7 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                             CircularProgressIndicator(color = NeonCyan, modifier = Modifier.size(28.dp))
                             Spacer(modifier = Modifier.height(8.dp))
-                            Text("Testing network transit speed... Please stand by.", fontSize = 11.sp, fontFamily = FontFamily.Monospace, color = Color.LightGray)
+                            Text("Testing network transit speed... Please stand by.", fontSize = 16.sp, fontFamily = RajdhaniFontFamily, color = Color.LightGray)
                         }
                     } else {
                         CyberButton(
@@ -12894,7 +13961,7 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier.fillMaxWidth().height(48.dp)
                         ) {
-                            AutoResizingText("RUN CHANNEL BANDWIDTH SPEED TEST", targetTextSize = 11.sp, fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                            AutoResizingText("RUN CHANNEL BANDWIDTH SPEED TEST", targetTextSize = 11.sp, fontFamily = RajdhaniFontFamily, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
                         }
                     }
                 }
@@ -12917,8 +13984,8 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                     ) {
                         Text(
                             text = "DECENTRAL SWARM P2P NETWORK COORDINATOR",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 12.sp,
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = if (nodeActive) NeonCyan else Color.White
                         )
@@ -12931,8 +13998,8 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = "Configures local discovery, routing, and transit protocols. Zero external tracking. Uses UDP local socket broadcasts to exchange network maps directly between devices.",
-                        fontSize = 11.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontSize = 16.sp,
+                        fontFamily = RajdhaniFontFamily,
                         color = Color.LightGray,
                         lineHeight = 15.sp
                     )
@@ -12941,9 +14008,9 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                     // Node Role Selector
                     Text(
                         text = "SELECT SWARM OPERATIONAL MODE / ROLE LEVEL:",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 10.sp,
-                        color = Color.Gray
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 15.sp,
+                        color = Color(0xFFB0B0C5)
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     
@@ -12968,9 +14035,9 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                             ) {
                                 Text(
                                     text = r.uppercase(),
-                                    fontSize = 11.sp,
-                                    fontFamily = FontFamily.Monospace,
-                                    color = if (isSel) NeonCyan else Color.Gray,
+                                    fontSize = 16.sp,
+                                    fontFamily = RajdhaniFontFamily,
+                                    color = if (isSel) NeonCyan else Color(0xFFB0B0C5),
                                     fontWeight = if (isSel) FontWeight.Bold else FontWeight.Normal
                                 )
                             }
@@ -12992,15 +14059,15 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                         Column {
                             Text(
                                 text = "SWARM NODE PROTOCOL:",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 10.sp,
-                                color = Color.Gray
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 15.sp,
+                                color = Color(0xFFB0B0C5)
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
                                 text = if (nodeActive) "UDP BROADCASTER ONLINE" else "OFFLINE",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 12.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = if (nodeActive) NeonCyan else Color.Red
                             )
@@ -13024,18 +14091,18 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                         Spacer(modifier = Modifier.height(14.dp))
                         Text(
                             text = "DISCOVERED SWARM NEIGHBORS (PEERS ON SUBNET):",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 10.sp,
-                            color = Color.Gray
+                            fontFamily = RajdhaniFontFamily,
+                            fontSize = 15.sp,
+                            color = Color(0xFFB0B0C5)
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         
                         if (peers.isEmpty()) {
                             Text(
                                 text = "Scanning local subnet... UDP Port 9944 broadcast active. Ensure other nodes are running on the network.",
-                                fontSize = 11.sp,
-                                fontFamily = FontFamily.Monospace,
-                                color = Color.Gray,
+                                fontSize = 16.sp,
+                                fontFamily = RajdhaniFontFamily,
+                                color = Color(0xFFB0B0C5),
                                 modifier = Modifier.padding(vertical = 4.dp)
                             )
                         } else {
@@ -13053,17 +14120,17 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                                         Column(modifier = Modifier.weight(1f)) {
                                             Text(
                                                 text = "${peer.id} (${peer.ip})",
-                                                fontSize = 11.sp,
+                                                fontSize = 16.sp,
                                                 fontWeight = FontWeight.Bold,
-                                                fontFamily = FontFamily.Monospace,
+                                                fontFamily = RajdhaniFontFamily,
                                                 color = Color.White
                                             )
                                             Spacer(modifier = Modifier.height(2.dp))
                                             Text(
                                                 text = "Role: ${peer.role} | Cap: ${peer.allocatedGb} GB",
-                                                fontSize = 10.sp,
-                                                fontFamily = FontFamily.Monospace,
-                                                color = Color.Gray
+                                                fontSize = 15.sp,
+                                                fontFamily = RajdhaniFontFamily,
+                                                color = Color(0xFFB0B0C5)
                                             )
                                             Spacer(modifier = Modifier.height(6.dp))
                                             CyberButton(
@@ -13082,7 +14149,7 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                                                 AutoResizingText(
                                                     text = "STREAM SHARD #$selectedShardIndex",
                                                     targetTextSize = 9.sp,
-                                                    fontFamily = FontFamily.Monospace,
+                                                    fontFamily = RajdhaniFontFamily,
                                                     fontWeight = FontWeight.Bold,
                                                     textAlign = TextAlign.Center
                                                 )
@@ -13094,9 +14161,9 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                                         ) {
                                             Text(
                                                 text = peer.status,
-                                                fontSize = 10.sp,
+                                                fontSize = 15.sp,
                                                 fontWeight = FontWeight.Bold,
-                                                fontFamily = FontFamily.Monospace,
+                                                fontFamily = RajdhaniFontFamily,
                                                 color = NeonGreen,
                                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                                             )
@@ -13111,9 +14178,9 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                     Spacer(modifier = Modifier.height(14.dp))
                     Text(
                         text = "NODE REAL-TIME SIGNAL STREAM:",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 10.sp,
-                        color = Color.Gray
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 15.sp,
+                        color = Color(0xFFB0B0C5)
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Box(
@@ -13131,8 +14198,8 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                             items(logs) { log ->
                                 Text(
                                     text = log,
-                                    fontSize = 10.sp,
-                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 15.sp,
+                                    fontFamily = RajdhaniFontFamily,
                                     color = if (log.contains("Critical") || log.contains("Error")) Color.Red else if (log.contains("📡") || log.contains("SWARM")) NeonCyan else Color.LightGray,
                                     lineHeight = 13.sp
                                 )
@@ -13154,16 +14221,16 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "GLOBAL DECENTRALIZED CLUSTER RANKINGS",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 12.sp,
+                        fontFamily = RajdhaniFontFamily,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = "Real-time ranking of active nodes on the Sub-Zero swarm. Rank index is determined primarily by locked WEED escrow stake, rewarding high-fidelity uptime and commitment to the collective storage grid.",
-                        fontSize = 11.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontSize = 16.sp,
+                        fontFamily = RajdhaniFontFamily,
                         color = Color.LightGray,
                         lineHeight = 15.sp
                     )
@@ -13191,42 +14258,42 @@ fun SwarmStoragePanel(viewModel: TarotViewModel) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
                                         text = "#${idx + 1}",
-                                        fontSize = 12.sp,
-                                        fontFamily = FontFamily.Monospace,
+                                        fontSize = 16.sp,
+                                        fontFamily = RajdhaniFontFamily,
                                         fontWeight = FontWeight.Bold,
-                                        color = if (isUser) NeonCyan else Color.Gray,
+                                        color = if (isUser) NeonCyan else Color(0xFFB0B0C5),
                                         modifier = Modifier.width(32.dp)
                                     )
                                     Column {
                                         Text(
                                             text = rankNode.name,
-                                            fontSize = 11.sp,
+                                            fontSize = 16.sp,
                                             fontWeight = FontWeight.Bold,
-                                            fontFamily = FontFamily.Monospace,
+                                            fontFamily = RajdhaniFontFamily,
                                             color = if (isUser) NeonCyan else Color.White
                                         )
                                         Spacer(modifier = Modifier.height(2.dp))
                                         Text(
                                             text = "Role: ${rankNode.role} | Bandwidth: ${String.format("%.1f", rankNode.speedMbps)} Mbps",
-                                            fontSize = 10.sp,
-                                            fontFamily = FontFamily.Monospace,
-                                            color = Color.Gray
+                                            fontSize = 15.sp,
+                                            fontFamily = RajdhaniFontFamily,
+                                            color = Color(0xFFB0B0C5)
                                         )
                                     }
                                 }
                                 Column(horizontalAlignment = Alignment.End) {
                                     Text(
                                         text = "${rankNode.stake} STAKED",
-                                        fontSize = 11.sp,
-                                        fontFamily = FontFamily.Monospace,
+                                        fontSize = 16.sp,
+                                        fontFamily = RajdhaniFontFamily,
                                         fontWeight = FontWeight.Bold,
                                         color = NeonGreen
                                     )
                                     Spacer(modifier = Modifier.height(2.dp))
                                     Text(
                                         text = rankNode.status,
-                                        fontSize = 10.sp,
-                                        fontFamily = FontFamily.Monospace,
+                                        fontSize = 15.sp,
+                                        fontFamily = RajdhaniFontFamily,
                                         color = if (rankNode.status == "ONLINE") NeonGreen else if (rankNode.status == "LOW_SPEED") Color.Yellow else Color.Red
                                     )
                                 }
@@ -13346,12 +14413,14 @@ fun MarijuanaLeaf(
 @Composable
 fun VanGoghGanjaBackground(
     skin: CyberSkin,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    overrideBgResId: Int? = null
 ) {
+    val bgRes = overrideBgResId ?: skin.backgroundResId
     Box(modifier = modifier) {
         // Draw the authentic, colorful, and glowing cyberpunk-fantasy illustration background
         Image(
-            painter = painterResource(id = skin.backgroundResId),
+            painter = painterResource(id = bgRes),
             contentDescription = "Cyber Fantasy ${skin.displayName} background",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
@@ -13536,7 +14605,7 @@ fun BlessingQuestsHubDialog(
                         fontSize = 16.sp,
                         color = NeonCyan,
                         fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.Monospace
+                        fontFamily = RajdhaniFontFamily
                     )
                     IconButton(onClick = onDismiss) {
                         Icon(imageVector = Icons.Default.Close, contentDescription = "Close", tint = Color.Gray)
@@ -13554,16 +14623,16 @@ fun BlessingQuestsHubDialog(
                 ) {
                     Text(
                         text = if (lang == "ru") "Текущий баланс:" else "Current Balance:",
-                        fontSize = 12.sp,
+                        fontSize = 16.sp,
                         color = Color.LightGray,
-                        fontFamily = FontFamily.Monospace
+                        fontFamily = RajdhaniFontFamily
                     )
                     Text(
                         text = "${profile?.weed ?: 0} WEED",
                         fontSize = 14.sp,
                         color = NeonGreen,
                         fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.Monospace
+                        fontFamily = RajdhaniFontFamily
                     )
                 }
 
@@ -13583,9 +14652,9 @@ fun BlessingQuestsHubDialog(
                     ) {
                         Text(
                             text = if (lang == "ru") "Daily Квесты" else "Daily Quests",
-                            fontSize = 12.sp,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace
+                            fontFamily = RajdhaniFontFamily
                         )
                     }
                     CyberButton(
@@ -13597,9 +14666,9 @@ fun BlessingQuestsHubDialog(
                     ) {
                         Text(
                             text = if (lang == "ru") "Дары и Бусты" else "Blessings & Tips",
-                            fontSize = 12.sp,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace
+                            fontFamily = RajdhaniFontFamily
                         )
                     }
                 }
@@ -13617,8 +14686,8 @@ fun BlessingQuestsHubDialog(
                             item {
                                 Text(
                                     text = if (lang == "ru") "Выполняйте задания для получения свободных кредитов:" else "Complete cyber tasks to harvest free WEED credits:",
-                                    fontSize = 11.sp,
-                                    color = Color.Gray,
+                                    fontSize = 16.sp,
+                                    color = Color(0xFFB0B0C5),
                                     modifier = Modifier.padding(bottom = 8.dp)
                                 )
                             }
@@ -13669,9 +14738,9 @@ fun BlessingQuestsHubDialog(
                                 ) {
                                     Text(
                                         text = if (lang == "ru") "🔄 СБРОСИТЬ КВЕСТЫ (ДЕБАГ)" else "🔄 RESET QUESTS (DEBUG)",
-                                        fontSize = 11.sp,
+                                        fontSize = 16.sp,
                                         fontWeight = FontWeight.Bold,
-                                        fontFamily = FontFamily.Monospace,
+                                        fontFamily = RajdhaniFontFamily,
                                         color = Color.White
                                     )
                                 }
@@ -13686,10 +14755,10 @@ fun BlessingQuestsHubDialog(
                             item {
                                 Text(
                                     text = if (lang == "ru") "ПОЖЕРТВОВАНИЯ КРЕДИТОВ (ВЫГОДНЫЕ БУСТЫ)" else "CREDIT BLESSINGS (IN-GAME BUFFS)",
-                                    fontSize = 12.sp,
+                                    fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = NeonMagenta,
-                                    fontFamily = FontFamily.Monospace
+                                    fontFamily = RajdhaniFontFamily
                                 )
                             }
 
@@ -13731,19 +14800,19 @@ fun BlessingQuestsHubDialog(
 
                             item {
                                 Spacer(modifier = Modifier.height(8.dp))
-                                androidx.compose.material3.Divider(color = Color.Gray.copy(alpha = 0.2f))
+                                androidx.compose.material3.HorizontalDivider(color = Color(0xFFB0B0C5).copy(alpha = 0.2f))
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
                                     text = if (lang == "ru") "МИКРОТРАНЗАКЦИИ СВЯЗИ (МАССОВАЯ МОНЕТИЗАЦИЯ)" else "MATRIX GATEWAY MICRO-DONATIONS (MONETIZATION)",
-                                    fontSize = 12.sp,
+                                    fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = NeonCyan,
-                                    fontFamily = FontFamily.Monospace
+                                    fontFamily = RajdhaniFontFamily
                                 )
                                 Text(
                                     text = if (lang == "ru") "Реалистичная симуляция платежного шлюза. Дешево, доступно, надежно." else "Simulated secure credit micro-payments. Ultra cheap, mass adoption model.",
-                                    fontSize = 11.sp,
-                                    color = Color.Gray,
+                                    fontSize = 16.sp,
+                                    color = Color(0xFFB0B0C5),
                                     modifier = Modifier.padding(vertical = 4.dp)
                                 )
                             }
@@ -13849,32 +14918,32 @@ fun QuestItemRow(
                 Icon(
                     imageVector = if (isCompleted) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
                     contentDescription = null,
-                    tint = if (isCompleted) NeonGreen else Color.Gray,
+                    tint = if (isCompleted) NeonGreen else Color(0xFFB0B0C5),
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     text = title,
-                    fontSize = 13.sp,
+                    fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
-                    fontFamily = FontFamily.Monospace
+                    fontFamily = RajdhaniFontFamily
                 )
             }
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = desc,
-                fontSize = 10.sp,
+                fontSize = 15.sp,
                 color = Color.LightGray,
-                fontFamily = FontFamily.Monospace
+                fontFamily = RajdhaniFontFamily
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "🎁 +$reward WEED",
-                fontSize = 11.sp,
+                fontSize = 16.sp,
                 color = NeonGreen,
                 fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Monospace
+                fontFamily = RajdhaniFontFamily
             )
         }
 
@@ -13883,10 +14952,10 @@ fun QuestItemRow(
         if (isClaimed) {
             Text(
                 text = if (lang == "ru") "ПОЛУЧЕНО" else "CLAIMED",
-                fontSize = 11.sp,
-                color = Color.Gray,
+                fontSize = 16.sp,
+                color = Color(0xFFB0B0C5),
                 fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = RajdhaniFontFamily,
                 modifier = Modifier
                     .background(Color(0x10FFFFFF), RoundedCornerShape(8.dp))
                     .padding(horizontal = 8.dp, vertical = 6.dp)
@@ -13901,18 +14970,18 @@ fun QuestItemRow(
             ) {
                 Text(
                     text = if (lang == "ru") "ЗАБРАТЬ" else "CLAIM",
-                    fontSize = 11.sp,
+                    fontSize = 16.sp,
                     color = CyberObsidian,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Monospace
+                    fontFamily = RajdhaniFontFamily
                 )
             }
         } else {
             Text(
                 text = if (lang == "ru") "В ПРОЦЕССЕ" else "IN PROGRESS",
-                fontSize = 10.sp,
-                color = Color.Gray,
-                fontFamily = FontFamily.Monospace,
+                fontSize = 15.sp,
+                color = Color(0xFFB0B0C5),
+                fontFamily = RajdhaniFontFamily,
                 modifier = Modifier
                     .background(Color(0x05FFFFFF), RoundedCornerShape(8.dp))
                     .padding(horizontal = 8.dp, vertical = 6.dp)
@@ -13942,17 +15011,17 @@ fun BlessingItemRow(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
-                fontSize = 13.sp,
+                fontSize = 17.sp,
                 fontWeight = FontWeight.Bold,
                 color = if (isActive) NeonMagenta else Color.White,
-                fontFamily = FontFamily.Monospace
+                fontFamily = RajdhaniFontFamily
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = desc,
-                fontSize = 10.sp,
+                fontSize = 15.sp,
                 color = Color.LightGray,
-                fontFamily = FontFamily.Monospace
+                fontFamily = RajdhaniFontFamily
             )
         }
 
@@ -13961,10 +15030,10 @@ fun BlessingItemRow(
         if (isActive) {
             Text(
                 text = if (lang == "ru") "АКТИВНО" else "ACTIVE",
-                fontSize = 11.sp,
+                fontSize = 16.sp,
                 color = NeonMagenta,
                 fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = RajdhaniFontFamily,
                 modifier = Modifier
                     .background(NeonMagenta.copy(alpha = 0.15f), RoundedCornerShape(8.dp))
                     .padding(horizontal = 8.dp, vertical = 6.dp)
@@ -13979,10 +15048,10 @@ fun BlessingItemRow(
             ) {
                 Text(
                     text = costText,
-                    fontSize = 11.sp,
+                    fontSize = 16.sp,
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Monospace
+                    fontFamily = RajdhaniFontFamily
                 )
             }
         }
@@ -14014,27 +15083,27 @@ fun MicroPayCard(
         ) {
             Text(
                 text = title,
-                fontSize = 11.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.LightGray,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = RajdhaniFontFamily,
                 textAlign = TextAlign.Center
             )
             Text(
                 text = reward,
-                fontSize = 10.sp,
+                fontSize = 15.sp,
                 color = NeonGreen,
                 fontWeight = FontWeight.SemiBold,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = RajdhaniFontFamily,
                 textAlign = TextAlign.Center,
                 lineHeight = 12.sp
             )
             Text(
                 text = price,
-                fontSize = 13.sp,
+                fontSize = 17.sp,
                 color = CyberObsidian,
                 fontWeight = FontWeight.Black,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = RajdhaniFontFamily,
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(NeonCyan, RoundedCornerShape(6.dp))
@@ -14077,10 +15146,10 @@ fun SimulatedCheckoutSheet(
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = NeonCyan,
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = RajdhaniFontFamily,
                         modifier = Modifier.padding(bottom = 12.dp)
                     )
-                    androidx.compose.material3.Divider(color = Color.Gray.copy(alpha = 0.2f))
+                    androidx.compose.material3.HorizontalDivider(color = Color(0xFFB0B0C5).copy(alpha = 0.2f))
                     Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
@@ -14088,14 +15157,14 @@ fun SimulatedCheckoutSheet(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = Color.White,
-                        fontFamily = FontFamily.Monospace
+                        fontFamily = RajdhaniFontFamily
                     )
                     Text(
                         text = "\$${String.format("%.2f", priceUsd)} USD",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Black,
                         color = NeonGreen,
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = RajdhaniFontFamily,
                         modifier = Modifier.padding(vertical = 8.dp)
                     )
 
@@ -14122,15 +15191,15 @@ fun SimulatedCheckoutSheet(
                                 text = "VISA •••• 4012",
                                 fontSize = 14.sp,
                                 color = Color.White,
-                                fontFamily = FontFamily.Monospace
+                                fontFamily = RajdhaniFontFamily
                             )
                         }
                         Text(
                             text = "GPAY",
-                            fontSize = 11.sp,
+                            fontSize = 16.sp,
                             color = CyberObsidian,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = RajdhaniFontFamily,
                             modifier = Modifier
                                 .background(Color.White, RoundedCornerShape(4.dp))
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
@@ -14151,10 +15220,10 @@ fun SimulatedCheckoutSheet(
                         ) {
                             Text(
                                 text = if (lang == "ru") "ОТМЕНА" else "CANCEL",
-                                fontSize = 12.sp,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White,
-                                fontFamily = FontFamily.Monospace
+                                fontFamily = RajdhaniFontFamily
                             )
                         }
                         CyberButton(
@@ -14168,9 +15237,9 @@ fun SimulatedCheckoutSheet(
                         ) {
                             Text(
                                 text = if (lang == "ru") "ПОДТВЕРДИТЬ И ОПЛАТИТЬ" else "CONFIRM & PAY",
-                                fontSize = 12.sp,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.Black,
-                                fontFamily = FontFamily.Monospace
+                                fontFamily = RajdhaniFontFamily
                             )
                         }
                     }
@@ -14178,10 +15247,10 @@ fun SimulatedCheckoutSheet(
                     // Processing animation
                     Text(
                         text = if (lang == "ru") "АВТОРИЗАЦИЯ ТРАНЗАКЦИИ..." else "AUTHORIZING ENCRYPTED TUNNEL...",
-                        fontSize = 13.sp,
+                        fontSize = 17.sp,
                         fontWeight = FontWeight.Bold,
                         color = NeonCyan,
-                        fontFamily = FontFamily.Monospace
+                        fontFamily = RajdhaniFontFamily
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     androidx.compose.material3.CircularProgressIndicator(
@@ -14192,9 +15261,9 @@ fun SimulatedCheckoutSheet(
                     Spacer(modifier = Modifier.height(24.dp))
                     Text(
                         text = if (lang == "ru") "Инициализация подписи контракта..." else "Securing financial quantum node consensus...",
-                        fontSize = 11.sp,
-                        color = Color.Gray,
-                        fontFamily = FontFamily.Monospace
+                        fontSize = 16.sp,
+                        color = Color(0xFFB0B0C5),
+                        fontFamily = RajdhaniFontFamily
                     )
                     
                     LaunchedEffect(Unit) {
@@ -14215,13 +15284,13 @@ fun SimulatedCheckoutSheet(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = NeonGreen,
-                        fontFamily = FontFamily.Monospace
+                        fontFamily = RajdhaniFontFamily
                     )
                     Text(
                         text = if (lang == "ru") "Ваш баланс был обновлен!" else "Your cybernetic ledger has been synchronized!",
-                        fontSize = 11.sp,
+                        fontSize = 16.sp,
                         color = Color.LightGray,
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = RajdhaniFontFamily,
                         modifier = Modifier.padding(top = 4.dp, bottom = 18.dp)
                     )
                     CyberButton(
@@ -14235,9 +15304,9 @@ fun SimulatedCheckoutSheet(
                     ) {
                         Text(
                             text = if (lang == "ru") "ОТЛИЧНО" else "ACKNOWLEDGE",
-                            fontSize = 12.sp,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace
+                            fontFamily = RajdhaniFontFamily
                         )
                     }
                 }

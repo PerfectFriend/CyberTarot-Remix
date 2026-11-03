@@ -1679,6 +1679,14 @@ class TarotRepository private constructor(context: Context) {
         dao.updateProfile(profile)
     }
 
+    suspend fun getUserProfileSync(): UserProfile? = withContext(Dispatchers.IO) {
+        dao.getUserProfileSync()
+    }
+
+    suspend fun getActiveDeckSync(): SavedDeck? = withContext(Dispatchers.IO) {
+        dao.getActiveDeckSync()
+    }
+
     companion object {
         @Volatile
         private var INSTANCE: TarotRepository? = null

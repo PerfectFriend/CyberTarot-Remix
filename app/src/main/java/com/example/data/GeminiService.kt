@@ -1012,4 +1012,147 @@ object GeminiService {
             return null
         }
     }
+
+    suspend fun generateCustomArcana(
+        userConcept: String,
+        systemLanguage: String = "en"
+    ): GeneratedArcanaData = withContext(Dispatchers.IO) {
+        val rawApiKey = BuildConfig.GEMINI_API_KEY
+        val isApiKeyInvalid = rawApiKey.isBlank() ||
+                rawApiKey == "MY_GEMINI_API_KEY" ||
+                rawApiKey.contains("placeholder", ignoreCase = true)
+
+        if (!isApiKeyInvalid) {
+            try {
+                val promptText = """
+                    You are a cyberpunk occult game designer for a Cyber Tarot TCG game.
+                    Create a unique custom battle card from this user concept: "$userConcept".
+                    Language: $systemLanguage.
+                    Respond ONLY with valid JSON with keys:
+                    "name" (Cyberpunk title, e.g. "Neon Blade Runner"),
+                    "traditionalName" (Tarot archetype, e.g. "The Chariot Prime"),
+                    "element" (One of: "CYBER", "BIO", "QUANTUM", "VOID"),
+                    "rarity" (One of: "Rare", "Epic", "Legend"),
+                    "energyCost" (integer 2 to 5),
+                    "power" (integer 4 to 9),
+                    "defense" (integer 4 to 9),
+                    "abilityTitle" (Short cyber ability title),
+                    "abilityDescription" (Ability description, 1 sentence),
+                    "lore" (Atmospheric cyber lore, 2 sentences),
+                    "advice" (Oracle advice quote, 1 sentence).
+                """.trimIndent()
+
+                val requestJson = JSONObject().apply {
+                    put("contents", JSONArray().apply {
+                        put(JSONObject().apply {
+                            put("parts", JSONArray().apply {
+                                put(JSONObject().apply { put("text", promptText) })
+                            })
+                        })
+                    })
+                }
+
+                val request = Request.Builder()
+                    .url("$BASE_URL?key=$rawApiKey")
+                    .post(requestJson.toString().toRequestBody("application/json".toMediaType()))
+                    .build()
+
+                val response = client.newCall(request).execute()
+                val body = response.body?.string()
+                if (response.isSuccessful && !body.isNullOrBlank()) {
+                    val root = JSONObject(body)
+                    val candidates = root.optJSONArray("candidates")
+                    val contentObj = candidates?.optJSONObject(0)?.optJSONObject("content")
+                    val parts = contentObj?.optJSONArray("parts")
+                    val text = parts?.optJSONObject(0)?.optString("text") ?: ""
+                    val jsonStart = text.indexOf('{')
+                    val jsonEnd = text.lastIndexOf('}')
+                    if (jsonStart != -1 && jsonEnd != -1 && jsonEnd > jsonStart) {
+                        val parsed = JSONObject(text.substring(jsonStart, jsonEnd + 1))
+                        return@withContext GeneratedArcanaData(
+                            name = parsed.optString("name", "Cyber Arcana"),
+                            traditionalName = parsed.optString("traditionalName", "The Archetype"),
+                            element = parsed.optString("element", "CYBER").uppercase(),
+                            rarity = parsed.optString("rarity", "Epic"),
+                            energyCost = parsed.optInt("energyCost", 3).coerceIn(1, 5),
+                            power = parsed.optInt("power", 6).coerceIn(2, 10),
+                            defense = parsed.optInt("defense", 6).coerceIn(2, 10),
+                            abilityTitle = parsed.optString("abilityTitle", "Overclock Core"),
+                            abilityDescription = parsed.optString("abilityDescription", "Deals burst damage on deploy"),
+                            lore = parsed.optString("lore", "Forged in the decentralized quantum depths."),
+                            advice = parsed.optString("advice", "Sync your neural link before proceeding.")
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        // High-fidelity Procedural Generator Fallback
+        val isRu = systemLanguage == "ru"
+        val lower = userConcept.lowercase()
+        val element = when {
+            lower.contains("био") || lower.contains("раст") || lower.contains("лист") || lower.contains("лес") || lower.contains("bio") || lower.contains("plant") -> "BIO"
+            lower.contains("квант") || lower.contains("маг") || lower.contains("звезд") || lower.contains("quantum") || lower.contains("star") -> "QUANTUM"
+            lower.contains("пустот") || lower.contains("тьм") || lower.contains("тень") || lower.contains("черн") || lower.contains("void") || lower.contains("shadow") -> "VOID"
+            else -> "CYBER"
+        }
+
+        val formattedConcept = userConcept.trim().replaceFirstChar { if (it.isLowerCase()) it.titlecase(java.util.Locale.getDefault()) else it.toString() }
+        val name = if (isRu) {
+            "Нейро-Аркан «$formattedConcept»"
+        } else {
+            "Cyber Arcana: $formattedConcept"
+        }
+
+        val archetype = when (element) {
+            "BIO" -> if (isRu) "Верховный Друид Био-Матрицы" else "Bio-Matrix Druid"
+            "QUANTUM" -> if (isRu) "Квантовый Пророк Сети" else "Quantum Net Prophet"
+            "VOID" -> if (isRu) "Теневой Сталкер Даркнета" else "Darknet Shadow Stalker"
+            else -> if (isRu) "Мастер Чипов и Кибер-Огня" else "Master of Cyber-Fire"
+        }
+
+        val abilityTitle = when (element) {
+            "BIO" -> if (isRu) "Био-Регенерация" else "Bio-Regen"
+            "QUANTUM" -> if (isRu) "Квантовая Фазировка" else "Quantum Phasing"
+            "VOID" -> if (isRu) "Поглощение Пустоты" else "Void Siphon"
+            else -> if (isRu) "Лазерная Перегрузка" else "Laser Overclock"
+        }
+
+        val abilityDesc = when (element) {
+            "BIO" -> if (isRu) "Восстанавливает +4 HP при успешной атаке" else "Restores +4 HP on attack"
+            "QUANTUM" -> if (isRu) "Дает +5 очков щита при выкладке на доску" else "Grants +5 shield barrier on deploy"
+            "VOID" -> if (isRu) "Сжигает 1 единицу RAM у соперника" else "Burns 1 enemy RAM node"
+            else -> if (isRu) "Наносит +3 урона при прямом ударе" else "Deals +3 instant burst damage"
+        }
+
+        GeneratedArcanaData(
+            name = name,
+            traditionalName = archetype,
+            element = element,
+            rarity = if (userConcept.length > 10) "Legend" else "Epic",
+            energyCost = 3,
+            power = 6,
+            defense = 6,
+            abilityTitle = abilityTitle,
+            abilityDescription = abilityDesc,
+            lore = if (isRu) "Создан в ходе синтеза нейронных весов и оккультных символов сети." else "Forged through neural weight synthesis and occult network symbols.",
+            advice = if (isRu) "Доверяйте интуиции матрицы и держите баланс стихий." else "Trust matrix intuition and maintain elemental equilibrium."
+        )
+    }
 }
+
+data class GeneratedArcanaData(
+    val name: String,
+    val traditionalName: String,
+    val element: String,
+    val rarity: String,
+    val energyCost: Int,
+    val power: Int,
+    val defense: Int,
+    val abilityTitle: String,
+    val abilityDescription: String,
+    val lore: String,
+    val advice: String
+)

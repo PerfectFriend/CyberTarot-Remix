@@ -2,22 +2,23 @@ package com.example.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Cyberpunk Neon Palette - Elegant Dark Theme
-val CyberObsidian = Color(0xFF06060D)  // Opaque deep velvet black-indigo
-val CyberCharcoal = Color(0xC50A0915)  // Beautifully translucent so wallpaper artwork and ornaments bleed through!
-val CyberMutedBlue = Color(0x66161628) // Translucent inner borders and panels
-val ElegantViolet = Color(0xFF7000FF)  // Deep neon violet accent
-val ElegantIndigo = Color(0x881B1B2B)  // Translucent outer borders and buttons
+// Futuristic Cyberpunk Cannabis Oracle Palette
+val CyberObsidian = Color(0xFF070B12)  // Deep cosmic velvet obsidian
+val CyberCharcoal = Color(0xE60D121F)  // Frosted luxury glass surface
+val CyberMutedBlue = Color(0x66162238) // Translucent border & accent
+val ElegantViolet = Color(0xFFA020F0)  // Deep mystic violet
+val ElegantIndigo = Color(0x99121B2F)  // Sleek button background
 
-val NeonCyan = Color(0xFF00F0FF)       // Vibrant digital cyan
-val NeonMagenta = Color(0xFFFF00E5)    // High-energy digital magenta
-val NeonGreen = Color(0xFF00FF88)      // Success green
-val NeonGold = Color(0xFFFFD700)       // Legend gold
-val NeonRed = Color(0xFFFF2A2A)        // Warn red
+val NeonCyan = Color(0xFF00F0FF)       // Electric cyber cyan
+val NeonMagenta = Color(0xFFFF007F)    // High-voltage digital magenta
+val NeonGreen = Color(0xFF00FF88)      // Bioluminescent sacred cannabis green
+val NeonGold = Color(0xFFFFD700)       // Sacred geometry royal gold
+val NeonRed = Color(0xFFFF3366)        // Laser red
+val NeonAmber = Color(0xFFFF9900)      // Solar amber
 
-// M3 Mappings
-val PrimaryCyber = NeonMagenta
+// Material 3 Mappings
+val PrimaryCyber = NeonGreen
 val SecondaryCyber = NeonCyan
-val TertiaryCyber = ElegantViolet
+val TertiaryCyber = NeonGold
 val DarkBackground = CyberObsidian
 val DarkSurface = CyberCharcoal

@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.audio.CyberNoirSynthPlayer
 import com.example.viewmodel.TarotViewModel
 import kotlinx.coroutines.launch
 
@@ -53,11 +54,41 @@ fun DuelArenaScreen(
 
     var selectedHandCard by remember { mutableStateOf<BattleCard?>(null) }
     var showSurrenderConfirm by remember { mutableStateOf(false) }
+    var isP2pLobbyOpen by remember { mutableStateOf(false) }
 
-    LaunchedEffect(activeDeck) {
+    if (isP2pLobbyOpen) {
+        com.example.p2p.P2pDuelLobbyScreen(
+            viewModel = viewModel,
+            onBack = { isP2pLobbyOpen = false },
+            onStartP2pDuel = { node ->
+                isP2pLobbyOpen = false
+                coroutineScope.launch {
+                    val battleCards = viewModel.getActiveBattleDeck()
+                    val deckName = activeDeck?.name ?: "Genesis Cyber Deck"
+                    engine.startMatch(difficulty = "Hardcore", customPlayerDeck = battleCards, deckName = "$deckName (vs ${node.name})")
+                }
+            }
+        )
+        return
+    }
+
+    var rewardedForThisMatch by remember { mutableStateOf(false) }
+    val radioState by com.example.audio.CyberRadioPlayer.state.collectAsStateWithLifecycle()
+    var showRadioInDuel by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
         val battleCards = viewModel.getActiveBattleDeck()
         val deckName = activeDeck?.name ?: "Genesis Cyber Deck"
         engine.startMatch(difficulty = "Normal", customPlayerDeck = battleCards, deckName = deckName)
+    }
+
+    LaunchedEffect(duelState.winner) {
+        if (duelState.winner == DuelWinner.PLAYER && !rewardedForThisMatch) {
+            rewardedForThisMatch = true
+            viewModel.addWeedCredits(150)
+        } else if (duelState.winner == null) {
+            rewardedForThisMatch = false
+        }
     }
 
     val infiniteTransition = rememberInfiniteTransition(label = "duel_pulse")
@@ -75,7 +106,6 @@ fun DuelArenaScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF04060C))
-            .windowInsetsPadding(WindowInsets.safeDrawing)
     ) {
         // Background Matrix Grid effect
         Canvas(modifier = Modifier.fillMaxSize()) {
@@ -98,9 +128,12 @@ fun DuelArenaScreen(
             }
         }
 
+        val duelScrollState = rememberScrollState()
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(duelScrollState)
                 .padding(horizontal = 12.dp, vertical = 6.dp)
         ) {
             // Top HUD
@@ -167,15 +200,73 @@ fun DuelArenaScreen(
                     }
                 }
 
-                IconButton(
-                    onClick = { engine.startMatch("Normal") },
-                    modifier = Modifier.testTag("duel_restart_button")
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Refresh,
-                        contentDescription = "Restart Match",
-                        tint = Color(0xFFAAAAAA)
-                    )
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    // DI.FM Cyber Radio Console Launcher Button
+                    IconButton(
+                        onClick = { showRadioInDuel = true },
+                        modifier = Modifier
+                            .size(28.dp)
+                            .background(
+                                if (radioState.isPlaying) currentSkin.primaryColor.copy(alpha = 0.2f) else Color(0x15FFFFFF),
+                                CircleShape
+                            )
+                            .border(
+                                1.dp,
+                                if (radioState.isPlaying) currentSkin.primaryColor else Color(0x22FFFFFF),
+                                CircleShape
+                            )
+                            .testTag("duel_radio_button")
+                    ) {
+                        if (radioState.isPlaying) {
+                            Row(
+                                modifier = Modifier
+                                    .width(14.dp)
+                                    .height(11.dp),
+                                horizontalArrangement = Arrangement.spacedBy(1.dp),
+                                verticalAlignment = Alignment.Bottom
+                            ) {
+                                radioState.visualizerBars.take(3).forEach { bar ->
+                                    Box(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .fillMaxHeight(bar.coerceIn(0.25f, 1f))
+                                            .background(currentSkin.primaryColor)
+                                    )
+                                }
+                            }
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Radio,
+                                contentDescription = "Radio DI.FM",
+                                tint = if (radioState.isBuffering) Color(0xFFFFB800) else Color.LightGray,
+                                modifier = Modifier.size(15.dp)
+                            )
+                        }
+                    }
+
+                    OutlinedButton(
+                        onClick = {
+                            CyberNoirSynthPlayer.triggerFX(CyberNoirSynthPlayer.FXType.CLICK)
+                            isP2pLobbyOpen = true
+                        },
+                        shape = RoundedCornerShape(8.dp),
+                        border = BorderStroke(1.dp, Color(0xFF00FF66)),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
+                        modifier = Modifier.height(28.dp)
+                    ) {
+                        Text("P2P 🌐", fontSize = 10.sp, color = Color(0xFF00FF66), fontWeight = FontWeight.Bold)
+                    }
+
+                    IconButton(
+                        onClick = { engine.startMatch("Normal") },
+                        modifier = Modifier.testTag("duel_restart_button")
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = "Restart Match",
+                            tint = Color(0xFFAAAAAA)
+                        )
+                    }
                 }
             }
 
@@ -330,6 +421,7 @@ fun DuelArenaScreen(
                 lang = lang,
                 primaryColor = currentSkin.primaryColor,
                 onRestart = {
+                    rewardedForThisMatch = false
                     coroutineScope.launch {
                         val battleCards = viewModel.getActiveBattleDeck()
                         val deckName = activeDeck?.name ?: "Genesis Cyber Deck"
@@ -359,6 +451,12 @@ fun DuelArenaScreen(
                         Text(if (lang == "ru") "Продолжить" else "Resume")
                     }
                 }
+            )
+        }
+
+        if (showRadioInDuel) {
+            com.example.ui.components.CyberRadioConsoleDialog(
+                onDismiss = { showRadioInDuel = false }
             )
         }
     }

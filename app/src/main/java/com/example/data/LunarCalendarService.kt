@@ -15,6 +15,36 @@ data class LunarDayInfo(
     val detailInstructions: String
 )
 
+enum class MintingAuspiciousnessTier {
+    AUSPICIOUS,     // Peak astral conductivity (Full Moon, Waxing Gibbous, Fertile Alignment)
+    BALANCED,       // Stable baseline node resonance (First/Third Quarter)
+    CHALLENGING     // Volatile, Void static, Eclipse flux (New Moon, Waning Crescent, Barren Void)
+}
+
+data class TarotMintingWindow(
+    val tier: MintingAuspiciousnessTier,
+    val title: String,
+    val summary: String,
+    val dropRateModifierPercent: Int, // e.g. +18, +10, 0, -10
+    val gasFeeDiscountPercent: Int,    // e.g. 15 (discount) or -20 (surcharge)
+    val favoredElements: List<String>,
+    val patronArcanaIndices: List<Int>,
+    val ritualAdvice: String,
+    val astralConductivity: Float,     // 0.0f .. 1.0f
+    val badgeLabel: String
+)
+
+data class TarotMintingDayForecast(
+    val dayOfMonth: Int,
+    val dateString: String,
+    val ageFactor: Double,
+    val illumination: Int,
+    val phaseIcon: String,
+    val phaseName: String,
+    val astrologicalSign: String,
+    val mintingWindow: TarotMintingWindow
+)
+
 object LunarCalendarService {
 
     /**
@@ -262,6 +292,219 @@ object LunarCalendarService {
         val list = mutableListOf<LunarDayInfo>()
         for (day in 1..maxDays) {
             list.add(getLunarDayInfo(year, month, day, lang))
+        }
+        return list
+    }
+
+    fun getTarotMintingWindow(year: Int, month: Int, day: Int, lang: String = "en"): TarotMintingWindow {
+        val ageFactor = calculateLunarAgeFactor(year, month, day)
+        val activeLang = if (lang in listOf("en", "ru", "es")) lang else "en"
+
+        return when {
+            // FULL MOON: PEAK ASTRAL CONVERGENCE (90% - 100% illumination)
+            ageFactor in 0.44..0.56 -> {
+                val title = when (activeLang) {
+                    "ru" -> "ПИК АСТРАЛЬНОГО РЕЗОНАНСА (ПОЛНОЛУНИЕ)"
+                    "es" -> "CONVERGENCIA ASTRAL MÁXIMA (LUNA LLENA)"
+                    else -> "PEAK ASTRAL RESONANCE (FULL MOON)"
+                }
+                val summary = when (activeLang) {
+                    "ru" -> "Максимальная лунная гравитация. Смарт-контракт генерирует энтропию повышенной чистоты. Шанс выпадения Epic/Legendary карт увеличен на 18%."
+                    "es" -> "Máxima gravedad lunar. El contrato inteligente genera entropía de máxima pureza. Probabilidad aumentada en +18% para cartas Epic y Legendary."
+                    else -> "Maximum lunar tidal force. Smart contract entropy seeds reach peak diversity. Dramatically heightened (+18%) probability of Epic and Legendary cards."
+                }
+                val advice = when (activeLang) {
+                    "ru" -> "Идеальный момент для чеканки высших арканов (XVIII Луна, II Жрица) и выполнения алхимического слияния 4:1 без потерь."
+                    "es" -> "Momento cumbre para acuñar arcanos mayores (XVIII La Luna, II La Sacerdotisa) y realizar fusiones alquímicas 4:1."
+                    else -> "Prime window for minting Major Arcana nodes (XVIII The Moon, II The High Priestess) and zero-loss 4:1 Alchemy Fusions."
+                }
+                val badge = when (activeLang) {
+                    "ru" -> "БЛАГОПРИЯТНО ДЛЯ ЧЕКАНКИ"
+                    "es" -> "PROPICIO PARA ACUÑAR"
+                    else -> "AUSPICIOUS MINT WINDOW"
+                }
+                TarotMintingWindow(
+                    tier = MintingAuspiciousnessTier.AUSPICIOUS,
+                    title = title,
+                    summary = summary,
+                    dropRateModifierPercent = 18,
+                    gasFeeDiscountPercent = 15,
+                    favoredElements = listOf("QUANTUM", "BIO", "CELESTIAL"),
+                    patronArcanaIndices = listOf(18, 2, 19),
+                    ritualAdvice = advice,
+                    astralConductivity = 0.98f,
+                    badgeLabel = badge
+                )
+            }
+            // WAXING GIBBOUS: ASCENDING ENERGY
+            ageFactor in 0.28..0.44 -> {
+                val title = when (activeLang) {
+                    "ru" -> "ВОСХОДЯЩИЙ ИМПУЛЬС (РАСТУЩАЯ ЛУНА)"
+                    "es" -> "IMPULSO ASCENDENTE (LUNA GIBOSA)"
+                    else -> "ASCENDING TIDAL PULSE (WAXING GIBBOUS)"
+                }
+                val summary = when (activeLang) {
+                    "ru" -> "Растущий потенциал усиливает базовую силу (ATK) и щиты чеканимых карт. Благоприятное время для колодостроения."
+                    "es" -> "El potencial ascendente aumenta el ATK y la defensa de las cartas acuñadas. Momento muy favorable para la forja."
+                    else -> "Ascending tide bolsters base ATK and Shield metrics on newly minted cards. High synergy for battle decks."
+                }
+                val advice = when (activeLang) {
+                    "ru" -> "Рекомендуется чеканка карт стихий BIO и CYBER. Сниженная комиссия сети \$WEED (-10%)."
+                    "es" -> "Se recomienda acuñar cartas con afinidades BIO y CYBER. Tarifas reducidas en \$WEED (-10%)."
+                    else -> "Recommended for minting BIO and CYBER affinity nodes with discounted (-10%) \$WEED network gas."
+                }
+                val badge = when (activeLang) {
+                    "ru" -> "БЛАГОПРИЯТНЫЙ ЦИКЛ"
+                    "es" -> "CICLO PROPICIO"
+                    else -> "AUSPICIOUS RISING"
+                }
+                TarotMintingWindow(
+                    tier = MintingAuspiciousnessTier.AUSPICIOUS,
+                    title = title,
+                    summary = summary,
+                    dropRateModifierPercent = 10,
+                    gasFeeDiscountPercent = 10,
+                    favoredElements = listOf("BIO", "CYBER"),
+                    patronArcanaIndices = listOf(1, 3, 14),
+                    ritualAdvice = advice,
+                    astralConductivity = 0.82f,
+                    badgeLabel = badge
+                )
+            }
+            // NEW MOON / DARK MOON: VOID STATIC & ECLIPSE FLUX
+            ageFactor < 0.05 || ageFactor > 0.95 -> {
+                val title = when (activeLang) {
+                    "ru" -> "ШУМ ПУСТОТЫ И ЗАТМЕНИЕ (НОВОЛУНИЕ)"
+                    "es" -> "ESTÁTICA DEL VACÍO (LUNA NUEVA)"
+                    else -> "VOID STATIC ECLIPSE (NEW MOON)"
+                }
+                val summary = when (activeLang) {
+                    "ru" -> "Астральное затмение. Стандартные арканы испытывают помехи. Однако темные арканы Пустоты получают 2.5x бонус к вероятности."
+                    "es" -> "Ocultación astral. Los arcanos comunes sufren interferencias, pero las cartas del Vacío obtienen una tasa 2.5x."
+                    else -> "Total astral occultation. High noise in quantum links for standard cards, but Void/Shadow arcana gain a 2.5x singularity boost."
+                }
+                val advice = when (activeLang) {
+                    "ru" -> "Осторожно при обычной чеканке. Если охотитесь за XIII Смерть или XVI Башня — идеальное окно для вызова темной сингулярности."
+                    "es" -> "Precaución con la forja estándar. Momento óptimo para invocar arcanos oscuros como XIII La Muerte o XVI La Torre."
+                    else -> "Volatile for ordinary cards. Ideal occult threshold if hunting for dark singularity nodes (XIII Death, XVI The Tower)."
+                }
+                val badge = when (activeLang) {
+                    "ru" -> "ОПАСНОСТЬ: ШУМ ПУСТОТЫ"
+                    "es" -> "ALERTA: FLUJO DE VACÍO"
+                    else -> "CHALLENGING: VOID FLUX"
+                }
+                TarotMintingWindow(
+                    tier = MintingAuspiciousnessTier.CHALLENGING,
+                    title = title,
+                    summary = summary,
+                    dropRateModifierPercent = -10,
+                    gasFeeDiscountPercent = -20, // surcharge / congestion
+                    favoredElements = listOf("VOID", "SHADOW"),
+                    patronArcanaIndices = listOf(13, 15, 16),
+                    ritualAdvice = advice,
+                    astralConductivity = 0.22f,
+                    badgeLabel = badge
+                )
+            }
+            // WANING CRESCENT: ENTROPY & HARVEST
+            ageFactor in 0.75..0.95 -> {
+                val title = when (activeLang) {
+                    "ru" -> "ФАЗА ЭНТРОПИИ (СТАРЕЮЩИЙ СЕРП)"
+                    "es" -> "FASE DE ENTROPÍA (LUNA MENGUANTE)"
+                    else -> "ENTROPY RECESSION (WANING CRESCENT)"
+                }
+                val summary = when (activeLang) {
+                    "ru" -> "Энергетический спад. Повышена вероятность выпадения Common карт. Лучше копить \$WEED или торговать на DEX маркете."
+                    "es" -> "Disminución de energía astral. Mayor probabilidad de cartas Common. Recomendado ahorrar \$WEED o comerciar."
+                    else -> "Receding astral resonance. Common tier pull rates are heightened. Best to accumulate \$WEED or trade on the DEX."
+                }
+                val advice = when (activeLang) {
+                    "ru" -> "Отложите крупную чеканку до растущей Луны. Проведите ревизию холодного хранилища или настройте боевую колоду."
+                    "es" -> "Posponga la forja de alto nivel hasta la luna creciente. Revise su bóveda fría o ajuste su mazo de batalla."
+                    else -> "Postpone high-tier mints until the next Waxing Moon. Reorganize your Vault or list cards on the DEX AMM."
+                }
+                val badge = when (activeLang) {
+                    "ru" -> "СЛОЖНЫЙ ПЕРИОД: ЭНТРОПИЯ"
+                    "es" -> "PERÍODO DIFÍCIL: ENTROPÍA"
+                    else -> "CHALLENGING: LOW RESONANCE"
+                }
+                TarotMintingWindow(
+                    tier = MintingAuspiciousnessTier.CHALLENGING,
+                    title = title,
+                    summary = summary,
+                    dropRateModifierPercent = -5,
+                    gasFeeDiscountPercent = -10,
+                    favoredElements = listOf("CYBER", "VOID"),
+                    patronArcanaIndices = listOf(9, 12, 20),
+                    ritualAdvice = advice,
+                    astralConductivity = 0.38f,
+                    badgeLabel = badge
+                )
+            }
+            // BALANCED / NEUTRAL CYCLES (First Quarter, Waning Gibbous, Waxing Crescent)
+            else -> {
+                val title = when (activeLang) {
+                    "ru" -> "БАЛАНСИРОВАННЫЙ ЭФИР"
+                    "es" -> "ÉTER EQUILIBRADO"
+                    else -> "BALANCED HARMONIC ETHER"
+                }
+                val summary = when (activeLang) {
+                    "ru" -> "Стабильная сеть блокчейна. Равномерное распределение шансов редкости и нейтральный уровень комиссий."
+                    "es" -> "Red blockchain estable. Distribución equilibrada de probabilidades y tarifas de gas estables."
+                    else -> "Stable network hash rate and balanced astral resonance. Standard baseline probability across all rarity tiers."
+                }
+                val advice = when (activeLang) {
+                    "ru" -> "Подходит для сбалансированной чеканки базовых карт и участия в стандартных дуэлях на P2P арене."
+                    "es" -> "Adecuado para la forja equilibrada de cartas base y duelos en la arena P2P."
+                    else -> "Reliable window for consistent deck minting and casual testing in P2P arena duels."
+                }
+                val badge = when (activeLang) {
+                    "ru" -> "НЕЙТРАЛЬНЫЙ БАЛАНС"
+                    "es" -> "BALANCE NEUTRAL"
+                    else -> "BALANCED BASELINE"
+                }
+                TarotMintingWindow(
+                    tier = MintingAuspiciousnessTier.BALANCED,
+                    title = title,
+                    summary = summary,
+                    dropRateModifierPercent = 0,
+                    gasFeeDiscountPercent = 0,
+                    favoredElements = listOf("CYBER", "QUANTUM"),
+                    patronArcanaIndices = listOf(4, 7, 10),
+                    ritualAdvice = advice,
+                    astralConductivity = 0.60f,
+                    badgeLabel = badge
+                )
+            }
+        }
+    }
+
+    fun getTarotMintingForecast(daysAhead: Int = 14, lang: String = "en"): List<TarotMintingDayForecast> {
+        val list = mutableListOf<TarotMintingDayForecast>()
+        for (i in 0 until daysAhead) {
+            val futureCal = Calendar.getInstance().apply {
+                add(Calendar.DAY_OF_YEAR, i)
+            }
+            val y = futureCal.get(Calendar.YEAR)
+            val m = futureCal.get(Calendar.MONTH) + 1
+            val d = futureCal.get(Calendar.DAY_OF_MONTH)
+
+            val lunarDay = getLunarDayInfo(y, m, d, lang)
+            val mintingWindow = getTarotMintingWindow(y, m, d, lang)
+            val ageFactor = calculateLunarAgeFactor(y, m, d)
+
+            list.add(
+                TarotMintingDayForecast(
+                    dayOfMonth = d,
+                    dateString = lunarDay.dateString,
+                    ageFactor = ageFactor,
+                    illumination = lunarDay.illumination,
+                    phaseIcon = lunarDay.phaseIcon,
+                    phaseName = lunarDay.phaseName,
+                    astrologicalSign = lunarDay.astrologicalSign,
+                    mintingWindow = mintingWindow
+                )
+            )
         }
         return list
     }

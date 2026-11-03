@@ -1,8 +1,10 @@
 package com.example.data
 
+import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+@Immutable
 @Entity(tableName = "saved_decks")
 data class SavedDeck(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -18,6 +20,7 @@ data class SavedDeck(
         else cardIndicesString.split(",").mapNotNull { it.trim().toIntOrNull() }
 }
 
+@Immutable
 @Entity(tableName = "card_upgrades")
 data class CardUpgrade(
     @PrimaryKey val cardIndex: Int,

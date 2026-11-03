@@ -1,5 +1,8 @@
 package com.example.data
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class CyberTarotCard(
     val index: Int,
     val name: String,

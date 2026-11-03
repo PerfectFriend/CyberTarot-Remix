@@ -3,6 +3,6 @@
     <item
         android:width="66dp"
         android:height="66dp"
-        android:drawable="@drawable/img_marijuana_leaf_splash_1783890299066"
+        android:drawable="@drawable/ic_cybertarot_fg"
         android:gravity="center" />
 </layer-list>

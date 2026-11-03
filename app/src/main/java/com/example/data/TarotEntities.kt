@@ -1,8 +1,10 @@
 package com.example.data
 
+import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+@Immutable
 @Entity(tableName = "user_profile")
 data class UserProfile(
     @PrimaryKey val id: Int = 1,
@@ -56,6 +58,7 @@ data class UserProfile(
     val nodeIsOnline: Boolean = false
 )
 
+@Immutable
 @Entity(tableName = "minted_cards")
 data class MintedCard(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -67,6 +70,7 @@ data class MintedCard(
     val listPrice: Int = 0
 )
 
+@Immutable
 @Entity(tableName = "market_listings")
 data class MarketListing(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -78,6 +82,7 @@ data class MarketListing(
     val isBot: Boolean = true
 )
 
+@Immutable
 @Entity(tableName = "transaction_logs")
 data class TransactionLog(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -89,6 +94,7 @@ data class TransactionLog(
     val timestamp: Long = System.currentTimeMillis()
 )
 
+@Immutable
 @Entity(tableName = "peer_contacts")
 data class PeerContact(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -99,6 +105,7 @@ data class PeerContact(
     val timestamp: Long = System.currentTimeMillis()
 )
 
+@Immutable
 @Entity(tableName = "encrypted_messages")
 data class EncryptedMessage(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -111,6 +118,7 @@ data class EncryptedMessage(
     val isIncoming: Boolean = false
 )
 
+@Immutable
 @Entity(tableName = "p2p_transactions")
 data class P2pTransaction(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -127,6 +135,7 @@ data class P2pTransaction(
     val timestamp: Long = System.currentTimeMillis()
 )
 
+@Immutable
 @Entity(tableName = "ad_banners")
 data class AdBanner(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -143,6 +152,7 @@ data class AdBanner(
     val messagePriceWeed: Int = 5
 )
 
+@Immutable
 @Entity(tableName = "divination_spreads")
 data class DivinationReading(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,

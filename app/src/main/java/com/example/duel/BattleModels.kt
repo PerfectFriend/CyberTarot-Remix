@@ -1,5 +1,7 @@
 package com.example.duel
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import com.example.data.CyberTarotCard
 import com.example.data.CyberTarotDeck
@@ -55,6 +57,7 @@ enum class CardSpecialEffect(
     COUNTER_STRIKE("Spike Protocol", "Контрудар", "Reflects 2 damage to any attacker", "Отражает 2 урона любому атакующему")
 }
 
+@Stable
 data class BattleCard(
     val instanceId: String = UUID.randomUUID().toString(),
     val cardIndex: Int,
@@ -80,6 +83,7 @@ enum class DuelWinner {
     PLAYER, ENEMY, DRAW
 }
 
+@Immutable
 data class DuelState(
     val turnNumber: Int = 1,
     val isPlayerTurn: Boolean = true,
